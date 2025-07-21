@@ -1,0 +1,59 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Search and Filter Section -->
+  <div class="mb-8">
+    <div class="flex gap-4 items-center">
+      <div class="flex-1">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch()"
+          placeholder="Rechercher des produits..."
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+      <button
+        (click)="onSearch()"
+        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Rechercher
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ error }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <!-- Products Grid -->
+  <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div *ngFor="let product of products" class="bg-white rounded-lg shadow-md overflow-hidden">
+      <img [src]="product.image" [alt]="product.name" class="w-full h-48 object-cover"/>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold mb-2">{{ product.name }}</h3>
+        <p class="text-gray-600 text-sm mb-2 line-clamp-2">{{ product.description }}</p>
+        <div class="flex justify-between items-center">
+          <span class="text-lg font-bold text-blue-600">{{ product.price | currency:'EUR' }}</span>
+          <span *ngIf="product.stock > 0" class="text-sm text-green-600">En stock</span>
+          <span *ngIf="product.stock === 0" class="text-sm text-red-600">Rupture de stock</span>
+        </div>
+        <button
+          [routerLink]="['/products', product.id]"
+          class="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+        >
+          Voir détails
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && products.length === 0" class="text-center py-12">
+    <p class="text-gray-600">Aucun produit trouvé</p>
+  </div>
+</div> 
