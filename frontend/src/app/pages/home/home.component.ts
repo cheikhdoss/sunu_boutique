@@ -89,7 +89,13 @@ export class HomeComponent implements OnInit {
   getImageUrl(imagePath: string): string {
     if (!imagePath) return '/assets/images/placeholder.svg';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:8000/storage/${imagePath}`;
+    
+    // Gérer les différents formats de chemin d'image du backend
+    if (imagePath.startsWith('products/')) {
+      return `http://localhost:8000/storage/${imagePath}`;
+    } else {
+      return `http://localhost:8000/storage/products/${imagePath}`;
+    }
   }
 
   trackByProductId(index: number, product: Product): number {
