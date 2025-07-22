@@ -1,45 +1,49 @@
+/* Header - Design simple et épuré comme l'image */
 .header-toolbar {
-  background: var(--gradient-primary);
-  color: white;
-  box-shadow: 0 4px 20px var(--shadow-color);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  padding: 0;
-  min-height: 70px;
+  background: #f2f2f6;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .header-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 70px;
+  gap: 20px;
 }
 
+/* Logo/Nom de la boutique */
 .logo-section {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  margin-right: 20px;
 }
 
 .logo-link {
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: white;
-  font-weight: 600;
+  color: #333;
+  font-weight: 700;
   font-size: 1.5rem;
-  transition: var(--transition);
+  transition: all 0.2s ease;
 }
 
 .logo-link:hover {
-  transform: scale(1.05);
+  color: #3fa4ee;
+  transform: scale(1.02);
 }
 
 .logo-icon {
-  font-size: 2rem;
-  margin-right: 12px;
-  color: white;
+  font-size: 1.8rem;
+  margin-right: 8px;
+  color: #3fa4ee;
 }
 
 .logo-text {
@@ -47,118 +51,236 @@
   letter-spacing: -0.5px;
 }
 
-.nav-section {
+/* Conteneur de recherche principal */
+.search-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 12px;
+}
+
+/* Wrapper de l'input de recherche */
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background: white;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  padding: 0;
+  transition: border-color 0.2s ease;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #3fa4ee;
+  box-shadow: 0 0 0 2px rgba(63, 164, 238, 0.1);
+}
+
+/* Icône de recherche */
+.search-icon {
+  color: #666;
+  margin: 0 12px 0 16px;
+  font-size: 1.2rem;
+}
+
+/* Champ de recherche */
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 14px 16px 14px 0;
+  font-size: 1rem;
+  color: #333;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: #999;
+  font-size: 0.95rem;
+}
+
+/* Bouton de recherche */
+.search-button {
+  background: linear-gradient(135deg, #3fa4ee 0%, #e91e63 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 14px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(63, 164, 238, 0.3);
+}
+
+.search-button:hover {
+  background: linear-gradient(135deg, #2e8ce6 0%, #d81b60 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(63, 164, 238, 0.4);
+}
+
+.search-button:active {
+  transform: translateY(0);
+}
+
+/* Actions utilisateur */
+.user-actions {
   display: flex;
   align-items: center;
   gap: 24px;
+  flex-shrink: 0;
 }
 
-.nav-link {
+/* Liens d'action */
+.action-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.8);
-  padding: 12px 16px;
-  border-radius: var(--border-radius);
-  transition: var(--transition);
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.95rem;
   font-weight: 500;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  text-decoration: none;
 }
 
-.nav-link:hover {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
+.action-link:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
 }
 
-.nav-link.active {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.15);
-  font-weight: 600;
+.action-link mat-icon {
+  font-size: 1.1rem;
 }
 
-.nav-link mat-icon {
-  font-size: 1.2rem;
+/* Flèche dropdown */
+.dropdown-arrow {
+  font-size: 1rem !important;
+  margin-left: 2px;
+  opacity: 0.7;
 }
 
-.actions-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.cart-button {
-  color: white;
-  transition: var(--transition);
+/* Lien panier spécial */
+.cart-link {
   position: relative;
 }
 
-.cart-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: scale(1.1);
-}
-
-.cart-button mat-icon {
-  font-size: 1.5rem;
-}
-
-.login-button {
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--border-radius);
-  padding: 8px 16px;
-  transition: var(--transition);
-  font-weight: 500;
-}
-
-.login-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-}
-
-.login-button mat-icon {
-  margin-right: 8px;
+.cart-link mat-icon {
   font-size: 1.2rem;
 }
 
-/* Mobile responsive */
+/* Menus dropdown */
+.mat-mdc-menu-panel {
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+}
+
+.mat-mdc-menu-item {
+  font-size: 0.95rem;
+  padding: 12px 16px;
+}
+
+.mat-mdc-menu-item mat-icon {
+  margin-right: 12px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.mat-mdc-menu-item:hover {
+  background: #f8f9fa;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
   .header-content {
-    padding: 0 16px;
-  }
-  
-  .nav-section {
     gap: 16px;
   }
   
-  .nav-link span {
+  .logo-section {
+    margin-right: 16px;
+  }
+  
+  .logo-link {
+    font-size: 1.3rem;
+  }
+  
+  .logo-icon {
+    font-size: 1.6rem;
+  }
+  
+  .user-actions {
+    gap: 16px;
+  }
+  
+  .action-link span {
     display: none;
   }
   
-  .login-button span {
-    display: none;
-  }
-  
-  .logo-text {
-    font-size: 1.2rem;
+  .search-button {
+    padding: 14px 20px;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+  
   .header-content {
-    padding: 0 12px;
+    gap: 12px;
   }
   
-  .nav-section {
-    gap: 8px;
-  }
-  
-  .actions-section {
-    gap: 8px;
+  .logo-section {
+    margin-right: 12px;
   }
   
   .logo-text {
     display: none;
+  }
+  
+  .logo-icon {
+    margin-right: 0;
+    font-size: 1.5rem;
+  }
+  
+  .user-actions {
+    gap: 12px;
+  }
+  
+  .search-button {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+  }
+  
+  .search-input {
+    padding: 12px 12px 12px 0;
+    font-size: 0.9rem;
+  }
+  
+  .search-icon {
+    margin: 0 10px 0 12px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .user-actions {
+    gap: 8px;
+  }
+  
+  .action-link {
+    padding: 6px 8px;
+  }
+  
+  .search-button {
+    padding: 10px 12px;
+    font-size: 0.8rem;
   }
 }

@@ -43,7 +43,7 @@ export class MockDataService {
       id: 1,
       name: 'Smartphone XYZ',
       description: 'Un smartphone dernier cri avec un appareil photo de 108MP.',
-      price: 79999, // Converti de 799.99 en centimes pour l'affichage
+      price: 79999,
       stock: 50,
       image: '01K0R73CR11X0AMN3VFEN3XA80.png',
       category_id: 1,
@@ -55,7 +55,7 @@ export class MockDataService {
       id: 2,
       name: 'T-shirt Coton Bio',
       description: 'Un t-shirt confortable et écologique.',
-      price: 2550, // Converti de 25.50 en centimes
+      price: 2550,
       stock: 120,
       image: '01K0R76QET34RF2QMYPE2YB8KD.jpeg',
       category_id: 2,
@@ -67,7 +67,7 @@ export class MockDataService {
       id: 3,
       name: 'Casque Audio Bluetooth',
       description: 'Casque avec réduction de bruit active.',
-      price: 14999, // Converti de 149.99 en centimes
+      price: 14999,
       stock: 75,
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
       category_id: 1,
@@ -79,7 +79,7 @@ export class MockDataService {
       id: 4,
       name: 's25',
       description: 'Un smartphone dernier cri avec un appareil photo de 108MP.',
-      price: 60000, // Converti de 600.00 en centimes
+      price: 60000,
       stock: 7,
       image: 'products/01K0R7E2C7H4GQFAZM7TEFA4BG.jpeg',
       category_id: 1,
@@ -90,23 +90,27 @@ export class MockDataService {
   ];
 
   getProducts(): Observable<Product[]> {
-    return of(this.products).pipe(delay(800)); // Simule un délai réseau
+    console.log('🔍 MockDataService: Retour des produits de test', this.products);
+    return of(this.products).pipe(delay(100));
   }
 
   getProduct(id: number): Observable<Product> {
     const product = this.products.find(p => p.id === id);
+    console.log('🔍 MockDataService: Recherche produit ID', id, 'trouvé:', product);
     if (!product) {
       throw new Error('Produit non trouvé');
     }
-    return of(product).pipe(delay(500));
+    return of(product).pipe(delay(100));
   }
 
   getCategories(): Observable<Category[]> {
-    return of(this.categories).pipe(delay(300));
+    console.log('🔍 MockDataService: Retour des catégories de test', this.categories);
+    return of(this.categories).pipe(delay(100));
   }
 
   getProductsByCategory(categoryId: number): Observable<Product[]> {
     const filteredProducts = this.products.filter(p => p.category_id === categoryId);
-    return of(filteredProducts).pipe(delay(600));
+    console.log('🔍 MockDataService: Produits pour catégorie', categoryId, ':', filteredProducts);
+    return of(filteredProducts).pipe(delay(100));
   }
 }

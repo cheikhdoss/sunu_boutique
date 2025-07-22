@@ -21,6 +21,7 @@ export class ProductDetailComponent implements OnInit {
   quantity = 1;
   loading = true;
   selectedImageIndex = 0;
+  imageError = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -96,6 +97,15 @@ export class ProductDetailComponent implements OnInit {
     } else {
       return `http://localhost:8000/storage/products/${imagePath}`;
     }
+  }
+
+  onImageError(event: any): void {
+    this.imageError = true;
+    event.target.style.display = 'none';
+  }
+
+  onImageLoad(): void {
+    this.imageError = false;
   }
 
   goBack(): void {

@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
+import { SearchService } from './services/search.service';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +11,14 @@ import { HeaderComponent } from './components/header/header.component';
 })
 export class App {
   protected readonly title = signal('Sunu Boutique');
+
+  constructor(private searchService: SearchService) {}
+
+  onSearchChange(searchTerm: string): void {
+    this.searchService.setSearchTerm(searchTerm);
+  }
+
+  onCategoryChange(categoryId: number | null): void {
+    this.searchService.setSelectedCategory(categoryId);
+  }
 }

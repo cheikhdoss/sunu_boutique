@@ -22,7 +22,17 @@
           <img [src]="getImageUrl(product.image)" 
                [alt]="product.name"
                class="main-image"
-               (error)="$any($event.target).src='/assets/images/placeholder.svg'">
+               (error)="onImageError($event)"
+               (load)="onImageLoad()">
+          
+          <!-- Placeholder pour image indisponible -->
+          <div class="image-placeholder" *ngIf="imageError">
+            <div class="placeholder-content">
+              <mat-icon class="placeholder-icon">image_not_supported</mat-icon>
+              <h3>Image indisponible</h3>
+              <p>L'image de ce produit n'est pas disponible pour le moment</p>
+            </div>
+          </div>
           
           <!-- Stock Badge -->
           <div class="stock-badge" [class.out-of-stock]="product.stock === 0">
