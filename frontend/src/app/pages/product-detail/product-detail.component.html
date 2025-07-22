@@ -1,0 +1,174 @@
+<div class="product-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement du produit...</p>
+  </div>
+
+  <!-- Product Detail -->
+  <div *ngIf="!loading && (product$ | async) as product" class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <button mat-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+        Retour aux produits
+      </button>
+    </nav>
+
+    <div class="product-detail-content">
+      <!-- Product Images -->
+      <div class="product-images-section">
+        <div class="main-image-container">
+          <img [src]="getImageUrl(product.image)" 
+               [alt]="product.name"
+               class="main-image"
+               (error)="$any($event.target).src='/assets/images/placeholder.svg'">
+          
+          <!-- Stock Badge -->
+          <div class="stock-badge" [class.out-of-stock]="product.stock === 0">
+            <mat-icon>{{ product.stock > 0 ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ product.stock > 0 ? 'En stock' : 'Rupture de stock' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Information -->
+      <div class="product-info-section">
+        <div class="product-header">
+          <!-- Category -->
+          <div class="product-category">
+            <mat-chip color="primary">{{ product.category?.name || 'Sans catégorie' }}</mat-chip>
+          </div>
+
+          <!-- Product Name -->
+          <h1 class="product-title">{{ product.name }}</h1>
+
+          <!-- Price -->
+          <div class="price-section">
+            <span class="current-price">{{ product.price | currency:'XOF':'symbol':'1.0-0' }}</span>
+          </div>
+
+          <!-- Stock Info -->
+          <div class="stock-info">
+            <mat-icon [class]="product.stock > 0 ? 'text-success' : 'text-error'">
+              {{ product.stock > 0 ? 'inventory' : 'inventory_2' }}
+            </mat-icon>
+            <span [class]="product.stock > 0 ? 'text-success' : 'text-error'">
+              {{ product.stock > 0 ? product.stock + ' en stock' : 'Rupture de stock' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Product Description -->
+        <div class="product-description">
+          <h3>Description</h3>
+          <p>{{ product.description }}</p>
+        </div>
+
+        <!-- Quantity Selector and Add to Cart -->
+        <div class="purchase-section" *ngIf="product.stock > 0">
+          <div class="quantity-section">
+            <label class="quantity-label">Quantité</label>
+            <div class="quantity-controls">
+              <button mat-icon-button 
+                      (click)="decreaseQuantity()"
+                      [disabled]="quantity <= 1"
+                      class="quantity-btn">
+                <mat-icon>remove</mat-icon>
+              </button>
+              
+              <mat-form-field appearance="outline" class="quantity-input">
+                <input matInput 
+                       type="number" 
+                       [(ngModel)]="quantity"
+                       [min]="1"
+                       [max]="product.stock"
+                       readonly>
+              </mat-form-field>
+              
+              <button mat-icon-button 
+                      (click)="increaseQuantity(product.stock)"
+                      [disabled]="quantity >= product.stock"
+                      class="quantity-btn">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button mat-raised-button 
+                    color="primary"
+                    class="add-to-cart-btn"
+                    (click)="addToCart(product)"
+                    [disabled]="product.stock === 0">
+              <mat-icon>add_shopping_cart</mat-icon>
+              Ajouter au panier
+            </button>
+
+            <button mat-stroked-button 
+                    color="accent"
+                    class="buy-now-btn"
+                    routerLink="/cart">
+              <mat-icon>flash_on</mat-icon>
+              Acheter maintenant
+            </button>
+          </div>
+        </div>
+
+        <!-- Out of Stock Message -->
+        <div class="out-of-stock-section" *ngIf="product.stock === 0">
+          <mat-card class="out-of-stock-card">
+            <mat-card-content>
+              <div class="out-of-stock-content">
+                <mat-icon class="out-of-stock-icon">inventory_2</mat-icon>
+                <h3>Produit indisponible</h3>
+                <p>Ce produit est actuellement en rupture de stock. Revenez plus tard ou contactez-nous pour plus d'informations.</p>
+                <button mat-button color="primary" routerLink="/">
+                  Voir d'autres produits
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Product Features -->
+        <div class="product-features">
+          <h3>Caractéristiques</h3>
+          <div class="features-grid">
+            <div class="feature-item">
+              <mat-icon>local_shipping</mat-icon>
+              <div>
+                <h4>Livraison rapide</h4>
+                <p>Livraison sous 24-48h</p>
+              </div>
+            </div>
+            
+            <div class="feature-item">
+              <mat-icon>verified_user</mat-icon>
+              <div>
+                <h4>Garantie qualité</h4>
+                <p>Produits certifiés</p>
+              </div>
+            </div>
+            
+            <div class="feature-item">
+              <mat-icon>support_agent</mat-icon>
+              <div>
+                <h4>Support client</h4>
+                <p>Assistance 7j/7</p>
+              </div>
+            </div>
+            
+            <div class="feature-item">
+              <mat-icon>payment</mat-icon>
+              <div>
+                <h4>Paiement sécurisé</h4>
+                <p>Transactions protégées</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

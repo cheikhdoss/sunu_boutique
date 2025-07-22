@@ -1,0 +1,118 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title fade-in">
+          Découvrez notre collection
+          <span class="text-accent">exceptionnelle</span>
+        </h1>
+        <p class="hero-subtitle fade-in">
+          Des produits de qualité premium sélectionnés avec soin pour vous offrir le meilleur
+        </p>
+        <button mat-raised-button color="accent" class="hero-cta slide-up" routerLink="/products">
+          <mat-icon>explore</mat-icon>
+          Explorer nos produits
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <div class="container">
+      <div class="filters-content">
+        <!-- Search Bar -->
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Rechercher un produit</mat-label>
+          <input matInput 
+                 placeholder="Nom, description..."
+                 (input)="onSearchChange($any($event.target).value || '')">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Category Filter -->
+        <mat-form-field appearance="outline" class="category-field">
+          <mat-label>Catégorie</mat-label>
+          <mat-select (selectionChange)="onCategoryChange($event.value)">
+            <mat-option [value]="null">Toutes les catégories</mat-option>
+            <mat-option *ngFor="let category of categories$ | async" [value]="category.id">
+              {{ category.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>category</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Nos Produits</h2>
+        <p class="section-subtitle">Découvrez notre sélection de produits premium</p>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Chargement des produits...</p>
+      </div>
+
+      <!-- Products Grid -->
+      <div *ngIf="!loading" class="products-grid">
+        <mat-card *ngFor="let product of filteredProducts$ | async; trackBy: trackByProductId" 
+                  class="product-card slide-up">
+          <div class="product-image-container">
+            <img [src]="getImageUrl(product.image)" 
+                 [alt]="product.name"
+                 class="product-image"
+                 (error)="$any($event.target).src='/assets/images/placeholder.svg'">
+            <div class="product-overlay">
+              <button mat-fab color="accent" 
+                      class="quick-view-btn"
+                      [routerLink]="['/product', product.id]">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+            <div class="stock-badge" [class.out-of-stock]="product.stock === 0">
+              {{ product.stock > 0 ? 'En stock' : 'Rupture' }}
+            </div>
+          </div>
+
+          <mat-card-content class="product-content">
+            <div class="product-category">
+              <mat-chip color="primary">{{ product.category?.name || 'Sans catégorie' }}</mat-chip>
+            </div>
+            
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-description">{{ product.description | slice:0:100 }}...</p>
+            
+            <div class="product-footer">
+              <div class="price-section">
+                <span class="price">{{ product.price | currency:'XOF':'symbol':'1.0-0' }}</span>
+              </div>
+              
+              <button mat-raised-button 
+                      color="primary"
+                      class="add-to-cart-btn"
+                      [disabled]="product.stock === 0"
+                      (click)="addToCart(product)">
+                <mat-icon>add_shopping_cart</mat-icon>
+                {{ product.stock > 0 ? 'Ajouter' : 'Indisponible' }}
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && (filteredProducts$ | async)?.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">inventory_2</mat-icon>
+        <h3>Aucun produit trouvé</h3>
+        <p>Essayez de modifier vos critères de recherche</p>
+      </div>
+    </div>
+  </section>
+</div>
