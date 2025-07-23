@@ -228,6 +228,32 @@ body {
   color: white !important;
 }
 
+/* Styles pour les notifications SnackBar */
+.success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.success-snackbar .mat-mdc-snack-bar-action {
+  color: #c8e6c9 !important;
+  font-weight: 600 !important;
+}
+
+.error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.error-snackbar .mat-mdc-snack-bar-action {
+  color: #ffcdd2 !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-snack-bar-container {
+  border-radius: 8px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .container {

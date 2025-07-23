@@ -1,0 +1,71 @@
+/* ===== STYLES DE DEBUG POUR LES BOUTONS DU CARROUSEL ===== */
+
+/* Rendre les boutons très visibles pour le debug */
+.carousel-nav {
+  background: #ff0000 !important; /* Rouge vif pour les voir */
+  color: white !important;
+  border: 3px solid #ffffff !important;
+  width: 80px !important;
+  height: 80px !important;
+  z-index: 1000 !important;
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  cursor: pointer !important;
+  font-size: 2rem !important;
+}
+
+.carousel-prev {
+  left: -40px !important;
+}
+
+.carousel-next {
+  right: -40px !important;
+}
+
+.carousel-nav:hover {
+  background: #00ff00 !important; /* Vert au hover */
+  transform: translateY(-50%) scale(1.2) !important;
+}
+
+.carousel-nav mat-icon {
+  font-size: 2rem !important;
+  color: white !important;
+}
+
+/* Indicateurs très visibles */
+.indicator {
+  background: #ff0000 !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  margin: 0 10px !important;
+  border: 2px solid white !important;
+}
+
+.indicator.active {
+  background: #00ff00 !important;
+}
+
+.indicator:hover {
+  background: #0000ff !important;
+}
+
+/* Container du carrousel */
+.carousel-container {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Debug info */
+.carousel-debug {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 9999;
+  font-family: monospace;
+}

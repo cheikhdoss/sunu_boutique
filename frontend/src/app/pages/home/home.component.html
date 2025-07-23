@@ -3,12 +3,20 @@
   <div class="matrix-bg" #matrixBg></div>
   
   <!-- Hero Section -->
-  <section class="hero-section hologram-effect" #heroSection>
+  <section class="hero-section hologram-effect futuristic-hero" #heroSection>
+    <!-- Éléments d'animation d'arrière-plan -->
+    <div class="floating-orbs"></div>
+    <div class="light-rays"></div>
+    <div class="decorative-elements"></div>
+    <div class="magic-star-1"></div>
+    <div class="magic-star-2"></div>
+    <div class="magic-star-3"></div>
+    
     <div class="container">
       <div class="hero-content">
         <h1 class="hero-title neon-glow" #heroTitle>
           Découvrez notre collection
-          <span class="text-accent cyber-glitch" #glitchText>exceptionnelle</span>
+          <span class="text-accent cyber-glitch" data-text="exceptionnelle" #glitchText>exceptionnelle</span>
         </h1>
         <p class="hero-subtitle" #heroSubtitle>
           Des produits de qualité premium sélectionnés avec soin pour vous offrir le meilleur
@@ -25,9 +33,35 @@
     </div>
   </section>
 
+  <!-- Section titre "En Vedette" avec animation Apple-style -->
+  <section class="featured-title-section" #featuredTitleSection>
+    <div class="container">
+      <div class="featured-title-wrapper" #featuredTitleWrapper>
+        <h2 class="featured-title apple-style" #featuredTitle>En Vedette</h2>
+        <div class="featured-subtitle" #featuredSubtitle>
+          Découvrez notre sélection exceptionnelle
+        </div>
+      </div>
+    </div>
+
+  <!-- Bannière produit vedette -->
+  <app-featured-product-banner [product]="featuredProduct"></app-featured-product-banner>
+
+  </section>
+
+
   
   <!-- Products Section -->
   <section class="products-section particle-effect" #productsSection>
+    <!-- Éléments d'animation d'arrière-plan -->
+    <div class="animated-orbs"></div>
+    <div class="animated-waves"></div>
+    <div class="geometric-lines"></div>
+    <div class="twinkling-stars"></div>
+    <div class="star-1"></div>
+    <div class="star-2"></div>
+    <div class="star-3"></div>
+    
     <div class="container">
       <div class="section-header" #sectionHeader>
         <h2 class="section-title neon-glow">Nos Produits</h2>

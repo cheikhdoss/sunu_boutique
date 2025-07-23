@@ -17,8 +17,4 @@ export class App {
   onSearchChange(searchTerm: string): void {
     this.searchService.setSearchTerm(searchTerm);
   }
-
-  onCategoryChange(categoryId: number | null): void {
-    this.searchService.setSelectedCategory(categoryId);
-  }
 }

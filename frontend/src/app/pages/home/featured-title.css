@@ -1,0 +1,240 @@
+/* Section titre "En Vedette" avec animation Apple-style */
+.featured-title-section {
+  padding: 120px 0;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured-title-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(63, 164, 238, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(233, 30, 99, 0.1) 0%, transparent 50%);
+  animation: backgroundPulse 8s ease-in-out infinite;
+}
+
+.featured-title-wrapper {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.featured-title.apple-style {
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #e0e0e0 25%,
+    #ffffff 50%,
+    #f0f0f0 75%,
+    #ffffff 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.3),
+    0 0 60px rgba(255, 255, 255, 0.2);
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  margin: 0;
+  position: relative;
+  animation: titleGlow 4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.featured-title.apple-style::before {
+  content: 'En Vedette';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerEffect 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+.featured-subtitle {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: subtitleFadeIn 1s ease-out 0.8s forwards;
+}
+
+/* Animations */
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 30px rgba(255, 255, 255, 0.3),
+      0 0 60px rgba(255, 255, 255, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 
+      0 0 40px rgba(255, 255, 255, 0.5),
+      0 0 80px rgba(255, 255, 255, 0.3),
+      0 0 120px rgba(63, 164, 238, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes shimmerEffect {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes subtitleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes backgroundPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Animation d'apparition au scroll */
+.featured-title-section.animate-in .featured-title.apple-style {
+  animation: 
+    titleAppear 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+    titleGlow 4s ease-in-out infinite 1.2s;
+}
+
+@keyframes titleAppear {
+  from {
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Effet de brillance traversant le texte */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.title-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 1.5s ease-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .featured-title-section {
+    padding: 80px 0;
+    min-height: 300px;
+  }
+  
+  .featured-title.apple-style {
+    font-size: clamp(3rem, 12vw, 6rem);
+  }
+  
+  .featured-subtitle {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-title-section {
+    padding: 60px 0;
+    min-height: 250px;
+  }
+  
+  .featured-title.apple-style {
+    font-size: clamp(2.5rem, 15vw, 5rem);
+  }
+  
+  .featured-subtitle {
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+}
+
+/* Effet de parallaxe léger */
+@media (prefers-reduced-motion: no-preference) {
+  .featured-title-section {
+    transform-style: preserve-3d;
+  }
+  
+  .featured-title-wrapper {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+}
+
+/* Amélioration de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .featured-title.apple-style,
+  .featured-title.apple-style::before,
+  .featured-subtitle,
+  .featured-title-section::before {
+    animation: none !important;
+  }
+  
+  .featured-title.apple-style {
+    opacity: 1;
+    transform: none;
+  }
+  
+  .featured-subtitle {
+    opacity: 1;
+    transform: none;
+  }
+}
