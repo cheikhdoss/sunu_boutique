@@ -77,6 +77,54 @@
   z-index: 1;
 }
 
+
+.featured-title.apple-stylev2 {
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    #014dff 0%,
+    rgb(0, 73, 170) 25%,
+    #00267e 50%,
+    #001546 75%,
+    #000d2c 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 
+    0 0 30px rgba(0, 28, 244, 0.3),
+    0 0 60px rgba(255, 255, 255, 0.2);
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  margin: 0;
+  position: relative;
+  animation: titleGlow 4s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.featured-title.apple-stylev2::before {
+  content: 'Nos Produits';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(36, 36, 36, 0.8) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerEffect 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+
 .featured-subtitle {
   font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.7);
