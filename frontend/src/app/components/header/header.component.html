@@ -1,0 +1,84 @@
+<div class="header-toolbar">
+  <div class="container">
+    <div class="header-content">
+      <!-- Logo/Nom de la boutique -->
+      <div class="logo-section">
+        <a routerLink="/" class="logo-link">
+          <mat-icon class="logo-icon">storefront</mat-icon>
+          <span class="logo-text">Sunu Boutique</span>
+        </a>
+      </div>
+
+      <!-- Barre de recherche principale -->
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input type="text" 
+                 class="search-input"
+                 placeholder="Cherchez un produit, une marque ou une catégorie"
+                 (input)="onSearchChange($any($event.target).value || '')"
+                 (keydown.enter)="performSearch()"
+                 [value]="searchTerm">
+        </div>
+        
+        <button class="search-button" (click)="performSearch()">
+          Rechercher
+        </button>
+      </div>
+
+      <!-- Actions utilisateur -->
+      <div class="user-actions">
+        <!-- Se connecter -->
+        <button class="action-link" [matMenuTriggerFor]="loginMenu">
+          <mat-icon>person</mat-icon>
+          <span>Se connecter</span>
+          <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
+        </button>
+        
+        <mat-menu #loginMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>login</mat-icon>
+            <span>Se connecter</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>person_add</mat-icon>
+            <span>Créer un compte</span>
+          </button>
+        </mat-menu>
+
+        <!-- Aide -->
+        <button class="action-link" [matMenuTriggerFor]="helpMenu">
+          <mat-icon>help_outline</mat-icon>
+          <span>Aide</span>
+          <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
+        </button>
+        
+        <mat-menu #helpMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>contact_support</mat-icon>
+            <span>Centre d'aide</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>phone</mat-icon>
+            <span>Nous contacter</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>info</mat-icon>
+            <span>À propos</span>
+          </button>
+        </mat-menu>
+
+        <!-- Panier -->
+        <button class="action-link cart-link" routerLink="/cart">
+          <mat-icon [matBadge]="cartItemsCount$ | async" 
+                    [matBadgeHidden]="(cartItemsCount$ | async) === 0"
+                    matBadgeColor="warn"
+                    matBadgeSize="small">
+            shopping_cart
+          </mat-icon>
+          <span>Panier</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

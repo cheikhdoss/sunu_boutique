@@ -1,0 +1,205 @@
+<div class="cart-container">
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">
+        <mat-icon>shopping_cart</mat-icon>
+        Mon Panier
+      </h1>
+      <p class="page-subtitle">Gérez vos articles et finalisez votre commande</p>
+    </div>
+
+    <!-- Cart Content -->
+    <div class="cart-content" *ngIf="(cartItems$ | async) as cartItems">
+      <!-- Empty Cart State -->
+      <div *ngIf="cartItems.length === 0" class="empty-cart">
+        <mat-card class="empty-cart-card">
+          <mat-card-content>
+            <div class="empty-cart-content">
+              <mat-icon class="empty-cart-icon">shopping_cart</mat-icon>
+              <h2>Votre panier est vide</h2>
+              <p>Découvrez nos produits et ajoutez-les à votre panier pour commencer vos achats.</p>
+              <button mat-raised-button color="primary" routerLink="/" class="continue-shopping-btn">
+                <mat-icon>explore</mat-icon>
+                Continuer mes achats
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Cart Items -->
+      <div *ngIf="cartItems.length > 0" class="cart-items-section">
+        <div class="cart-grid">
+          <!-- Cart Items List -->
+          <div class="cart-items-list">
+            <div class="cart-header">
+              <h2>Articles dans votre panier ({{ getTotalItems() }})</h2>
+              <button mat-button color="warn" (click)="clearCart()" class="clear-cart-btn">
+                <mat-icon>delete_sweep</mat-icon>
+                Vider le panier
+              </button>
+            </div>
+
+            <div class="cart-items">
+              <mat-card *ngFor="let item of cartItems; trackBy: trackByProductId" class="cart-item-card">
+                <div class="cart-item">
+                  <!-- Product Image -->
+                  <div class="item-image-container">
+                    <img [src]="getImageUrl(item.product.image)" 
+                         [alt]="item.product.name"
+                         class="item-image"
+                         (error)="$any($event.target).src='/assets/images/placeholder.svg'">
+                  </div>
+
+                  <!-- Product Info -->
+                  <div class="item-info">
+                    <div class="item-details">
+                      <h3 class="item-name">{{ item.product.name }}</h3>
+                      <p class="item-category">{{ item.product.category?.name || 'Sans catégorie' }}</p>
+                      <p class="item-description">{{ item.product.description | slice:0:100 }}...</p>
+                      
+                      <!-- Stock Info -->
+                      <div class="stock-info">
+                        <mat-icon [class]="item.product.stock > 0 ? 'text-success' : 'text-error'">
+                          {{ item.product.stock > 0 ? 'check_circle' : 'error' }}
+                        </mat-icon>
+                        <span [class]="item.product.stock > 0 ? 'text-success' : 'text-error'">
+                          {{ item.product.stock > 0 ? 'En stock (' + item.product.stock + ')' : 'Rupture de stock' }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Quantity Controls -->
+                    <div class="quantity-controls">
+                      <label class="quantity-label">Quantité</label>
+                      <div class="quantity-selector">
+                        <button mat-icon-button 
+                                (click)="decreaseQuantity(item)"
+                                [disabled]="item.quantity <= 1"
+                                class="quantity-btn">
+                          <mat-icon>remove</mat-icon>
+                        </button>
+                        
+                        <span class="quantity-display">{{ item.quantity }}</span>
+                        
+                        <button mat-icon-button 
+                                (click)="increaseQuantity(item)"
+                                [disabled]="item.quantity >= item.product.stock"
+                                class="quantity-btn">
+                          <mat-icon>add</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Price and Actions -->
+                  <div class="item-actions">
+                    <div class="price-section">
+                      <div class="unit-price">
+                        {{ item.product.price | currency:'XOF':'symbol':'1.0-0' }} / unité
+                      </div>
+                      <div class="total-price">
+                        {{ (item.product.price * item.quantity) | currency:'XOF':'symbol':'1.0-0' }}
+                      </div>
+                    </div>
+
+                    <button mat-icon-button 
+                            color="warn"
+                            (click)="removeFromCart(item.product.id)"
+                            class="remove-btn"
+                            matTooltip="Retirer du panier">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </mat-card>
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <mat-card class="summary-card">
+              <mat-card-header>
+                <mat-card-title>
+                  <mat-icon>receipt</mat-icon>
+                  Résumé de la commande
+                </mat-card-title>
+              </mat-card-header>
+              
+              <mat-card-content>
+                <div class="summary-details">
+                  <div class="summary-row">
+                    <span>Articles ({{ getTotalItems() }})</span>
+                    <span>{{ getTotal() | currency:'XOF':'symbol':'1.0-0' }}</span>
+                  </div>
+                  
+                  <div class="summary-row">
+                    <span>Livraison</span>
+                    <span class="free-shipping">Gratuite</span>
+                  </div>
+                  
+                  <mat-divider></mat-divider>
+                  
+                  <div class="summary-row total-row">
+                    <span>Total</span>
+                    <span class="total-amount">{{ getTotal() | currency:'XOF':'symbol':'1.0-0' }}</span>
+                  </div>
+                </div>
+
+                <div class="checkout-section">
+                  <button mat-raised-button 
+                          color="primary"
+                          class="checkout-btn"
+                          (click)="proceedToCheckout()"
+                          [disabled]="cartItems.length === 0">
+                    <mat-icon>payment</mat-icon>
+                    Passer la commande
+                  </button>
+                  
+                  <button mat-button 
+                          routerLink="/"
+                          class="continue-shopping-link">
+                    <mat-icon>arrow_back</mat-icon>
+                    Continuer mes achats
+                  </button>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="payment-methods">
+                  <h4>Modes de paiement acceptés</h4>
+                  <div class="payment-icons">
+                    <mat-chip>
+                      <mat-icon>credit_card</mat-icon>
+                      Carte bancaire
+                    </mat-chip>
+                    <mat-chip>
+                      <mat-icon>local_atm</mat-icon>
+                      Espèces à la livraison
+                    </mat-chip>
+                  </div>
+                </div>
+
+                <!-- Security Info -->
+                <div class="security-info">
+                  <div class="security-item">
+                    <mat-icon>security</mat-icon>
+                    <span>Paiement sécurisé</span>
+                  </div>
+                  <div class="security-item">
+                    <mat-icon>local_shipping</mat-icon>
+                    <span>Livraison rapide</span>
+                  </div>
+                  <div class="security-item">
+                    <mat-icon>support_agent</mat-icon>
+                    <span>Support 7j/7</span>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

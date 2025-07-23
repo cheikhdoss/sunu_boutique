@@ -1,0 +1,20 @@
+// Custom CSS variables for consistent theming
+:root {
+  --primary-color: #3f51b5;
+  --primary-dark: #303f9f;
+  --primary-light: #c5cae9;
+  --accent-color: #e91e63;
+  --accent-dark: #c2185b;
+  --accent-light: #f8bbd9;
+  --background-color: #fafafa;
+  --surface-color: #ffffff;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --gradient-primary: linear-gradient(135deg, #3f51b5 0%, #303f9f 100%);
+  --gradient-accent: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+  --border-radius: 12px;
+  --border-radius-large: 20px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

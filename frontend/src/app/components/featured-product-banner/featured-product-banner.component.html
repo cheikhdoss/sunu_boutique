@@ -1,0 +1,44 @@
+<div class="featured-banner">
+  
+  <div class="content-container">
+    
+    <div class="text-content">
+      
+      <div class="promo-badge" *ngIf="product.promotion">
+        profiter de la promotion de {{ product.promotion }}%
+      </div>
+      
+      <h1 class="product-title">{{ product.name }}</h1>
+      
+      <ul class="key-features">
+        <li *ngFor="let feature of product.features">
+          <mat-icon>check_circle</mat-icon> {{ feature }}
+        </li>
+      </ul>
+      
+      <div class="pricing">
+        <span class="current-price">{{ product.currentPrice | currency:'XOF':'symbol':'1.2-2' }}</span>
+        <div class="old-price" *ngIf="product.oldPrice">
+          {{ product.oldPrice | currency:'XOF':'symbol':'1.0-0' }}
+        </div>
+      </div>
+      
+      <button mat-raised-button 
+              color="primary" 
+              class="cta-button"
+              #ctaButton
+              (click)="addToCart()"
+              (mouseenter)="onButtonHover(true)"
+              (mouseleave)="onButtonHover(false)"
+              [disabled]="!product.inStock">
+        <mat-icon *ngIf="product.inStock">shopping_cart</mat-icon>
+        <mat-icon *ngIf="!product.inStock">block</mat-icon>
+        {{ product.inStock ? 'COMMANDER MAINTENANT' : 'RUPTURE DE STOCK' }}
+      </button>
+    </div>
+    
+    <div class="image-container">
+      <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
+    </div>
+  </div>
+</div>
