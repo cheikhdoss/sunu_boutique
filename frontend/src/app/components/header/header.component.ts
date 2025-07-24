@@ -1,9 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../../material.module';
 import { CartService } from '../../services/cart.service';
-import { ProductService, Category } from '../../services/product.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -16,13 +15,9 @@ import { map } from 'rxjs/operators';
 })
 export class HeaderComponent implements OnInit {
   cartItemsCount$: Observable<number>;
-  searchTerm = '';
-
-  @Output() searchChange = new EventEmitter<string>();
 
   constructor(
-    private cartService: CartService,
-    private productService: ProductService
+    private cartService: CartService
   ) {
     this.cartItemsCount$ = this.cartService.cart$.pipe(
       map(items => items.reduce((count, item) => count + item.quantity, 0))
@@ -30,14 +25,4 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {}
-
-  onSearchChange(searchTerm: string): void {
-    this.searchTerm = searchTerm;
-    this.searchChange.emit(searchTerm);
-  }
-
-  performSearch(): void {
-    // Émettre la recherche
-    this.searchChange.emit(this.searchTerm.trim());
-  }
 }

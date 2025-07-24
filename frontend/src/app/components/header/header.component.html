@@ -9,23 +9,6 @@
         </a>
       </div>
 
-      <!-- Barre de recherche principale -->
-      <div class="search-container">
-        <div class="search-input-wrapper">
-          <mat-icon class="search-icon">search</mat-icon>
-          <input type="text" 
-                 class="search-input"
-                 placeholder="Cherchez un produit, une marque ou une catégorie"
-                 (input)="onSearchChange($any($event.target).value || '')"
-                 (keydown.enter)="performSearch()"
-                 [value]="searchTerm">
-        </div>
-        
-        <button class="search-button" (click)="performSearch()">
-          Rechercher
-        </button>
-      </div>
-
       <!-- Actions utilisateur -->
       <div class="user-actions">
         <!-- Se connecter -->
@@ -34,7 +17,7 @@
           <span>Se connecter</span>
           <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
         </button>
-        
+
         <mat-menu #loginMenu="matMenu">
           <button mat-menu-item>
             <mat-icon>login</mat-icon>
@@ -52,7 +35,7 @@
           <span>Aide</span>
           <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
         </button>
-        
+
         <mat-menu #helpMenu="matMenu">
           <button mat-menu-item>
             <mat-icon>contact_support</mat-icon>
@@ -70,7 +53,7 @@
 
         <!-- Panier -->
         <button class="action-link cart-link" routerLink="/cart">
-          <mat-icon [matBadge]="cartItemsCount$ | async" 
+          <mat-icon [matBadge]="cartItemsCount$ | async"
                     [matBadgeHidden]="(cartItemsCount$ | async) === 0"
                     matBadgeColor="warn"
                     matBadgeSize="small">
