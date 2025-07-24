@@ -10,11 +10,18 @@ import { SearchService } from '../../services/search.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, combineLatest, interval, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ProductSearchBarComponent } from '../../components/product-search-bar/product-search-bar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, MaterialModule, FeaturedProductBannerComponent],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    MaterialModule, 
+    FeaturedProductBannerComponent,
+    ProductSearchBarComponent
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css', './home-futuristic.css', './carousel-improvements.css', './featured-title.css']
 })
@@ -683,6 +690,36 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }, { threshold: 0.3, rootMargin: "-50px 0px" });
 
     observer.observe(this.featuredTitleSection.nativeElement);
+  }
+
+  onSearch(searchTerm: string) {
+    this.searchService.setSearchTerm(searchTerm);
+  }
+
+  onCategoryChange(category: string) {
+    const categoryId = this.categories$.pipe(
+      map(categories => categories.find(c => c.name === category)?.id)
+    ).subscribe(id => {
+      this.searchService.setSelectedCategory(id || null);
+    });
+  }
+
+  onSortChange(sortOption: string) {
+    this.filteredProducts$ = this.filteredProducts$.pipe(
+      map(products => {
+        const sortedProducts = [...products];
+        switch (sortOption) {
+          case 'name':
+            return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+          case 'price_asc':
+            return sortedProducts.sort((a, b) => a.price - b.price);
+          case 'price_desc':
+            return sortedProducts.sort((a, b) => b.price - a.price);
+          default:
+            return sortedProducts;
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
