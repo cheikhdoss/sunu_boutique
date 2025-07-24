@@ -68,6 +68,13 @@
         <p class="section-subtitle">Découvrez notre sélection de produits premium</p>
       </div>
 
+      <!-- Search Bar -->
+      <app-product-search-bar
+        (searchChange)="onSearch($event)"
+        (categoryChange)="onCategoryChange($event)"
+        (sortChange)="onSortChange($event)">
+      </app-product-search-bar>
+
       <!-- Loading State -->
       <div *ngIf="loading" class="loading-container">
         <div class="cyberpunk-loader" #cyberpunkLoader></div>
