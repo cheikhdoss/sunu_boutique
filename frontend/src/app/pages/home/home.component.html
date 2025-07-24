@@ -1,0 +1,228 @@
+<div class="home-container">
+  <!-- Matrix Background Effect -->
+  <div class="matrix-bg" #matrixBg></div>
+  
+  <!-- Hero Section -->
+  <section class="hero-section hologram-effect futuristic-hero" #heroSection>
+    <!-- Éléments d'animation d'arrière-plan -->
+    <div class="floating-orbs"></div>
+    <div class="light-rays"></div>
+    <div class="decorative-elements"></div>
+    <div class="magic-star-1"></div>
+    <div class="magic-star-2"></div>
+    <div class="magic-star-3"></div>
+    
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title neon-glow" #heroTitle>
+          Découvrez notre collection
+          <span class="text-accent cyber-glitch" data-text="exceptionnelle" #glitchText>exceptionnelle</span>
+        </h1>
+        <p class="hero-subtitle" #heroSubtitle>
+          Des produits de qualité premium sélectionnés avec soin pour vous offrir le meilleur
+        </p>
+        <button mat-raised-button 
+                color="accent" 
+                class="hero-cta energy-border" 
+                routerLink="/products"
+                #heroCta>
+          <mat-icon>explore</mat-icon>
+          Explorer nos produits
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section titre "En Vedette" avec animation Apple-style -->
+  <section class="featured-title-section" #featuredTitleSection>
+    <div class="container">
+      <div class="featured-title-wrapper" #featuredTitleWrapper>
+        <h2 class="featured-title apple-style" #featuredTitle>En Vedette</h2>
+        <div class="featured-subtitle" #featuredSubtitle>
+          Découvrez notre sélection exceptionnelle
+        </div>
+      </div>
+    </div>
+
+  <!-- Bannière produit vedette -->
+  <app-featured-product-banner [product]="featuredProduct"></app-featured-product-banner>
+
+  </section>
+
+
+  
+  <!-- Products Section -->
+  <section class="products-section particle-effect" #productsSection>
+    <!-- Éléments d'animation d'arrière-plan -->
+    <div class="animated-orbs"></div>
+    <div class="animated-waves"></div>
+    <div class="geometric-lines"></div>
+    <div class="twinkling-stars"></div>
+    <div class="star-1"></div>
+    <div class="star-2"></div>
+    <div class="star-3"></div>
+    
+    <div class="container">
+      <div class="featured-title-wrapper" #sectionHeader>
+        <h2 class="featured-title apple-stylev2">Nos Produits</h2>
+        <p class="section-subtitle">Découvrez notre sélection de produits premium</p>
+      </div>
+
+      <!-- Ajout de la barre de recherche -->
+      <app-search-bar></app-search-bar>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="cyberpunk-loader" #cyberpunkLoader></div>
+        <p class="neon-text">Chargement des produits...</p>
+      </div>
+
+      <!-- Products Grid -->
+      <div *ngIf="!loading" class="products-grid" #productsGrid>
+        <mat-card *ngFor="let product of filteredProducts$ | async; trackBy: trackByProductId; let i = index" 
+                  class="product-card hologram-effect"
+                  [attr.data-product-id]="product.id"
+                  [attr.data-index]="i"
+                  (mouseenter)="onCardHover(product.id, true, $event)"
+                  (mouseleave)="onCardHover(product.id, false, $event)">
+          
+          <div class="product-image-container">
+            <img [src]="getImageUrl(product.image)" 
+                 [alt]="product.name"
+                 class="product-image"
+                 (error)="$any($event.target).src='/assets/images/placeholder.svg'">
+            
+            <div class="product-overlay">
+              <button mat-fab color="accent" 
+                      class="quick-view-btn energy-border"
+                      [routerLink]="['/product', product.id]">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+            
+            <div class="stock-badge energy-border" [class.out-of-stock]="product.stock === 0">
+              {{ product.stock > 0 ? 'En stock' : 'Rupture' }}
+            </div>
+          </div>
+
+          <mat-card-content class="product-content">
+            <div class="product-category">
+              <mat-chip color="primary" class="neon-glow">{{ product.category?.name || 'Sans catégorie' }}</mat-chip>
+            </div>
+            
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-description">{{ product.description | slice:0:100 }}...</p>
+            
+            <div class="product-footer">
+              <div class="price-section">
+                <span class="price neon-glow">{{ product.price | currency:'XOF':'symbol':'1.0-0' }}</span>
+              </div>
+              
+              <button mat-raised-button 
+                      color="primary"
+                      class="add-to-cart-btn futuristic-btn"
+                      [disabled]="product.stock === 0"
+                      [attr.data-product-id]="product.id"
+                      (mouseenter)="onButtonHover(product.id, true, $event)"
+                      (mouseleave)="onButtonHover(product.id, false, $event)"
+                      (click)="addToCart(product, $event)">
+                <mat-icon>add_shopping_cart</mat-icon>
+                {{ product.stock > 0 ? 'Ajouter' : 'Indisponible' }}
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && (filteredProducts$ | async)?.length === 0" class="empty-state" #emptyState>
+        <mat-icon class="empty-icon cyber-glitch">inventory_2</mat-icon>
+        <h3 class="neon-glow">Aucun produit trouvé</h3>
+        <p>Essayez de modifier vos critères de recherche</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer-section">
+    <div class="container">
+      <div class="footer-content">
+        <!-- Company Info -->
+        <div class="footer-column">
+          <h3 class="footer-title">Sunu Boutique</h3>
+          <p class="footer-description">
+            Votre destination pour des produits de qualité premium. 
+            Nous sélectionnons avec soin chaque article pour vous offrir le meilleur.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="Facebook">
+              <mat-icon>facebook</mat-icon>
+            </a>
+            <a href="#" class="social-link" aria-label="Instagram">
+              <mat-icon>camera_alt</mat-icon>
+            </a>
+            <a href="#" class="social-link" aria-label="Twitter">
+              <mat-icon>alternate_email</mat-icon>
+            </a>
+            <a href="#" class="social-link" aria-label="LinkedIn">
+              <mat-icon>business</mat-icon>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-column">
+          <h4 class="footer-subtitle">Liens rapides</h4>
+          <ul class="footer-links">
+            <li><a href="#" routerLink="/">Accueil</a></li>
+            <li><a href="#" routerLink="/products">Produits</a></li>
+            <li><a href="#" routerLink="/cart">Panier</a></li>
+            <li><a href="#">À propos</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Categories -->
+        <div class="footer-column">
+          <h4 class="footer-subtitle">Catégories</h4>
+          <ul class="footer-links">
+            <li *ngFor="let category of categories$ | async | slice:0:5">
+              <a href="#">{{ category.name }}</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="footer-column">
+          <h4 class="footer-subtitle">Contact</h4>
+          <div class="contact-info">
+            <div class="contact-item">
+              <mat-icon>location_on</mat-icon>
+              <span>Dakar, Sénégal</span>
+            </div>
+            <div class="contact-item">
+              <mat-icon>phone</mat-icon>
+              <span>+221 77 123 45 67</span>
+            </div>
+            <div class="contact-item">
+              <mat-icon>email</mat-icon>
+              <span>contact@sunuboutique.sn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <p>&copy; 2024 Sunu Boutique. Tous droits réservés.</p>
+          <div class="footer-bottom-links">
+            <a href="#">Politique de confidentialité</a>
+            <a href="#">Conditions d'utilisation</a>
+            <a href="#">Mentions légales</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
