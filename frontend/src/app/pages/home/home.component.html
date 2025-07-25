@@ -1,7 +1,7 @@
 <div class="home-container">
   <!-- Matrix Background Effect -->
   <div class="matrix-bg" #matrixBg></div>
-  
+
   <!-- Hero Section -->
   <section class="hero-section hologram-effect futuristic-hero" #heroSection>
     <!-- Éléments d'animation d'arrière-plan -->
@@ -11,7 +11,7 @@
     <div class="magic-star-1"></div>
     <div class="magic-star-2"></div>
     <div class="magic-star-3"></div>
-    
+
     <div class="container">
       <div class="hero-content">
         <h1 class="hero-title neon-glow" #heroTitle>
@@ -21,9 +21,9 @@
         <p class="hero-subtitle" #heroSubtitle>
           Des produits de qualité premium sélectionnés avec soin pour vous offrir le meilleur
         </p>
-        <button mat-raised-button 
-                color="accent" 
-                class="hero-cta energy-border" 
+        <button mat-raised-button
+                color="accent"
+                class="hero-cta energy-border"
                 routerLink="/products"
                 #heroCta>
           <mat-icon>explore</mat-icon>
@@ -50,7 +50,7 @@
   </section>
 
 
-  
+
   <!-- Products Section -->
   <section class="products-section particle-effect" #productsSection>
     <!-- Éléments d'animation d'arrière-plan -->
@@ -61,7 +61,7 @@
     <div class="star-1"></div>
     <div class="star-2"></div>
     <div class="star-3"></div>
-    
+
     <div class="container">
       <div class="featured-title-wrapper" #sectionHeader>
         <h2 class="featured-title apple-stylev2">Nos Produits</h2>
@@ -83,27 +83,27 @@
 
       <!-- Products Grid -->
       <div *ngIf="!loading" class="products-grid" #productsGrid>
-        <mat-card *ngFor="let product of filteredProducts$ | async; trackBy: trackByProductId; let i = index" 
+        <mat-card *ngFor="let product of filteredProducts$ | async; trackBy: trackByProductId; let i = index"
                   class="product-card hologram-effect"
                   [attr.data-product-id]="product.id"
                   [attr.data-index]="i"
                   (mouseenter)="onCardHover(product.id, true, $event)"
                   (mouseleave)="onCardHover(product.id, false, $event)">
-          
+
           <div class="product-image-container">
-            <img [src]="getImageUrl(product.image)" 
+            <img [src]="getImageUrl(product.image)"
                  [alt]="product.name"
                  class="product-image"
                  (error)="$any($event.target).src='/assets/images/placeholder.svg'">
-            
+
             <div class="product-overlay">
-              <button mat-fab color="accent" 
+              <button mat-fab color="accent"
                       class="quick-view-btn energy-border"
                       [routerLink]="['/product', product.id]">
                 <mat-icon>visibility</mat-icon>
               </button>
             </div>
-            
+
             <div class="stock-badge energy-border" [class.out-of-stock]="product.stock === 0">
               {{ product.stock > 0 ? 'En stock' : 'Rupture' }}
             </div>
@@ -113,16 +113,16 @@
             <div class="product-category">
               <mat-chip color="primary" class="neon-glow">{{ product.category?.name || 'Sans catégorie' }}</mat-chip>
             </div>
-            
+
             <h3 class="product-name">{{ product.name }}</h3>
             <p class="product-description">{{ product.description | slice:0:100 }}...</p>
-            
+
             <div class="product-footer">
               <div class="price-section">
                 <span class="price neon-glow">{{ product.price | currency:'XOF':'symbol':'1.0-0' }}</span>
               </div>
-              
-              <button mat-raised-button 
+
+              <button mat-raised-button
                       color="primary"
                       class="add-to-cart-btn futuristic-btn"
                       [disabled]="product.stock === 0"
@@ -155,7 +155,7 @@
         <div class="footer-column">
           <h3 class="footer-title">Sunu Boutique</h3>
           <p class="footer-description">
-            Votre destination pour des produits de qualité premium. 
+            Votre destination pour des produits de qualité premium.
             Nous sélectionnons avec soin chaque article pour vous offrir le meilleur.
           </p>
           <div class="social-links">
@@ -210,7 +210,7 @@
             </div>
             <div class="contact-item">
               <mat-icon>email</mat-icon>
-              <span>contact@sunuboutique.sn</span>
+              <span>contact&#64;sunuboutique.sn</span>
             </div>
           </div>
         </div>

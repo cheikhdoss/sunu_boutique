@@ -1,0 +1,111 @@
+<div class="checkout-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Finaliser votre commande</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+        <!-- Informations client -->
+        <div formGroupName="customerInfo" class="form-section">
+          <h3>Informations personnelles</h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Prénom</mat-label>
+              <input matInput formControlName="firstName" required>
+              <mat-error>{{getErrorMessage('customerInfo', 'firstName')}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nom</mat-label>
+              <input matInput formControlName="lastName" required>
+              <mat-error>{{getErrorMessage('customerInfo', 'lastName')}}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" required>
+              <mat-error>{{getErrorMessage('customerInfo', 'email')}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Téléphone</mat-label>
+              <input matInput formControlName="phone" required>
+              <mat-error>{{getErrorMessage('customerInfo', 'phone')}}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Adresse de livraison -->
+        <div formGroupName="deliveryAddress" class="form-section">
+          <h3>Adresse de livraison</h3>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Rue</mat-label>
+            <input matInput formControlName="street" required>
+            <mat-error>{{getErrorMessage('deliveryAddress', 'street')}}</mat-error>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Ville</mat-label>
+              <input matInput formControlName="city" required>
+              <mat-error>{{getErrorMessage('deliveryAddress', 'city')}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Code postal</mat-label>
+              <input matInput formControlName="postalCode" required>
+              <mat-error>{{getErrorMessage('deliveryAddress', 'postalCode')}}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Pays</mat-label>
+            <input matInput formControlName="country" required>
+            <mat-error>{{getErrorMessage('deliveryAddress', 'country')}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Informations complémentaires</mat-label>
+            <textarea matInput formControlName="additionalInfo" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+
+        <!-- Mode de paiement -->
+        <div class="form-section">
+          <h3>Mode de paiement</h3>
+          
+          <mat-radio-group formControlName="paymentMethod" class="payment-methods">
+            <mat-radio-button [value]="paymentMethods.ONLINE">
+              Paiement en ligne
+              <mat-icon>credit_card</mat-icon>
+            </mat-radio-button>
+            
+            <mat-radio-button [value]="paymentMethods.CASH_ON_DELIVERY">
+              Paiement à la livraison
+              <mat-icon>local_shipping</mat-icon>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <!-- Résumé de la commande -->
+        <div class="order-summary">
+          <h3>Résumé de la commande</h3>
+          <p>Total à payer: {{cartService.getTotalAmount() | currency:'EUR'}}</p>
+        </div>
+
+        <!-- Bouton de validation -->
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit" [disabled]="checkoutForm.invalid || isSubmitting">
+            <mat-icon>shopping_cart_checkout</mat-icon>
+            Valider la commande
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div> 

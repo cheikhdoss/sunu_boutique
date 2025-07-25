@@ -1,11 +1,29 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
-import { Product } from './product.service';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  stock: number;
+  category?: Category;
+  created_at?: string;
+  updated_at?: string;
+}
 
 export interface CartItem {
   product: Product;
   quantity: number;
+  id: number;
+  price: number;
 }
 
 @Injectable({
@@ -14,84 +32,66 @@ export interface CartItem {
 export class CartService {
   private cartItems: CartItem[] = [];
   private cartSubject = new BehaviorSubject<CartItem[]>([]);
-  public cart$ = this.cartSubject.asObservable();
+  cart$: Observable<CartItem[]> = this.cartSubject.asObservable();
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    // Charger le panier depuis le localStorage seulement côté client
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadCartFromStorage();
+  constructor() {
+    // Charger le panier depuis le localStorage au démarrage
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      this.cartItems = JSON.parse(savedCart);
+      this.cartSubject.next(this.cartItems);
     }
   }
 
-  private loadCartFromStorage(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-          this.cartItems = JSON.parse(savedCart);
-          this.cartSubject.next(this.cartItems);
-        }
-      } catch (error) {
-        console.warn('Erreur lors du chargement du panier:', error);
-        this.cartItems = [];
-      }
-    }
-  }
-
-  private saveCartToStorage(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        localStorage.setItem('cart', JSON.stringify(this.cartItems));
-      } catch (error) {
-        console.warn('Erreur lors de la sauvegarde du panier:', error);
-      }
-    }
+  private saveCart(): void {
+    localStorage.setItem('cart', JSON.stringify(this.cartItems));
     this.cartSubject.next(this.cartItems);
   }
 
   addToCart(product: Product, quantity: number = 1): void {
     const existingItem = this.cartItems.find(item => item.product.id === product.id);
-    
+
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      this.cartItems.push({ product, quantity });
+      this.cartItems.push({
+        product,
+        quantity,
+        id: product.id,
+        price: product.price
+      });
     }
-    
-    this.saveCartToStorage();
+
+    this.saveCart();
   }
 
   removeFromCart(productId: number): void {
     this.cartItems = this.cartItems.filter(item => item.product.id !== productId);
-    this.saveCartToStorage();
+    this.saveCart();
   }
 
   updateQuantity(productId: number, quantity: number): void {
     const item = this.cartItems.find(item => item.product.id === productId);
     if (item) {
-      if (quantity <= 0) {
-        this.removeFromCart(productId);
-      } else {
-        item.quantity = quantity;
-        this.saveCartToStorage();
-      }
+      item.quantity = quantity;
+      this.saveCart();
     }
+  }
+
+  clearCart(): void {
+    this.cartItems = [];
+    this.saveCart();
   }
 
   getCartItems(): CartItem[] {
     return this.cartItems;
   }
 
-  getCartTotal(): number {
-    return this.cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
-  }
-
   getCartItemsCount(): number {
     return this.cartItems.reduce((count, item) => count + item.quantity, 0);
   }
 
-  clearCart(): void {
-    this.cartItems = [];
-    this.saveCartToStorage();
+  getTotalAmount(): number {
+    return this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   }
 }

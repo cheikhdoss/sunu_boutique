@@ -1,0 +1,105 @@
+.confirmation-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+mat-card-header mat-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 1rem;
+}
+
+.confirmation-message {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background-color: #e8f5e9;
+  border-radius: 8px;
+}
+
+.confirmation-message h2 {
+  color: #2e7d32;
+  margin-top: 0;
+}
+
+.confirmation-message p {
+  margin: 0.5rem 0;
+}
+
+.confirmation-message strong {
+  color: #1b5e20;
+  font-size: 1.2rem;
+}
+
+.next-steps {
+  margin-top: 2rem;
+}
+
+.next-steps h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+mat-list-item {
+  margin-bottom: 1rem;
+}
+
+mat-list-item mat-icon {
+  color: #2196f3;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: center;
+  padding: 1rem !important;
+  margin-top: 2rem;
+}
+
+mat-card-actions button {
+  padding: 0.5rem 2rem;
+}
+
+mat-card-actions button mat-icon {
+  margin-right: 0.5rem;
+}
+
+/* Animation */
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.confirmation-container {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .confirmation-container {
+    margin: 1rem auto;
+  }
+  
+  .confirmation-message {
+    padding: 1rem;
+  }
+  
+  mat-card-header mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+} 
