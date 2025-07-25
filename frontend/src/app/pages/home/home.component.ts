@@ -10,11 +10,20 @@ import { SearchService } from '../../services/search.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, combineLatest, interval, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ProductSearchBarComponent } from '../../components/product-search-bar/product-search-bar.component';
+import {MatChip} from '@angular/material/chips';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, MaterialModule, FeaturedProductBannerComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MaterialModule,
+    FeaturedProductBannerComponent,
+    ProductSearchBarComponent,
+    MatChip
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css', './home-futuristic.css', './carousel-improvements.css', './featured-title.css']
 })
@@ -51,7 +60,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   autoplayEnabled = true;
   private autoplayInterval: any;
   isCarouselInitialized = false; // Public pour le debug
-  
+
   // Touch support properties
   private touchStartX = 0;
   private touchEndX = 0;
@@ -83,11 +92,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this.products$ = this.productService.getProducts();
     this.categories$ = this.productService.getCategories();
-    
+
     this.featuredProducts$ = this.products$.pipe(
       map(products => products.slice(0, 8))
     );
-    
+
     this.filteredProducts$ = combineLatest([
       this.products$,
       this.searchService.selectedCategory$,
@@ -95,18 +104,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     ]).pipe(
       map(([products, categoryId, searchTerm]) => {
         let filtered = products;
-        
+
         if (categoryId) {
           filtered = filtered.filter(product => product.category_id === categoryId);
         }
-        
+
         if (searchTerm) {
-          filtered = filtered.filter(product => 
+          filtered = filtered.filter(product =>
             product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             product.description.toLowerCase().includes(searchTerm.toLowerCase())
           );
         }
-        
+
         return filtered;
       })
     );
@@ -128,24 +137,24 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ===== MÉTHODES DE NAVIGATION DU CARROUSEL =====
-  
+
   nextSlide(): void {
     console.log('🔄 nextSlide appelé');
     console.log('   - currentSlide AVANT:', this.currentSlide);
     console.log('   - maxSlides:', this.maxSlides);
     console.log('   - totalProducts:', this.totalProducts);
-    
+
     this.stopAutoplay();
-    
+
     if (this.currentSlide < this.maxSlides) {
       this.currentSlide++;
     } else {
       this.currentSlide = 0; // Retour au début
     }
-    
+
     console.log('   - currentSlide APRÈS:', this.currentSlide);
     this.moveToSlide();
-    
+
     setTimeout(() => {
       if (this.autoplayEnabled) {
         this.startAutoplay();
@@ -157,18 +166,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('🔄 previousSlide appelé');
     console.log('   - currentSlide AVANT:', this.currentSlide);
     console.log('   - maxSlides:', this.maxSlides);
-    
+
     this.stopAutoplay();
-    
+
     if (this.currentSlide > 0) {
       this.currentSlide--;
     } else {
       this.currentSlide = this.maxSlides; // Aller à la fin
     }
-    
+
     console.log('   - currentSlide APRÈS:', this.currentSlide);
     this.moveToSlide();
-    
+
     setTimeout(() => {
       if (this.autoplayEnabled) {
         this.startAutoplay();
@@ -178,12 +187,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   goToSlide(slideIndex: number): void {
     console.log('🎯 goToSlide appelé avec index:', slideIndex);
-    
+
     this.stopAutoplay();
     this.currentSlide = Math.max(0, Math.min(slideIndex, this.maxSlides));
     console.log('🎯 Slide sélectionné:', this.currentSlide);
     this.moveToSlide();
-    
+
     setTimeout(() => {
       if (this.autoplayEnabled) {
         this.startAutoplay();
@@ -237,25 +246,25 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ===== INITIALISATION DU CARROUSEL =====
-  
+
   private initializeCarousel(): void {
     this.featuredProducts$.subscribe(products => {
       if (products.length > 0 && !this.isCarouselInitialized) {
         this.totalProducts = products.length;
         this.maxSlides = Math.max(0, this.totalProducts - this.visibleProducts);
         this.isCarouselInitialized = true;
-        
+
         console.log('🔧 INITIALISATION CARROUSEL:');
         console.log('   - Produits total:', this.totalProducts);
         console.log('   - Produits visibles:', this.visibleProducts);
         console.log('   - Slides possibles (maxSlides):', this.maxSlides);
         console.log('   - Positions: 0 à', this.maxSlides);
         console.log('   - Largeur par slide:', this.slideWidth + 'px');
-        
+
         if (this.maxSlides === 0) {
           console.log('⚠️ ATTENTION: maxSlides = 0, pas de défilement possible');
         }
-        
+
         setTimeout(() => {
           this.startJavaScriptCarousel();
           console.log('✅ Carrousel initialisé');
@@ -273,7 +282,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     console.log('🚀 Track trouvé, démarrage du carrousel');
-    
+
     // Vérifier les dimensions du track
     const trackRect = track.getBoundingClientRect();
     console.log('📏 Dimensions du track:', {
@@ -281,23 +290,23 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       height: trackRect.height,
       children: track.children.length
     });
-    
+
     const moveCarousel = () => {
       if (this.maxSlides === 0) {
         console.log('⏸️ Autoplay arrêté: pas de slides à défiler');
         return;
       }
-      
+
       if (this.currentSlide < this.maxSlides) {
         this.currentSlide++;
       } else {
         this.currentSlide = 0;
       }
-      
+
       const translateX = -(this.currentSlide * this.slideWidth);
       track.style.transition = 'transform 0.5s ease-in-out';
       track.style.transform = `translateX(${translateX}px)`;
-      
+
       console.log('🔄 Auto-slide:', this.currentSlide, 'Position:', translateX);
     };
 
@@ -338,7 +347,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ===== SUPPORT TACTILE =====
-  
+
   onTouchStart(event: TouchEvent): void {
     this.touchStartX = event.touches[0].clientX;
   }
@@ -350,7 +359,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private handleSwipe(): void {
     const swipeDistance = this.touchStartX - this.touchEndX;
-    
+
     if (Math.abs(swipeDistance) > this.minSwipeDistance) {
       if (swipeDistance > 0) {
         this.nextSlide();
@@ -361,7 +370,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ===== MÉTHODES HELPER =====
-  
+
   isNewProduct(product: Product): boolean {
     if (!product.created_at) return false;
     const createdDate = new Date(product.created_at);
@@ -386,7 +395,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   getImageUrl(imagePath: string): string {
     if (!imagePath) return '/assets/images/placeholder.svg';
     if (imagePath.startsWith('http')) return imagePath;
-    
+
     if (imagePath.startsWith('products/')) {
       return `http://localhost:8000/storage/${imagePath}`;
     } else {
@@ -395,14 +404,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ===== ACTIONS PRODUITS =====
-  
+
   addToCart(product: Product, event?: Event): void {
     if (product.stock > 0) {
       if (event) {
         const button = event.target as HTMLElement;
         button.style.transform = 'scale(0.95)';
         button.style.boxShadow = '0 0 20px rgba(63, 164, 238, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.2)';
-        
+
         setTimeout(() => {
           button.style.transform = 'scale(1)';
           button.style.boxShadow = '';
@@ -425,14 +434,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ===== ÉVÉNEMENTS HOVER =====
-  
+
   onCardHover(productId: number, isHovered: boolean, event: Event): void {
     const card = event.currentTarget as HTMLElement;
-    
+
     if (isHovered) {
       card.style.transform = 'perspective(1000px) rotateX(-5deg) rotateY(5deg) translateY(-10px) scale(1.02)';
       card.style.boxShadow = '0 20px 40px rgba(63, 164, 238, 0.4), 0 0 20px rgba(233, 30, 99, 0.3)';
-      
+
       const overlay = document.createElement('div');
       overlay.className = 'hologram-scan';
       overlay.style.cssText = `
@@ -446,16 +455,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         pointer-events: none;
         z-index: 10;
       `;
-      
+
       card.style.position = 'relative';
       card.appendChild(overlay);
-      
+
       setTimeout(() => {
         if (overlay.parentNode) {
           overlay.parentNode.removeChild(overlay);
         }
       }, 600);
-      
+
     } else {
       card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
       card.style.boxShadow = '0 4px 20px rgba(63, 164, 238, 0.2)';
@@ -464,7 +473,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onButtonHover(productId: number, isHovered: boolean, event: Event): void {
     const button = event.currentTarget as HTMLElement;
-    
+
     if (isHovered) {
       button.style.transform = 'scale(1.05) translateY(-2px)';
       button.style.boxShadow = '0 8px 25px rgba(63, 164, 238, 0.5), 0 0 20px rgba(233, 30, 99, 0.3)';
@@ -476,7 +485,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onCarouselCardHover(productId: number, isHovered: boolean, event: Event): void {
     const card = event.currentTarget as HTMLElement;
-    
+
     if (isHovered) {
       this.stopAutoplay();
       card.style.transform = 'translateY(-10px) scale(1.05)';
@@ -491,7 +500,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ===== ANIMATIONS =====
-  
+
   private initializeAnimations(): void {
     this.createMatrixEffect();
     this.animateHeroSection();
@@ -514,7 +523,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     canvas.style.left = '0';
     canvas.style.zIndex = '-1';
     canvas.style.pointerEvents = 'none';
-    
+
     this.matrixBg.nativeElement.appendChild(canvas);
 
     for (let i = 0; i < 50; i++) {
@@ -531,28 +540,28 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const animateMatrix = () => {
       if (!ctx) return;
-      
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       this.matrixParticles.forEach(particle => {
         particle.x += particle.speedX;
         particle.y += particle.speedY;
-        
+
         if (particle.y > canvas.height) {
           particle.y = -10;
           particle.x = Math.random() * canvas.width;
         }
-        
+
         ctx.globalAlpha = particle.opacity;
         ctx.fillStyle = particle.color;
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fill();
       });
-      
+
       requestAnimationFrame(animateMatrix);
     };
-    
+
     animateMatrix();
   }
 
@@ -560,13 +569,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.heroSection) return;
 
     const elements = [this.heroTitle, this.heroSubtitle, this.heroCta];
-    
+
     elements.forEach((element, index) => {
       if (element) {
         const el = element.nativeElement;
         el.style.opacity = '0';
         el.style.transform = 'translateY(50px)';
-        
+
         setTimeout(() => {
           el.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
           el.style.opacity = '1';
@@ -577,12 +586,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.heroCta) {
       const button = this.heroCta.nativeElement;
-      
+
       button.addEventListener('mouseenter', () => {
         button.style.transform = 'scale(1.1) translateY(-5px)';
         button.style.boxShadow = '0 10px 30px rgba(63, 164, 238, 0.6), 0 0 20px rgba(233, 30, 99, 0.4)';
       });
-      
+
       button.addEventListener('mouseleave', () => {
         button.style.transform = 'scale(1) translateY(0)';
         button.style.boxShadow = '0 4px 15px rgba(63, 164, 238, 0.3)';
@@ -594,11 +603,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.glitchText) return;
 
     const element = this.glitchText.nativeElement;
-    
+
     this.glitchInterval = setInterval(() => {
       element.style.transform = `translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
       element.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
-      
+
       setTimeout(() => {
         element.style.transform = 'translate(0, 0)';
         element.style.filter = 'hue-rotate(0deg)';
@@ -633,10 +642,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private createEnergyBorders(): void {
     const energyElements = document.querySelectorAll('.energy-border');
-    
+
     energyElements.forEach(element => {
       const htmlElement = element as HTMLElement;
-      
+
       const createEnergyEffect = () => {
         htmlElement.style.boxShadow = `
           0 0 10px rgba(63, 164, 238, ${Math.random() * 0.5 + 0.3}),
@@ -644,17 +653,17 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           inset 0 0 10px rgba(63, 164, 238, 0.1)
         `;
       };
-      
+
       setInterval(createEnergyEffect, 2000);
     });
   }
 
   private animateNeonText(): void {
     const neonElements = document.querySelectorAll('.neon-glow');
-    
+
     neonElements.forEach(element => {
       const htmlElement = element as HTMLElement;
-      
+
       const pulseNeon = () => {
         const intensity = Math.sin(Date.now() * 0.003) * 0.3 + 0.7;
         htmlElement.style.textShadow = `
@@ -664,7 +673,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           0 0 20px rgba(63, 164, 238, ${intensity * 0.4})
         `;
       };
-      
+
       const animationSub = interval(50).subscribe(pulseNeon);
       this.animationSubscriptions.push(animationSub);
     });
@@ -683,6 +692,36 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }, { threshold: 0.3, rootMargin: "-50px 0px" });
 
     observer.observe(this.featuredTitleSection.nativeElement);
+  }
+
+  onSearch(searchTerm: string) {
+    this.searchService.setSearchTerm(searchTerm);
+  }
+
+  onCategoryChange(category: string) {
+    const categoryId = this.categories$.pipe(
+      map(categories => categories.find(c => c.name === category)?.id)
+    ).subscribe(id => {
+      this.searchService.setSelectedCategory(id || null);
+    });
+  }
+
+  onSortChange(sortOption: string) {
+    this.filteredProducts$ = this.filteredProducts$.pipe(
+      map(products => {
+        const sortedProducts = [...products];
+        switch (sortOption) {
+          case 'name':
+            return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+          case 'price_asc':
+            return sortedProducts.sort((a, b) => a.price - b.price);
+          case 'price_desc':
+            return sortedProducts.sort((a, b) => b.price - a.price);
+          default:
+            return sortedProducts;
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {

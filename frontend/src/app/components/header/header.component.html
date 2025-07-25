@@ -9,42 +9,42 @@
         </a>
       </div>
 
-      <!-- Barre de recherche principale -->
-      <div class="search-container">
-        <div class="search-input-wrapper">
-          <mat-icon class="search-icon">search</mat-icon>
-          <input type="text" 
-                 class="search-input"
-                 placeholder="Cherchez un produit, une marque ou une catégorie"
-                 (input)="onSearchChange($any($event.target).value || '')"
-                 (keydown.enter)="performSearch()"
-                 [value]="searchTerm">
-        </div>
-        
-        <button class="search-button" (click)="performSearch()">
-          Rechercher
-        </button>
-      </div>
-
       <!-- Actions utilisateur -->
       <div class="user-actions">
         <!-- Se connecter -->
-        <button class="action-link" [matMenuTriggerFor]="loginMenu">
-          <mat-icon>person</mat-icon>
-          <span>Se connecter</span>
-          <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
-        </button>
-        
-        <mat-menu #loginMenu="matMenu">
-          <button mat-menu-item>
+        <ng-container *ngIf="!(authService.currentUser$ | async); else userMenu">
+          <button class="action-link" routerLink="/auth/login">
             <mat-icon>login</mat-icon>
             <span>Se connecter</span>
           </button>
-          <button mat-menu-item>
+          <button class="action-link" routerLink="/auth/register">
             <mat-icon>person_add</mat-icon>
             <span>Créer un compte</span>
           </button>
-        </mat-menu>
+        </ng-container>
+
+        <ng-template #userMenu>
+          <button class="action-link" [matMenuTriggerFor]="loginMenu">
+            <mat-icon>account_circle</mat-icon>
+            <span>Mon compte</span>
+            <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
+          </button>
+
+          <mat-menu #loginMenu="matMenu">
+            <button mat-menu-item routerLink="/profile">
+              <mat-icon>person</mat-icon>
+              <span>Mon profil</span>
+            </button>
+            <button mat-menu-item routerLink="/orders">
+              <mat-icon>shopping_bag</mat-icon>
+              <span>Mes commandes</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Déconnexion</span>
+            </button>
+          </mat-menu>
+        </ng-template>
 
         <!-- Aide -->
         <button class="action-link" [matMenuTriggerFor]="helpMenu">
@@ -52,7 +52,7 @@
           <span>Aide</span>
           <mat-icon class="dropdown-arrow">keyboard_arrow_down</mat-icon>
         </button>
-        
+
         <mat-menu #helpMenu="matMenu">
           <button mat-menu-item>
             <mat-icon>contact_support</mat-icon>
@@ -70,10 +70,10 @@
 
         <!-- Panier -->
         <button class="action-link cart-link" routerLink="/cart">
-          <mat-icon [matBadge]="cartItemsCount$ | async" 
-                    [matBadgeHidden]="(cartItemsCount$ | async) === 0"
-                    matBadgeColor="warn"
-                    matBadgeSize="small">
+          <mat-icon [matBadge]="cartItemsCount$ | async"
+                   [matBadgeHidden]="(cartItemsCount$ | async) === 0"
+                   matBadgeColor="warn"
+                   matBadgeSize="small">
             shopping_cart
           </mat-icon>
           <span>Panier</span>

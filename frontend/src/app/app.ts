@@ -14,7 +14,5 @@ export class App {
 
   constructor(private searchService: SearchService) {}
 
-  onSearchChange(searchTerm: string): void {
-    this.searchService.setSearchTerm(searchTerm);
-  }
+
 }

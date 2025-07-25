@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MaterialModule } from '../../material.module';
-import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { RouterLink } from '@angular/router';
 import { CartService, CartItem } from '../../services/cart.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
@@ -10,15 +13,23 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, RouterModule, MaterialModule, FormsModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatDividerModule,
+    RouterLink
+  ],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
   cartItems$: Observable<CartItem[]>;
-  
+
   constructor(
-    private cartService: CartService,
+    protected cartService: CartService,
     private snackBar: MatSnackBar
   ) {
     this.cartItems$ = this.cartService.cart$;
@@ -53,7 +64,7 @@ export class CartComponent implements OnInit {
   }
 
   getTotal(): number {
-    return this.cartService.getCartTotal();
+    return this.cartService.getTotalAmount();
   }
 
   getTotalItems(): number {
@@ -64,7 +75,6 @@ export class CartComponent implements OnInit {
     if (!imagePath) return '/assets/images/placeholder.svg';
     if (imagePath.startsWith('http')) return imagePath;
     
-    // Gérer les différents formats de chemin d'image du backend
     if (imagePath.startsWith('products/')) {
       return `http://localhost:8000/storage/${imagePath}`;
     } else {
@@ -91,12 +101,7 @@ export class CartComponent implements OnInit {
   }
 
   proceedToCheckout(): void {
-    // Ici vous pouvez implémenter la logique de commande
-    this.snackBar.open('Fonctionnalité de commande à implémenter', 'Fermer', {
-      duration: 3000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top'
-    });
+    window.location.href = '/checkout';
   }
 
   trackByProductId(index: number, item: CartItem): number {

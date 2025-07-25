@@ -1,0 +1,52 @@
+<div class="confirmation-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-icon color="primary">check_circle</mat-icon>
+      <mat-card-title>Commande confirmée</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="confirmation-message">
+        <h2>Merci pour votre commande!</h2>
+        <p>Votre numéro de commande est : <strong>{{orderId}}</strong></p>
+        <p>Un email de confirmation a été envoyé à votre adresse email.</p>
+      </div>
+
+      <div class="next-steps">
+        <h3>Prochaines étapes</h3>
+        <mat-list>
+          <mat-list-item>
+            <mat-icon matListItemIcon>email</mat-icon>
+            <div matListItemTitle>Email de confirmation</div>
+            <div matListItemLine>Vous recevrez un email détaillé de votre commande</div>
+          </mat-list-item>
+
+          <mat-list-item *ngIf="order?.paymentMethod === 'ONLINE'">
+            <mat-icon matListItemIcon>payment</mat-icon>
+            <div matListItemTitle>Paiement traité</div>
+            <div matListItemLine>Votre paiement a été traité avec succès</div>
+          </mat-list-item>
+
+          <mat-list-item *ngIf="order?.paymentMethod === 'CASH_ON_DELIVERY'">
+            <mat-icon matListItemIcon>local_shipping</mat-icon>
+            <div matListItemTitle>Paiement à la livraison</div>
+            <div matListItemLine>Préparez le montant exact pour la livraison</div>
+          </mat-list-item>
+
+          <mat-list-item>
+            <mat-icon matListItemIcon>local_shipping</mat-icon>
+            <div matListItemTitle>Livraison en cours de préparation</div>
+            <div matListItemLine>Nous vous tiendrons informé du statut de la livraison</div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-flat-button color="primary" routerLink="/">
+        <mat-icon>home</mat-icon>
+        Retour à l'accueil
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div> 

@@ -1,24 +1,26 @@
 import { Routes } from '@angular/router';
+import { HomeComponent } from './pages/home/home.component';
+import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
+import { CartComponent } from './pages/cart/cart.component';
+import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
+import { LoginComponent } from './pages/auth/login/login.component';
+import { RegisterComponent } from './pages/auth/register/register.component';
+import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'product/:id', component: ProductDetailComponent },
+  { path: 'cart', component: CartComponent },
+  { path: 'checkout', component: CheckoutComponent },
+  { path: 'order-confirmation', component: OrderConfirmationComponent },
   {
-    path: '',
-    loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
+    path: 'auth',
+    children: [
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent },
+      { path: 'forgot-password', component: ForgotPasswordComponent }
+    ]
   },
-  {
-    path: 'products',
-    loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
-  },
-  {
-    path: 'product/:id',
-    loadComponent: () => import('./pages/product-detail/product-detail.component').then(m => m.ProductDetailComponent)
-  },
-  {
-    path: 'cart',
-    loadComponent: () => import('./pages/cart/cart.component').then(m => m.CartComponent)
-  },
-  {
-    path: '**',
-    redirectTo: ''
-  }
+  { path: '**', redirectTo: '' }
 ];
