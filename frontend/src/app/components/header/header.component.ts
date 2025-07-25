@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -26,11 +27,18 @@ import { map } from 'rxjs/operators';
 export class HeaderComponent implements OnInit {
   cartItemsCount$: Observable<number>;
 
-  constructor(private cartService: CartService) {
+  constructor(
+    private cartService: CartService,
+    protected authService: AuthService
+  ) {
     this.cartItemsCount$ = this.cartService.cart$.pipe(
       map(items => items.reduce((count, item) => count + item.quantity, 0))
     );
   }
 
   ngOnInit(): void {}
+
+  logout(): void {
+    this.authService.logout();
+  }
 }

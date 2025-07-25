@@ -166,7 +166,7 @@
    MENUS DROPDOWN
    ======================================== */
 
-.mat-mdc-menu-panel {
+::ng-deep .mat-mdc-menu-panel {
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
@@ -175,20 +175,20 @@
   overflow: hidden;
 }
 
-.mat-mdc-menu-item {
+::ng-deep .mat-mdc-menu-item {
   font-size: 0.95rem;
   padding: 16px 20px;
   transition: all 0.3s ease;
   font-weight: 500;
 }
 
-.mat-mdc-menu-item mat-icon {
+::ng-deep .mat-mdc-menu-item mat-icon {
   margin-right: 16px;
   color: #667eea;
   font-size: 1.2rem;
 }
 
-.mat-mdc-menu-item:hover {
+::ng-deep .mat-mdc-menu-item:hover {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
   transform: translateX(4px);
 }
