@@ -8,11 +8,12 @@ import { CartService } from '../../services/cart.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import {MatChip} from '@angular/material/chips';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, MaterialModule, FormsModule],
+  imports: [CommonModule, RouterModule, MaterialModule, FormsModule, MatChip],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
@@ -90,7 +91,7 @@ export class ProductDetailComponent implements OnInit {
   getImageUrl(imagePath: string): string {
     if (!imagePath) return '/assets/images/placeholder.svg';
     if (imagePath.startsWith('http')) return imagePath;
-    
+
     // Gérer les différents formats de chemin d'image du backend
     if (imagePath.startsWith('products/')) {
       return `http://localhost:8000/storage/${imagePath}`;
