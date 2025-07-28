@@ -302,3 +302,4 @@ Completude des fonctionnalites demandees- Qualité de l'expérience utilisateur-
 - Qualité de la démonstration- Clarté de la documentation- Professionnalisme de la présentation
 
 
+ 

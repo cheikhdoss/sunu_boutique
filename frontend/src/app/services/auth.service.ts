@@ -10,6 +10,8 @@ export interface User {
   email: string;
   role: 'user' | 'admin';
   created_at: string;
+  phone?: string;
+  avatar?: string;
 }
 
 export interface AuthResponse {
@@ -82,4 +84,9 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
-} 
+
+  updateCurrentUser(user: User): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+}

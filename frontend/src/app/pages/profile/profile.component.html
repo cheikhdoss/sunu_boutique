@@ -1,0 +1,394 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>Mon Profil</h1>
+    <p>Gérez vos informations personnelles, adresses et consultez votre historique de commandes</p>
+  </div>
+
+  <!-- Section de présentation de l'utilisateur -->
+  <mat-card class="user-presentation-card" *ngIf="currentUser">
+    <div class="user-presentation">
+      <div class="user-avatar">
+        <img *ngIf="avatarPreview || currentUser.avatar" 
+             [src]="avatarPreview || currentUser.avatar" 
+             alt="Avatar" 
+             class="user-avatar-image">
+        <div *ngIf="!avatarPreview && !currentUser.avatar" class="user-avatar-placeholder">
+          <mat-icon>person</mat-icon>
+        </div>
+      </div>
+      <div class="user-info">
+        <h2 class="user-name">{{ currentUser.name }}</h2>
+        <p class="user-email">{{ currentUser.email }}</p>
+        <p class="user-phone" *ngIf="currentUser.phone">
+          <mat-icon>phone</mat-icon>
+          {{ currentUser.phone }}
+        </p>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="profile-card">
+    <mat-tab-group>
+      <!-- Onglet Informations personnelles -->
+      <mat-tab label="Informations personnelles">
+        <div class="tab-content">
+          <!-- Section Avatar -->
+          <div class="avatar-section">
+            <h3>Photo de profil</h3>
+            <div class="avatar-container">
+              <div class="avatar-preview">
+                <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" class="avatar-image">
+                <div *ngIf="!avatarPreview" class="avatar-placeholder">
+                  <mat-icon>person</mat-icon>
+                </div>
+              </div>
+              <div class="avatar-actions">
+                <input type="file" #avatarInput (change)="onAvatarSelected($event)" 
+                       accept="image/*" style="display: none;">
+                <button mat-raised-button color="primary" (click)="avatarInput.click()">
+                  <mat-icon>photo_camera</mat-icon>
+                  Choisir une photo
+                </button>
+                <button mat-button color="primary" (click)="uploadAvatar()" 
+                        [disabled]="!avatarFile || isLoading" *ngIf="avatarFile">
+                  <mat-icon>upload</mat-icon>
+                  Uploader
+                </button>
+                <button mat-button color="warn" (click)="deleteAvatar()" 
+                        *ngIf="avatarPreview && !avatarFile">
+                  <mat-icon>delete</mat-icon>
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Formulaire profil -->
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nom complet</mat-label>
+                <input matInput formControlName="name" placeholder="Votre nom complet">
+                <mat-error>{{ getErrorMessage(profileForm, 'name') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Adresse email</mat-label>
+                <input matInput type="email" formControlName="email" placeholder="votre@email.com">
+                <mat-error>{{ getErrorMessage(profileForm, 'email') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Téléphone</mat-label>
+                <input matInput formControlName="phone" placeholder="+33 1 23 45 67 89">
+                <mat-error>{{ getErrorMessage(profileForm, 'phone') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button mat-raised-button color="primary" type="submit" 
+                      [disabled]="profileForm.invalid || isLoading">
+                <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!isLoading">save</mat-icon>
+                {{ isLoading ? 'Mise à jour...' : 'Mettre à jour' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+
+      <!-- Onglet Adresses de livraison -->
+      <mat-tab label="Adresses de livraison">
+        <div class="tab-content">
+          <div class="addresses-header">
+            <h3>Mes adresses de livraison</h3>
+            <button mat-raised-button color="primary" (click)="isAddingAddress = true" 
+                    *ngIf="!isAddingAddress">
+              <mat-icon>add</mat-icon>
+              Ajouter une adresse
+            </button>
+          </div>
+
+          <!-- Formulaire d'ajout d'adresse -->
+          <mat-card class="address-form-card" *ngIf="isAddingAddress">
+            <mat-card-header>
+              <mat-card-title>Nouvelle adresse</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="addressForm" (ngSubmit)="addAddress()">
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Libellé de l'adresse</mat-label>
+                    <input matInput formControlName="label" placeholder="Ex: Domicile, Bureau">
+                    <mat-error>{{ getErrorMessage(addressForm, 'label') }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row two-columns">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Prénom</mat-label>
+                    <input matInput formControlName="first_name">
+                    <mat-error>{{ getErrorMessage(addressForm, 'first_name') }}</mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nom</mat-label>
+                    <input matInput formControlName="last_name">
+                    <mat-error>{{ getErrorMessage(addressForm, 'last_name') }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Adresse complète</mat-label>
+                    <input matInput formControlName="address" placeholder="Numéro et nom de rue">
+                    <mat-error>{{ getErrorMessage(addressForm, 'address') }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row two-columns">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Ville</mat-label>
+                    <input matInput formControlName="city">
+                    <mat-error>{{ getErrorMessage(addressForm, 'city') }}</mat-error>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Code postal</mat-label>
+                    <input matInput formControlName="postal_code" placeholder="75001">
+                    <mat-error>{{ getErrorMessage(addressForm, 'postal_code') }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row two-columns">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Pays</mat-label>
+                    <mat-select formControlName="country">
+                      <mat-option value="France">France</mat-option>
+                      <mat-option value="Belgique">Belgique</mat-option>
+                      <mat-option value="Suisse">Suisse</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Téléphone</mat-label>
+                    <input matInput formControlName="phone" placeholder="+33 1 23 45 67 89">
+                    <mat-error>{{ getErrorMessage(addressForm, 'phone') }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-actions">
+                  <button mat-button type="button" (click)="isAddingAddress = false; addressForm.reset()">
+                    Annuler
+                  </button>
+                  <button mat-raised-button color="primary" type="submit" 
+                          [disabled]="addressForm.invalid">
+                    <mat-icon>save</mat-icon>
+                    Enregistrer
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Liste des adresses -->
+          <div class="addresses-list" *ngIf="deliveryAddresses.length > 0">
+            <mat-card class="address-card" *ngFor="let address of deliveryAddresses">
+              <mat-card-header>
+                <div class="address-header">
+                  <div class="address-label">
+                    <h4>{{ address.label }}</h4>
+                    <mat-chip *ngIf="address.is_default" color="primary" selected>
+                      Par défaut
+                    </mat-chip>
+                  </div>
+                  <div class="address-actions">
+                    <button mat-icon-button (click)="editAddress(address)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteAddress(address.id!)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="address-details">
+                  <p><strong>{{ address.first_name }} {{ address.last_name }}</strong></p>
+                  <p>{{ address.address }}</p>
+                  <p>{{ address.postal_code }} {{ address.city }}</p>
+                  <p>{{ address.country }}</p>
+                  <p><mat-icon>phone</mat-icon> {{ address.phone }}</p>
+                </div>
+              </mat-card-content>
+              <mat-card-actions *ngIf="!address.is_default">
+                <button mat-button color="primary" (click)="setDefaultAddress(address.id!)">
+                  <mat-icon>star</mat-icon>
+                  Définir par défaut
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Onglet Historique des commandes -->
+      <mat-tab label="Historique des commandes">
+        <div class="tab-content">
+          <div class="orders-header">
+            <h3>Mes commandes</h3>
+            <p>Consultez l'état de vos commandes et téléchargez vos factures</p>
+          </div>
+
+          <div class="orders-list" *ngIf="orderHistory.length > 0; else noOrdersTemplate">
+            <mat-expansion-panel class="order-panel" *ngFor="let order of orderHistory">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <div class="order-summary">
+                    <div class="order-info">
+                      <strong>{{ order.order_number }}</strong>
+                      <span class="order-date">{{ order.date | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                    <div class="order-status">
+                      <mat-chip [color]="getStatusColor(order.status)" selected>
+                        {{ getStatusLabel(order.status) }}
+                      </mat-chip>
+                      <span class="order-total">{{ order.total | currency:'EUR':'symbol':'1.2-2' }}</span>
+                    </div>
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="order-details">
+                <!-- Informations de paiement -->
+                <div class="payment-info">
+                  <h4>Informations de paiement</h4>
+                  <div class="payment-details">
+                    <div class="payment-item">
+                      <span class="label">Mode de paiement:</span>
+                      <span class="value">{{ getPaymentMethodLabel(order.payment_method) }}</span>
+                    </div>
+                    <div class="payment-item">
+                      <span class="label">Statut du paiement:</span>
+                      <mat-chip [color]="order.payment_status === 'paye' ? 'primary' : 'warn'" selected>
+                        {{ getPaymentStatusLabel(order.payment_status) }}
+                      </mat-chip>
+                    </div>
+                  </div>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <!-- Articles commandés -->
+                <div class="order-items">
+                  <h4>Articles commandés</h4>
+                  <div class="item" *ngFor="let item of order.items">
+                    <div class="item-info">
+                      <span class="item-name">{{ item.name }}</span>
+                      <span class="item-details">
+                        {{ item.quantity }} × {{ item.unit_price | currency:'EUR':'symbol':'1.2-2' }}
+                      </span>
+                    </div>
+                    <div class="item-total">
+                      {{ item.total_price | currency:'EUR':'symbol':'1.2-2' }}
+                    </div>
+                  </div>
+                  <div class="order-total-line">
+                    <strong>Total: {{ order.total | currency:'EUR':'symbol':'1.2-2' }}</strong>
+                  </div>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <!-- Adresse de livraison -->
+                <div class="delivery-info">
+                  <h4>Adresse de livraison</h4>
+                  <div class="delivery-address">
+                    <p><strong>{{ order.delivery_address.first_name }} {{ order.delivery_address.last_name }}</strong></p>
+                    <p>{{ order.delivery_address.address }}</p>
+                    <p>{{ order.delivery_address.postal_code }} {{ order.delivery_address.city }}</p>
+                    <p>{{ order.delivery_address.country }}</p>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="order-actions">
+                  <button mat-button color="primary" (click)="downloadInvoice(order)" 
+                          *ngIf="order.status === 'livree' || order.invoice_url">
+                    <mat-icon>download</mat-icon>
+                    Télécharger la facture
+                  </button>
+                  <button mat-button (click)="reorderItems(order)" 
+                          *ngIf="order.status === 'livree'">
+                    <mat-icon>refresh</mat-icon>
+                    Recommander
+                  </button>
+                  <button mat-button color="warn" (click)="cancelOrder(order)" 
+                          *ngIf="order.status === 'en_attente'">
+                    <mat-icon>cancel</mat-icon>
+                    Annuler la commande
+                  </button>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </div>
+
+          <ng-template #noOrdersTemplate>
+            <div class="no-orders">
+              <mat-icon class="no-orders-icon">shopping_bag</mat-icon>
+              <h3>Aucune commande</h3>
+              <p>Vous n'avez pas encore passé de commande.</p>
+              <button mat-raised-button color="primary" routerLink="/">
+                <mat-icon>shopping_cart</mat-icon>
+                Commencer mes achats
+              </button>
+            </div>
+          </ng-template>
+        </div>
+      </mat-tab>
+
+      <!-- Onglet Mot de passe -->
+      <mat-tab label="Mot de passe">
+        <div class="tab-content">
+          <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Mot de passe actuel</mat-label>
+                <input matInput type="password" formControlName="currentPassword">
+                <mat-error>{{ getErrorMessage(passwordForm, 'currentPassword') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nouveau mot de passe</mat-label>
+                <input matInput type="password" formControlName="newPassword">
+                <mat-error>{{ getErrorMessage(passwordForm, 'newPassword') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Confirmer le nouveau mot de passe</mat-label>
+                <input matInput type="password" formControlName="confirmPassword">
+                <mat-error>{{ getErrorMessage(passwordForm, 'confirmPassword') }}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button mat-raised-button color="primary" type="submit" 
+                      [disabled]="passwordForm.invalid || isLoading">
+                <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!isLoading">lock</mat-icon>
+                {{ isLoading ? 'Mise à jour...' : 'Changer le mot de passe' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
