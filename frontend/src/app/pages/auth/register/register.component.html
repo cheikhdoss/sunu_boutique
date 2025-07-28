@@ -1,53 +1,193 @@
 <div class="auth-container">
-  <mat-card class="auth-card">
+  <mat-card class="auth-card register-card">
     <mat-card-header>
-      <mat-card-title>Inscription</mat-card-title>
+      <mat-card-title>
+        <mat-icon class="title-icon">person_add</mat-icon>
+        Créer un compte
+      </mat-card-title>
+      <mat-card-subtitle>
+        Rejoignez Sunu Boutique et découvrez nos produits exclusifs
+      </mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline">
-          <mat-label>Nom complet</mat-label>
-          <input matInput formControlName="name" required>
-          <mat-error>{{getErrorMessage('name')}}</mat-error>
-        </mat-form-field>
+      <mat-stepper #stepper class="register-stepper" orientation="horizontal">
+        <!-- Étape 1: Informations personnelles -->
+        <mat-step [stepControl]="personalInfoForm" label="Informations personnelles">
+          <div class="step-content">
+            <h3 class="step-title">
+              <mat-icon>person</mat-icon>
+              Vos informations
+            </h3>
+            <p class="step-description">
+              Commençons par quelques informations de base sur vous.
+            </p>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" required>
-          <mat-error>{{getErrorMessage('email')}}</mat-error>
-        </mat-form-field>
+            <form [formGroup]="personalInfoForm">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nom complet</mat-label>
+                <input matInput formControlName="name" required autocomplete="name">
+                <mat-icon matSuffix>person</mat-icon>
+                <mat-error>{{ getErrorMessage(personalInfoForm, 'name') }}</mat-error>
+              </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Mot de passe</mat-label>
-          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
-          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
-            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-          <mat-error>{{getErrorMessage('password')}}</mat-error>
-        </mat-form-field>
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Téléphone</mat-label>
+                  <input matInput formControlName="phone" type="tel" autocomplete="tel">
+                  <mat-icon matSuffix>phone</mat-icon>
+                </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Confirmer le mot de passe</mat-label>
-          <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="password_confirmation" required>
-          <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
-            <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-          <mat-error>{{getErrorMessage('password_confirmation')}}</mat-error>
-        </mat-form-field>
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Genre</mat-label>
+                  <mat-select formControlName="gender">
+                    <mat-option value="male">Homme</mat-option>
+                    <mat-option value="female">Femme</mat-option>
+                    <mat-option value="other">Autre</mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>wc</mat-icon>
+                </mat-form-field>
+              </div>
 
-        <div class="form-actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="registerForm.invalid || isLoading">
-            <mat-icon>person_add</mat-icon>
-            S'inscrire
-          </button>
-        </div>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Date de naissance</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date_of_birth">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </form>
 
-        <div class="auth-links">
-          <span>Déjà inscrit ?</span>
-          <a routerLink="/auth/login">Se connecter</a>
-        </div>
-      </form>
+            <div class="step-actions">
+              <button mat-raised-button color="primary" matStepperNext>
+                Suivant
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-step>
+
+        <!-- Étape 2: Compte et sécurité -->
+        <mat-step [stepControl]="accountForm" label="Compte et sécurité">
+          <div class="step-content">
+            <h3 class="step-title">
+              <mat-icon>security</mat-icon>
+              Sécurité du compte
+            </h3>
+            <p class="step-description">
+              Créez vos identifiants de connexion sécurisés.
+            </p>
+
+            <form [formGroup]="accountForm">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Adresse email</mat-label>
+                <input matInput type="email" formControlName="email" required autocomplete="email">
+                <mat-icon matSuffix>email</mat-icon>
+                <mat-error>{{ getErrorMessage(accountForm, 'email') }}</mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Mot de passe</mat-label>
+                <input matInput [type]="hidePassword ? 'password' : 'text'" 
+                       formControlName="password" required autocomplete="new-password">
+                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+                  <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error>{{ getErrorMessage(accountForm, 'password') }}</mat-error>
+                
+                <!-- Indicateur de force du mot de passe -->
+                <mat-hint *ngIf="accountForm.get('password')?.value">
+                  <div class="password-strength">
+                    Force: <span [style.color]="getPasswordStrengthColor()">{{ getPasswordStrengthLabel() }}</span>
+                  </div>
+                  <mat-progress-bar 
+                    [value]="getPasswordStrength()" 
+                    [color]="getPasswordStrengthColor()">
+                  </mat-progress-bar>
+                </mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Confirmer le mot de passe</mat-label>
+                <input matInput [type]="hidePasswordConfirmation ? 'password' : 'text'" 
+                       formControlName="password_confirmation" required autocomplete="new-password">
+                <button mat-icon-button matSuffix (click)="hidePasswordConfirmation = !hidePasswordConfirmation" type="button">
+                  <mat-icon>{{ hidePasswordConfirmation ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error>{{ getErrorMessage(accountForm, 'password_confirmation') }}</mat-error>
+              </mat-form-field>
+
+              <!-- Conditions d'utilisation -->
+              <div class="terms-section">
+                <mat-checkbox formControlName="terms" required>
+                  J'accepte les 
+                  <a href="#" target="_blank">conditions d'utilisation</a> 
+                  et la 
+                  <a href="#" target="_blank">politique de confidentialité</a>
+                </mat-checkbox>
+                <mat-error *ngIf="accountForm.get('terms')?.invalid && accountForm.get('terms')?.touched">
+                  {{ getErrorMessage(accountForm, 'terms') }}
+                </mat-error>
+              </div>
+
+              <!-- Newsletter -->
+              <div class="newsletter-section">
+                <mat-checkbox>
+                  Je souhaite recevoir les offres et actualités par email
+                </mat-checkbox>
+              </div>
+            </form>
+
+            <div class="step-actions">
+              <button mat-button matStepperPrevious>
+                <mat-icon>arrow_back</mat-icon>
+                Précédent
+              </button>
+              <button mat-raised-button color="primary" 
+                      [disabled]="accountForm.invalid || isLoading"
+                      (click)="onSubmit()">
+                <mat-icon>{{ isLoading ? 'hourglass_empty' : 'person_add' }}</mat-icon>
+                {{ isLoading ? 'Création...' : 'Créer mon compte' }}
+              </button>
+            </div>
+          </div>
+        </mat-step>
+      </mat-stepper>
+
+      <!-- Liens de navigation -->
+      <div class="auth-links">
+        <mat-icon class="link-icon">login</mat-icon>
+        <span>Vous avez déjà un compte ?</span>
+        <a routerLink="/auth/login" class="login-link">
+          Se connecter
+        </a>
+      </div>
     </mat-card-content>
   </mat-card>
-</div> 
+
+  <!-- Section avantages -->
+  <div class="benefits-section">
+    <h3 class="benefits-title">Pourquoi créer un compte ?</h3>
+    <div class="benefits-grid">
+      <div class="benefit-item" style="--i: 0">
+        <mat-icon class="benefit-icon">speed</mat-icon>
+        <h4>Commandes rapides</h4>
+        <p>Vos informations sauvegardées pour un checkout express</p>
+      </div>
+      <div class="benefit-item" style="--i: 1">
+        <mat-icon class="benefit-icon">track_changes</mat-icon>
+        <h4>Suivi des commandes</h4>
+        <p>Suivez vos commandes en temps réel</p>
+      </div>
+      <div class="benefit-item" style="--i: 2">
+        <mat-icon class="benefit-icon">card_giftcard</mat-icon>
+        <h4>Offres exclusives</h4>
+        <p>Accédez à des promotions réservées aux membres</p>
+      </div>
+      <div class="benefit-item" style="--i: 3">
+        <mat-icon class="benefit-icon">favorite</mat-icon>
+        <h4>Liste de favoris</h4>
+        <p>Sauvegardez vos produits préférés</p>
+      </div>
+    </div>
+  </div>
+</div>

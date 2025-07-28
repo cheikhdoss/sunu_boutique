@@ -8,7 +8,6 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { OrdersComponent } from './pages/orders/orders.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,7 +16,6 @@ export const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent },
   { path: 'order-confirmation', component: OrderConfirmationComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'orders', component: OrdersComponent },
   {
     path: 'auth',
     children: [
