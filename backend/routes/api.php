@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\DeliveryAddressController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
 
 /*
@@ -20,34 +23,49 @@ use App\Http\Controllers\Api\UserController;
 
 // Routes publiques d'authentification
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('reset-password', [AuthController::class, 'resetPassword']);
 });
 
 // Routes protégées par Sanctum
 Route::middleware('auth:sanctum')->group(function () {
-
+    
     // Routes d'authentification protégées
     Route::prefix('auth')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::post('/logout-all', [AuthController::class, 'logoutAll']);
-        Route::get('/me', [AuthController::class, 'me']);
-        Route::post('/refresh', [AuthController::class, 'refresh']);
-        Route::get('/check-token', [AuthController::class, 'checkToken']);
-        Route::put('/change-password', [AuthController::class, 'changePassword']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('logout-all', [AuthController::class, 'logoutAll']);
+        Route::get('me', [AuthController::class, 'me']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
+        Route::get('check-token', [AuthController::class, 'checkToken']);
+        Route::put('change-password', [AuthController::class, 'changePassword']);
     });
 
     // Obtenir l'utilisateur authentifié
     Route::get('/user', function (Request $request) {
-        return response()->json([
-            'success' => true,
-            'user' => $request->user()
-        ]);
+        return $request->user();
     });
+    
+    // Profile routes (notre système de profil)
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show']);
+        Route::put('/', [ProfileController::class, 'update']);
+        Route::put('/password', [ProfileController::class, 'updatePassword']);
+        Route::post('/avatar', [ProfileController::class, 'uploadAvatar']);
+        Route::delete('/avatar', [ProfileController::class, 'deleteAvatar']);
+    });
+    
+    // Delivery addresses routes (notre système d'adresses)
+    Route::apiResource('delivery-addresses', DeliveryAddressController::class);
+    Route::put('delivery-addresses/{address}/set-default', [DeliveryAddressController::class, 'setDefault']);
+    
+    // Orders routes (notre système de commandes)
+    Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
+    Route::put('orders/{order}/cancel', [OrderController::class, 'cancel']);
+    Route::get('orders/{order}/invoice', [OrderController::class, 'downloadInvoice']);
 
-    // Routes de gestion du profil utilisateur
+    // Routes de gestion du profil utilisateur (système alternatif)
     Route::prefix('user')->group(function () {
         Route::get('/profile', [UserController::class, 'getProfile']);
         Route::put('/profile', [UserController::class, 'updateProfile']);
@@ -61,23 +79,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Adresses
         Route::get('/addresses', [UserController::class, 'getAddresses']);
-        // Route::post('/addresses', [UserController::class, 'createAddress']);
-        // Route::put('/addresses/{id}', [UserController::class, 'updateAddress']);
-        // Route::delete('/addresses/{id}', [UserController::class, 'deleteAddress']);
-        // Route::put('/addresses/{id}/set-default', [UserController::class, 'setDefaultAddress']);
 
         // Commandes
         Route::get('/orders', [UserController::class, 'getUserOrders']);
-        // Route::get('/orders/recent', [OrderController::class, 'getRecentOrders']);
-        // Route::get('/orders/search', [OrderController::class, 'searchOrders']);
-        // Route::get('/orders/{id}', [OrderController::class, 'getOrderDetails']);
-        // Route::put('/orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
-        // Route::get('/orders/{id}/invoice', [OrderController::class, 'downloadInvoice']);
 
         // Favoris
         Route::get('/favorites', [UserController::class, 'getUserFavorites']);
-        // Route::post('/favorites/{productId}', [UserController::class, 'toggleFavorite']);
-        // Route::delete('/favorites/{productId}', [UserController::class, 'removeFavorite']);
     });
 });
 

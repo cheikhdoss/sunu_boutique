@@ -1,0 +1,174 @@
+.orders-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.orders-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.orders-header h1 {
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.orders-header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.order-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.order-info h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.order-date {
+  margin: 0.25rem 0 0 0;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.order-status {
+  display: flex;
+  align-items: center;
+}
+
+.order-items {
+  margin: 1rem 0;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.item-details {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.order-total {
+  text-align: right;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f0f0f0;
+  font-size: 1.1rem;
+}
+
+.no-orders, .loading {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.no-orders-icon, .loading-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.loading-icon {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-orders h2 {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.no-orders p {
+  color: #999;
+  margin-bottom: 2rem;
+}
+
+.no-orders button {
+  min-width: 200px;
+  height: 48px;
+}
+
+.no-orders button mat-icon {
+  margin-right: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .orders-container {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+
+  .orders-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .order-status {
+    align-self: flex-end;
+  }
+
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .no-orders button {
+    min-width: 150px;
+  }
+}

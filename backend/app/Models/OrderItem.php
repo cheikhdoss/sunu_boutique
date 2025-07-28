@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderItem extends Model
 {
@@ -16,13 +17,14 @@ class OrderItem extends Model
         'product_description',
         'product_sku',
         'product_image',
-        'unit_price',
         'quantity',
+        'unit_price',
         'total_price',
         'product_attributes',
     ];
 
     protected $casts = [
+        'quantity' => 'integer',
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2',
         'product_attributes' => 'array',
@@ -40,18 +42,12 @@ class OrderItem extends Model
         });
     }
 
-    /**
-     * Relation avec la commande
-     */
-    public function order()
+    public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Relation avec le produit
-     */
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }

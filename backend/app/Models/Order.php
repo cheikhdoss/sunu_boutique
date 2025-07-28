@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Order extends Model
@@ -13,6 +15,14 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
+        'delivery_address_id',
+        'status',
+        'payment_status',
+        'payment_method',
+        'total',
+        'notes',
+        'invoice_url',
+        // Champs additionnels pour compatibilité
         'shipping_first_name',
         'shipping_last_name',
         'shipping_company',
@@ -37,28 +47,25 @@ class Order extends Model
         'tax_amount',
         'shipping_amount',
         'discount_amount',
-        'total',
-        'status',
-        'payment_method',
-        'payment_status',
         'payment_date',
         'shipped_at',
         'delivered_at',
         'cancelled_at',
-        'notes',
         'admin_notes',
     ];
 
     protected $casts = [
+        'total' => 'decimal:2',
         'subtotal' => 'decimal:2',
         'tax_amount' => 'decimal:2',
         'shipping_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
-        'total' => 'decimal:2',
         'payment_date' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
         'cancelled_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**
@@ -75,32 +82,31 @@ class Order extends Model
         });
     }
 
-    /**
-     * Générer un numéro de commande unique
-     */
-    public static function generateOrderNumber()
-    {
-        do {
-            $orderNumber = 'CMD-' . date('Y') . '-' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
-        } while (static::where('order_number', $orderNumber)->exists());
-
-        return $orderNumber;
-    }
-
-    /**
-     * Relation avec l'utilisateur
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Relation avec les articles de la commande
-     */
-    public function items()
+    public function deliveryAddress(): BelongsTo
+    {
+        return $this->belongsTo(DeliveryAddress::class);
+    }
+
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public static function generateOrderNumber(): string
+    {
+        $year = date('Y');
+        $lastOrder = self::whereYear('created_at', $year)
+            ->orderBy('id', 'desc')
+            ->first();
+        
+        $nextNumber = $lastOrder ? (int)substr($lastOrder->order_number, -3) + 1 : 1;
+        
+        return 'CMD-' . $year . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -132,7 +138,7 @@ class Order extends Model
      */
     public function canBeCancelled()
     {
-        return in_array($this->status, ['pending', 'processing']);
+        return in_array($this->status, ['en_attente', 'pending', 'processing']);
     }
 
     /**
@@ -140,7 +146,7 @@ class Order extends Model
      */
     public function isDelivered()
     {
-        return $this->status === 'delivered';
+        return in_array($this->status, ['livree', 'delivered']);
     }
 
     /**
@@ -148,7 +154,7 @@ class Order extends Model
      */
     public function isPaid()
     {
-        return $this->payment_status === 'paid';
+        return in_array($this->payment_status, ['paye', 'paid']);
     }
 
     /**
@@ -156,6 +162,13 @@ class Order extends Model
      */
     public function getShippingAddressAttribute()
     {
+        if ($this->deliveryAddress) {
+            return $this->deliveryAddress->address . ', ' . 
+                   $this->deliveryAddress->city . ' ' . 
+                   $this->deliveryAddress->postal_code . ', ' . 
+                   $this->deliveryAddress->country;
+        }
+
         $address = $this->shipping_address_line_1;
         
         if ($this->shipping_address_line_2) {
@@ -175,42 +188,15 @@ class Order extends Model
     }
 
     /**
-     * Obtenir l'adresse de facturation complète
-     */
-    public function getBillingAddressAttribute()
-    {
-        $address = $this->billing_address_line_1;
-        
-        if ($this->billing_address_line_2) {
-            $address .= ', ' . $this->billing_address_line_2;
-        }
-        
-        $address .= ', ' . $this->billing_city;
-        
-        if ($this->billing_state) {
-            $address .= ', ' . $this->billing_state;
-        }
-        
-        $address .= ' ' . $this->billing_postal_code;
-        $address .= ', ' . $this->billing_country;
-        
-        return $address;
-    }
-
-    /**
      * Obtenir le nom complet de livraison
      */
     public function getShippingFullNameAttribute()
     {
+        if ($this->deliveryAddress) {
+            return $this->deliveryAddress->first_name . ' ' . $this->deliveryAddress->last_name;
+        }
+        
         return $this->shipping_first_name . ' ' . $this->shipping_last_name;
-    }
-
-    /**
-     * Obtenir le nom complet de facturation
-     */
-    public function getBillingFullNameAttribute()
-    {
-        return $this->billing_first_name . ' ' . $this->billing_last_name;
     }
 
     /**

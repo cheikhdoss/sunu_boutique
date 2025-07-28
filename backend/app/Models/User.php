@@ -21,10 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
         'phone',
         'date_of_birth',
         'gender',
-        'avatar',
         'is_admin',
     ];
 
@@ -51,6 +51,14 @@ class User extends Authenticatable
             'date_of_birth' => 'date',
             'is_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Relation avec les adresses de livraison
+     */
+    public function deliveryAddresses()
+    {
+        return $this->hasMany(DeliveryAddress::class);
     }
 
     /**
@@ -106,17 +114,17 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->is_admin;
+        return $this->is_admin ?? false;
     }
 
     /**
      * Obtenir l'URL complète de l'avatar
      */
-    public function getAvatarUrlAttribute(): string
+    public function getAvatarUrlAttribute()
     {
         if ($this->avatar) {
-            return url('storage/avatars/' . $this->avatar);
+            return asset('storage/avatars/' . $this->avatar);
         }
-        return url('storage/avatars/default.png');
+        return null;
     }
 }
