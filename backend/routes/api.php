@@ -114,6 +114,8 @@ Route::prefix('payments')->group(function () {
 // Routes publiques pour les détails de commande et factures (pour les pages de paiement)
 Route::get('orders/{orderId}/details', [OrderController::class, 'getOrderDetails']);
 Route::post('orders/{orderId}/generate-invoice', [OrderController::class, 'generateInvoice']);
+Route::post('orders/{orderId}/confirmation-email', [OrderController::class, 'sendConfirmationEmail']);
+Route::post('orders/{orderId}/confirm-payment', [OrderController::class, 'confirmCashOnDeliveryPayment']);
 
 // Routes pour les factures
 Route::prefix('invoices')->group(function () {

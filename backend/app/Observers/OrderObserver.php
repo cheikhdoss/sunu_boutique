@@ -3,8 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Order;
-use App\Notifications\OrderPaidNotification;
-use App\Notifications\OrderStatusChangedNotification;
+use App\Mail\OrderPaidNotification;
+use App\Mail\OrderStatusChangedMail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -163,7 +163,7 @@ class OrderObserver
 
             // Envoyer l'email
             Mail::to($recipientEmail, $recipientName)
-                ->send(new OrderStatusChangedNotification($order, $oldStatus, $newStatus));
+                ->send(new OrderStatusChangedMail($order, $oldStatus, $newStatus));
 
             Log::info('Status change email sent', [
                 'order_id' => $order->id,
@@ -196,9 +196,10 @@ class OrderObserver
         }
 
         // Priorité 3: Email dans les informations client (JSON)
-        if ($order->customer_info && is_array($order->customer_info)) {
-            if (isset($order->customer_info['email'])) {
-                return $order->customer_info['email'];
+        if ($order->customer_info) {
+            $customerInfo = is_array($order->customer_info) ? $order->customer_info : json_decode($order->customer_info, true);
+            if ($customerInfo && isset($customerInfo['email'])) {
+                return $customerInfo['email'];
             }
         }
 

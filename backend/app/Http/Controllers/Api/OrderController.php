@@ -132,6 +132,14 @@ class OrderController extends Controller
                 'billing_country' => $deliveryAddress['country'],
                 'billing_phone' => $customerInfo['phone'],
                 
+                // Informations client en JSON pour l'OrderObserver
+                'customer_info' => json_encode([
+                    'firstName' => $customerInfo['firstName'],
+                    'lastName' => $customerInfo['lastName'],
+                    'email' => $customerInfo['email'],
+                    'phone' => $customerInfo['phone']
+                ]),
+                
                 // Notes additionnelles
                 'notes' => $deliveryAddress['additionalInfo'] ?? null,
             ]);
@@ -443,5 +451,179 @@ class OrderController extends Controller
                 'message' => 'Erreur lors de la génération de la facture'
             ], 500);
         }
+    }
+
+    /**
+     * Envoyer l'email de confirmation de commande
+     */
+    public function sendConfirmationEmail($orderId)
+    {
+        try {
+            $order = Order::with(['items', 'user'])->findOrFail($orderId);
+
+            // Envoyer l'email de confirmation spécifique
+            $this->sendOrderConfirmationEmail($order);
+
+            // Pour les commandes à la livraison, on confirme directement la commande
+            if ($order->payment_method === 'cash_on_delivery') {
+                $order->update(['status' => 'confirmed']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Email de confirmation envoyé avec succès'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error sending confirmation email', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'envoi de l\'email de confirmation'
+            ], 500);
+        }
+    }
+
+    /**
+     * Confirmer le paiement à la livraison
+     */
+    public function confirmCashOnDeliveryPayment($orderId)
+    {
+        try {
+            $order = Order::with(['items', 'user'])->findOrFail($orderId);
+
+            // Vérifier que c'est bien une commande à la livraison
+            if ($order->payment_method !== 'cash_on_delivery') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cette commande n\'est pas un paiement à la livraison'
+                ], 400);
+            }
+
+            // Vérifier que la commande n'est pas déjà payée
+            if ($order->payment_status === 'paid') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cette commande est déjà marquée comme payée'
+                ], 400);
+            }
+
+            // Marquer la commande comme payée
+            $order->update([
+                'payment_status' => 'paid',
+                'paid_at' => now(),
+                'status' => 'delivered' // Marquer comme livrée puisque le paiement est reçu
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Paiement à la livraison confirmé avec succès'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Error confirming cash on delivery payment', [
+                'order_id' => $orderId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la confirmation du paiement'
+            ], 500);
+        }
+    }
+
+    /**
+     * Envoyer l'email de confirmation de commande
+     */
+    private function sendOrderConfirmationEmail(Order $order): void
+    {
+        try {
+            // Déterminer l'email du destinataire
+            $recipientEmail = $this->getRecipientEmail($order);
+            $recipientName = $this->getRecipientName($order);
+
+            if (!$recipientEmail) {
+                \Log::warning('No recipient email found for order confirmation', ['order_id' => $order->id]);
+                return;
+            }
+
+            // Choisir le template selon le mode de paiement
+            if ($order->payment_method === 'cash_on_delivery') {
+                // Template spécifique pour paiement à la livraison
+                \Mail::to($recipientEmail, $recipientName)
+                    ->send(new \App\Mail\CashOnDeliveryMail($order));
+                
+                \Log::info('Cash on delivery email sent', [
+                    'order_id' => $order->id,
+                    'recipient' => $recipientEmail
+                ]);
+            } else {
+                // Template général pour autres modes de paiement
+                \Mail::to($recipientEmail, $recipientName)
+                    ->send(new \App\Mail\OrderConfirmationMail($order));
+                
+                \Log::info('Order confirmation email sent', [
+                    'order_id' => $order->id,
+                    'recipient' => $recipientEmail
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to send order confirmation email', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Obtenir l'email du destinataire
+     */
+    private function getRecipientEmail(Order $order): ?string
+    {
+        // Priorité 1: Email de l'utilisateur connecté
+        if ($order->user && $order->user->email) {
+            return $order->user->email;
+        }
+
+        // Priorité 2: Email dans les informations client (JSON)
+        if ($order->customer_info) {
+            $customerInfo = is_array($order->customer_info) ? $order->customer_info : json_decode($order->customer_info, true);
+            if ($customerInfo && isset($customerInfo['email'])) {
+                return $customerInfo['email'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Obtenir le nom du destinataire
+     */
+    private function getRecipientName(Order $order): string
+    {
+        // Priorité 1: Nom de l'utilisateur connecté
+        if ($order->user && $order->user->name) {
+            return $order->user->name;
+        }
+
+        // Priorité 2: Nom de livraison
+        if ($order->shipping_first_name && $order->shipping_last_name) {
+            return $order->shipping_first_name . ' ' . $order->shipping_last_name;
+        }
+
+        // Priorité 3: Nom dans les informations client (JSON)
+        if ($order->customer_info) {
+            $customerInfo = is_array($order->customer_info) ? $order->customer_info : json_decode($order->customer_info, true);
+            if ($customerInfo && isset($customerInfo['firstName'], $customerInfo['lastName'])) {
+                return $customerInfo['firstName'] . ' ' . $customerInfo['lastName'];
+            }
+        }
+
+        return 'Client';
     }
 }

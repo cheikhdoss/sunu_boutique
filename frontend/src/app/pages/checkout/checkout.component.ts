@@ -360,15 +360,22 @@ export class CheckoutComponent implements OnInit {
    */
   private async processCashOnDelivery(order: any): Promise<void> {
     try {
+      // Récupérer l'ID de la commande depuis la réponse
+      const orderId = order.data?.id || order.id;
+      
+      console.log('Order ID pour confirmation:', orderId);
+      console.log('Order complet:', order);
+
+      if (!orderId) {
+        throw new Error('ID de commande manquant');
+      }
+
       await firstValueFrom(
-        this.orderService.sendOrderConfirmationEmail(order)
+        this.orderService.sendOrderConfirmationEmail({ id: orderId })
       );
 
       this.cartService.clearCart();
       this.snackBar.open('Commande confirmée avec succès !', 'OK', { duration: 5000 });
-      
-      // Récupérer l'ID de la commande depuis la réponse
-      const orderId = order.data?.id || order.id;
       
       this.router.navigate(['/order-confirmation'], {
         queryParams: { orderId: orderId }

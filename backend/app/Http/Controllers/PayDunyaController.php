@@ -395,19 +395,15 @@ class PayDunyaController extends Controller
             $order->load(['items', 'user']);
 
             // Déterminer l'email du destinataire
-            $customerEmail = null;
-            if ($order->user && $order->user->email) {
-                $customerEmail = $order->user->email;
-            } elseif ($order->billing_email) {
-                $customerEmail = $order->billing_email;
-            }
+            $recipientEmail = $this->getRecipientEmail($order);
+            $recipientName = $this->getRecipientName($order);
 
-            if ($customerEmail) {
-                Mail::to($customerEmail)->send(new OrderPaidNotification($order));
+            if ($recipientEmail) {
+                Mail::to($recipientEmail, $recipientName)->send(new OrderPaidNotification($order));
                 
                 Log::info('Payment confirmation email sent', [
                     'order_id' => $order->id,
-                    'customer_email' => $customerEmail
+                    'recipient' => $recipientEmail
                 ]);
             } else {
                 Log::warning('No customer email found for payment confirmation', [
@@ -420,5 +416,62 @@ class PayDunyaController extends Controller
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Obtenir l'email du destinataire
+     */
+    private function getRecipientEmail(Order $order): ?string
+    {
+        // Priorité 1: Email de l'utilisateur connecté
+        if ($order->user && $order->user->email) {
+            return $order->user->email;
+        }
+
+        // Priorité 2: Email de facturation
+        if ($order->billing_email) {
+            return $order->billing_email;
+        }
+
+        // Priorité 3: Email dans les informations client (JSON)
+        if ($order->customer_info) {
+            $customerInfo = is_array($order->customer_info) ? $order->customer_info : json_decode($order->customer_info, true);
+            if ($customerInfo && isset($customerInfo['email'])) {
+                return $customerInfo['email'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Obtenir le nom du destinataire
+     */
+    private function getRecipientName(Order $order): string
+    {
+        // Priorité 1: Nom de l'utilisateur connecté
+        if ($order->user && $order->user->name) {
+            return $order->user->name;
+        }
+
+        // Priorité 2: Nom de facturation
+        if ($order->billing_first_name && $order->billing_last_name) {
+            return $order->billing_first_name . ' ' . $order->billing_last_name;
+        }
+
+        // Priorité 3: Nom de livraison
+        if ($order->shipping_first_name && $order->shipping_last_name) {
+            return $order->shipping_first_name . ' ' . $order->shipping_last_name;
+        }
+
+        // Priorité 4: Nom dans les informations client (JSON)
+        if ($order->customer_info) {
+            $customerInfo = is_array($order->customer_info) ? $order->customer_info : json_decode($order->customer_info, true);
+            if ($customerInfo && isset($customerInfo['firstName'], $customerInfo['lastName'])) {
+                return $customerInfo['firstName'] . ' ' . $customerInfo['lastName'];
+            }
+        }
+
+        return 'Client';
     }
 }
