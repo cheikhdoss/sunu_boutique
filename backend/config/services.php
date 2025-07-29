@@ -35,4 +35,19 @@ return [
         ],
     ],
 
+    'wave' => [
+        'api_key' => env('WAVE_API_KEY'),
+        'base_url' => env('WAVE_BASE_URL', 'https://api.wave.com'),
+    ],
+
+    'paydunya' => [
+        'master_key' => env('PAYDUNYA_MASTER_KEY'),
+        'private_key' => env('PAYDUNYA_PRIVATE_KEY'),
+        'public_key' => env('PAYDUNYA_PUBLIC_KEY'),
+        'token' => env('PAYDUNYA_TOKEN'),
+        'mode' => env('PAYDUNYA_MODE', 'test'),
+        'base_url' => env('PAYDUNYA_BASE_URL', 'https://app.paydunya.com'),
+        'ngrok_url' => env('NGROK_URL'), // Pour développement local
+    ],
+
 ];

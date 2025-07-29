@@ -1,0 +1,191 @@
+.payment-error-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.error-card {
+  padding: 2rem;
+}
+
+.error-content {
+  text-align: center;
+}
+
+.error-header {
+  margin-bottom: 2rem;
+}
+
+.error-icon {
+  font-size: 5rem;
+  color: #f44336;
+  margin-bottom: 1rem;
+}
+
+.error-header h1 {
+  color: #f44336;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.error-message {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 0;
+}
+
+.order-info {
+  background-color: #fff3e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid #ff9800;
+}
+
+.order-info p {
+  margin: 0;
+  color: #e65100;
+}
+
+.error-details {
+  background-color: #ffebee;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.error-details h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #c62828;
+}
+
+.error-details ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.error-details li {
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.actions button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.help-section {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.help-section h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.help-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.help-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.help-option mat-icon {
+  color: #2196f3;
+  font-size: 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.help-option div {
+  flex: 1;
+}
+
+.help-option strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+.help-option p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.alternative-methods {
+  background-color: #e3f2fd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.alternative-methods h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #1976d2;
+  text-align: center;
+}
+
+.alternative-methods p {
+  margin: 0;
+  color: #555;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .payment-error-container {
+    margin: 1rem auto;
+    padding: 0.5rem;
+  }
+  
+  .error-card {
+    padding: 1rem;
+  }
+  
+  .error-header h1 {
+    font-size: 2rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .actions button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .help-option {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .help-option mat-icon {
+    margin-top: 0;
+  }
+}

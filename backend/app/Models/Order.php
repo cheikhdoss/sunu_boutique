@@ -12,47 +12,10 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'order_number',
-        'user_id',
-        'delivery_address_id',
-        'status',
-        'payment_status',
-        'payment_method',
-        'total',
-        'notes',
-        'invoice_url',
-        // Champs additionnels pour compatibilité
-        'shipping_first_name',
-        'shipping_last_name',
-        'shipping_company',
-        'shipping_address_line_1',
-        'shipping_address_line_2',
-        'shipping_city',
-        'shipping_state',
-        'shipping_postal_code',
-        'shipping_country',
-        'shipping_phone',
-        'billing_first_name',
-        'billing_last_name',
-        'billing_company',
-        'billing_address_line_1',
-        'billing_address_line_2',
-        'billing_city',
-        'billing_state',
-        'billing_postal_code',
-        'billing_country',
-        'billing_phone',
-        'subtotal',
-        'tax_amount',
-        'shipping_amount',
-        'discount_amount',
-        'payment_date',
-        'shipped_at',
-        'delivered_at',
-        'cancelled_at',
-        'admin_notes',
-    ];
+    /**
+     * Les attributs qui ne doivent pas être assignés en masse.
+     */
+    protected $guarded = [];
 
     protected $casts = [
         'total' => 'decimal:2',
@@ -66,6 +29,11 @@ class Order extends Model
         'cancelled_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'paid_at' => 'datetime',
+        'invoice_generated_at' => 'datetime',
+        'customer_info' => 'json',
+        'delivery_address' => 'json',
+        'paydunya_customer_info' => 'json',
     ];
 
     /**

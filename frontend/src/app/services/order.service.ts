@@ -26,9 +26,9 @@ export interface Order {
   id: number;
   order_number: string;
   date: string;
-  status: 'en_attente' | 'expediee' | 'livree' | 'annulee';
-  payment_status: 'en_attente' | 'paye' | 'echec';
-  payment_method: 'avant_livraison' | 'apres_livraison';
+  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'en_attente' | 'expediee' | 'livree' | 'annulee';
+  payment_status: 'pending' | 'processing' | 'paid' | 'failed' | 'refunded' | 'en_attente' | 'paye' | 'echec';
+  payment_method: 'online' | 'cash_on_delivery' | 'avant_livraison' | 'apres_livraison';
   total: number;
   invoice_url?: string;
   items: OrderItem[];
@@ -73,5 +73,9 @@ export class OrderService {
 
   sendOrderConfirmationEmail(order: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${order.id}/confirmation-email`, {});
+  }
+
+  generateInvoice(orderId: number): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/invoices/${orderId}/generate`, {});
   }
 }

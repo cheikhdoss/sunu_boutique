@@ -206,54 +206,103 @@ export class ProfileComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const statusLabels: { [key: string]: string } = {
+      // Statuts français (anciens)
       'en_attente': 'En attente',
       'expediee': 'Expédiée',
       'livree': 'Livrée',
-      'annulee': 'Annulée'
+      'annulee': 'Annulée',
+      // Statuts anglais (nouveaux)
+      'pending': 'En attente',
+      'confirmed': 'Confirmée',
+      'processing': 'En préparation',
+      'shipped': 'Expédiée',
+      'delivered': 'Livrée',
+      'cancelled': 'Annulée'
     };
     return statusLabels[status] || status;
   }
 
   getPaymentStatusLabel(status: string): string {
     const statusLabels: { [key: string]: string } = {
+      // Statuts français (anciens)
       'en_attente': 'En attente',
       'paye': 'Payé',
-      'echec': 'Échec'
+      'echec': 'Échec',
+      // Statuts anglais (nouveaux)
+      'pending': 'En attente',
+      'processing': 'En cours',
+      'paid': 'Payé',
+      'failed': 'Échec',
+      'refunded': 'Remboursé'
     };
     return statusLabels[status] || status;
   }
 
   getPaymentMethodLabel(method: string): string {
     const methodLabels: { [key: string]: string } = {
+      // Méthodes françaises (anciennes)
       'avant_livraison': 'Paiement en ligne',
-      'apres_livraison': 'Paiement à la livraison'
+      'apres_livraison': 'Paiement à la livraison',
+      // Méthodes anglaises (nouvelles)
+      'online': 'Paiement en ligne',
+      'cash_on_delivery': 'Paiement à la livraison'
     };
     return methodLabels[method] || method;
   }
 
   getStatusColor(status: string): string {
     const statusColors: { [key: string]: string } = {
+      // Statuts français (anciens)
       'en_attente': 'warn',
       'expediee': 'accent',
       'livree': 'primary',
-      'annulee': ''
+      'annulee': '',
+      // Statuts anglais (nouveaux)
+      'pending': 'warn',
+      'confirmed': 'accent',
+      'processing': 'accent',
+      'shipped': 'accent',
+      'delivered': 'primary',
+      'cancelled': ''
     };
     return statusColors[status] || '';
   }
 
   downloadInvoice(order: Order): void {
-    this.orderService.downloadInvoice(order.id).subscribe({
+    // Utiliser le nouveau système de factures
+    window.open(`http://localhost:8000/api/invoices/${order.id}/download`, '_blank');
+  }
+
+  viewInvoice(order: Order): void {
+    // Voir la facture dans le navigateur
+    window.open(`http://localhost:8000/api/invoices/${order.id}/view`, '_blank');
+  }
+
+  generateInvoice(order: Order): void {
+    // Générer une nouvelle facture
+    this.orderService.generateInvoice(order.id).subscribe({
       next: (response) => {
-        if (response.invoice_url) {
-          window.open(response.invoice_url, '_blank');
-        }
-        this.snackBar.open(response.message, 'Fermer', { duration: 3000 });
+        this.snackBar.open('Facture générée avec succès', 'Fermer', { duration: 3000 });
+        this.loadOrderHistory(); // Recharger pour mettre à jour l'URL de facture
       },
       error: (error) => {
-        console.error('Erreur lors du téléchargement de la facture:', error);
-        this.snackBar.open('Erreur lors du téléchargement de la facture', 'Fermer', { duration: 3000 });
+        console.error('Erreur lors de la génération de la facture:', error);
+        this.snackBar.open('Erreur lors de la génération de la facture', 'Fermer', { duration: 3000 });
       }
     });
+  }
+
+  canDownloadInvoice(order: Order): boolean {
+    // Vérifier les statuts de paiement (français et anglais)
+    const isPaid = order.payment_status === 'paid' || order.payment_status === 'paye';
+    
+    // Vérifier les statuts de commande (français et anglais)
+    const isDelivered = order.status === 'delivered' || order.status === 'livree';
+    
+    // Vérifier si une facture existe déjà
+    const hasInvoice = order.invoice_url !== null && order.invoice_url !== undefined;
+    
+    return isPaid || isDelivered || hasInvoice;
   }
 
   reorderItems(order: Order): void {

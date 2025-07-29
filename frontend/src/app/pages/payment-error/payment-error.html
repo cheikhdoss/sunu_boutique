@@ -1,0 +1,77 @@
+<div class="payment-error-container">
+  <mat-card class="error-card">
+    <div class="error-content">
+      <!-- Error Header -->
+      <div class="error-header">
+        <mat-icon class="error-icon">error</mat-icon>
+        <h1>Paiement échoué</h1>
+        <p class="error-message">{{ errorMessage }}</p>
+      </div>
+
+      <!-- Order Info -->
+      <div class="order-info" *ngIf="orderId">
+        <p><strong>Numéro de commande :</strong> {{ orderId }}</p>
+      </div>
+
+      <!-- Error Details -->
+      <div class="error-details">
+        <h3>Que s'est-il passé ?</h3>
+        <ul>
+          <li>Votre paiement n'a pas pu être traité</li>
+          <li>Aucun montant n'a été débité de votre compte</li>
+          <li>Votre commande est toujours en attente</li>
+        </ul>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="retryPayment()">
+          <mat-icon>refresh</mat-icon>
+          Réessayer le paiement
+        </button>
+        <button mat-stroked-button (click)="goToHome()">
+          <mat-icon>home</mat-icon>
+          Retour à l'accueil
+        </button>
+        <button mat-stroked-button (click)="contactSupport()">
+          <mat-icon>support_agent</mat-icon>
+          Contacter le support
+        </button>
+      </div>
+
+      <!-- Help Section -->
+      <div class="help-section">
+        <h3>Besoin d'aide ?</h3>
+        <div class="help-options">
+          <div class="help-option">
+            <mat-icon>credit_card</mat-icon>
+            <div>
+              <strong>Vérifiez vos informations de paiement</strong>
+              <p>Assurez-vous que votre carte est valide et que vous avez suffisamment de fonds</p>
+            </div>
+          </div>
+          <div class="help-option">
+            <mat-icon>wifi</mat-icon>
+            <div>
+              <strong>Vérifiez votre connexion</strong>
+              <p>Une connexion internet stable est nécessaire pour traiter le paiement</p>
+            </div>
+          </div>
+          <div class="help-option">
+            <mat-icon>phone</mat-icon>
+            <div>
+              <strong>Contactez votre banque</strong>
+              <p>Votre banque peut avoir bloqué la transaction pour des raisons de sécurité</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alternative Payment Methods -->
+      <div class="alternative-methods">
+        <h3>Autres options de paiement</h3>
+        <p>Vous pouvez également choisir le paiement à la livraison lors de votre prochaine commande.</p>
+      </div>
+    </div>
+  </mat-card>
+</div>

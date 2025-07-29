@@ -126,8 +126,6 @@ export class CheckoutComponent implements OnInit {
         this.orderService.createOrder(orderData)
       );
 
-      console.log('Commande créée:', order);
-
       // Sauvegarder les données du client pour la prochaine fois
       this.saveCustomerDataAfterOrder(formValue);
 
@@ -319,22 +317,12 @@ export class CheckoutComponent implements OnInit {
     try {
       this.snackBar.open('Initialisation du paiement PayDunya...', '', { duration: 2000 });
 
-      // Récupérer l'ID de la commande depuis la réponse
-      const orderId = order.data?.id || order.id;
-      
-      console.log('Order ID pour PayDunya:', orderId);
-      console.log('Order complet:', order);
-
-      if (!orderId) {
-        throw new Error('ID de commande manquant');
-      }
-
       const payDunyaResponse = await firstValueFrom(
-        this.payDunyaService.initiatePayment({ order_id: orderId })
+        this.payDunyaService.initiatePayment({ order_id: order.id })
       );
 
       if (payDunyaResponse.success && payDunyaResponse.data) {
-        localStorage.setItem('pending_order_id', orderId.toString());
+        localStorage.setItem('pending_order_id', order.id.toString());
         localStorage.setItem('paydunya_invoice_token', payDunyaResponse.data.invoice_token);
 
         this.snackBar.open('Redirection vers PayDunya...', '', { duration: 2000 });
@@ -367,11 +355,8 @@ export class CheckoutComponent implements OnInit {
       this.cartService.clearCart();
       this.snackBar.open('Commande confirmée avec succès !', 'OK', { duration: 5000 });
       
-      // Récupérer l'ID de la commande depuis la réponse
-      const orderId = order.data?.id || order.id;
-      
       this.router.navigate(['/order-confirmation'], {
-        queryParams: { orderId: orderId }
+        queryParams: { orderId: order.id }
       });
 
     } catch (error: any) {

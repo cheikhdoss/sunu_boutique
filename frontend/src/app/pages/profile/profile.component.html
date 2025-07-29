@@ -273,7 +273,7 @@
                     </div>
                     <div class="payment-item">
                       <span class="label">Statut du paiement:</span>
-                      <mat-chip [color]="order.payment_status === 'paye' ? 'primary' : 'warn'" selected>
+                      <mat-chip [color]="(order.payment_status === 'paye' || order.payment_status === 'paid') ? 'primary' : 'warn'" selected>
                         {{ getPaymentStatusLabel(order.payment_status) }}
                       </mat-chip>
                     </div>
@@ -324,21 +324,36 @@
 
                 <!-- Actions -->
                 <div class="order-actions">
-                  <button mat-button color="primary" (click)="downloadInvoice(order)" 
-                          *ngIf="order.status === 'livree' || order.invoice_url">
-                    <mat-icon>download</mat-icon>
-                    Télécharger la facture
-                  </button>
-                  <button mat-button (click)="reorderItems(order)" 
-                          *ngIf="order.status === 'livree'">
-                    <mat-icon>refresh</mat-icon>
-                    Recommander
-                  </button>
-                  <button mat-button color="warn" (click)="cancelOrder(order)" 
-                          *ngIf="order.status === 'en_attente'">
-                    <mat-icon>cancel</mat-icon>
-                    Annuler la commande
-                  </button>
+                  <!-- Actions de facture -->
+                  <div class="invoice-actions" *ngIf="canDownloadInvoice(order)">
+                    <button mat-raised-button color="primary" (click)="downloadInvoice(order)">
+                      <mat-icon>download</mat-icon>
+                      Télécharger la facture
+                    </button>
+                    <button mat-stroked-button color="primary" (click)="viewInvoice(order)">
+                      <mat-icon>visibility</mat-icon>
+                      Voir la facture
+                    </button>
+                    <button mat-button color="accent" (click)="generateInvoice(order)" 
+                            *ngIf="!order.invoice_url && canDownloadInvoice(order)">
+                      <mat-icon>receipt</mat-icon>
+                      Générer la facture
+                    </button>
+                  </div>
+                  
+                  <!-- Autres actions -->
+                  <div class="other-actions">
+                    <button mat-button (click)="reorderItems(order)" 
+                            *ngIf="order.status === 'livree'">
+                      <mat-icon>refresh</mat-icon>
+                      Recommander
+                    </button>
+                    <button mat-button color="warn" (click)="cancelOrder(order)" 
+                            *ngIf="order.status === 'en_attente'">
+                      <mat-icon>cancel</mat-icon>
+                      Annuler la commande
+                    </button>
+                  </div>
                 </div>
               </div>
             </mat-expansion-panel>

@@ -1,0 +1,127 @@
+<div class="payment-success-container">
+  <mat-card class="success-card">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Vérification de votre paiement...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-container">
+      <mat-icon class="error-icon">error</mat-icon>
+      <h2>Erreur</h2>
+      <p>Impossible de récupérer les détails de votre commande.</p>
+      <button mat-raised-button color="primary" (click)="goToHome()">
+        Retour à l'accueil
+      </button>
+    </div>
+
+    <!-- Success State -->
+    <div *ngIf="orderDetails && !loading && !error" class="success-container">
+      <!-- Success Header -->
+      <div class="success-header">
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <h1>Paiement réussi !</h1>
+        <p class="success-message">
+          Votre commande a été confirmée et votre paiement a été traité avec succès.
+        </p>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h3>Détails de la commande</h3>
+        <div class="order-info">
+          <div class="info-row">
+            <span class="label">Numéro de commande :</span>
+            <span class="value">{{ orderDetails.order_number }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Montant total :</span>
+            <span class="value amount">{{ orderDetails.total | currency:'XOF':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Statut du paiement :</span>
+            <span class="value" 
+                  [ngClass]="{
+                    'status-paid': orderDetails.payment_status === 'paid',
+                    'status-processing': orderDetails.payment_status === 'processing',
+                    'status-pending': orderDetails.payment_status === 'pending'
+                  }">
+              {{ getPaymentStatusLabel(orderDetails.payment_status) }}
+              <mat-icon *ngIf="orderDetails.payment_status === 'processing'" class="processing-icon">hourglass_empty</mat-icon>
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="label">Statut de la commande :</span>
+            <span class="value">{{ getOrderStatusLabel(orderDetails.status) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Date :</span>
+            <span class="value">{{ orderDetails.created_at | date:'dd/MM/yyyy à HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <div class="order-items">
+        <h3>Articles commandés</h3>
+        <div class="items-list" *ngIf="orderDetails.items && orderDetails.items.length > 0">
+          <div class="item" *ngFor="let item of orderDetails.items">
+            <div class="item-info">
+              <span class="item-name">{{ item.product_name }}</span>
+              <span class="item-details">Quantité: {{ item.quantity }} × {{ item.unit_price | currency:'XOF':'symbol':'1.0-0' }}</span>
+            </div>
+            <span class="item-total">{{ item.total_price | currency:'XOF':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+        <div class="no-items" *ngIf="!orderDetails.items || orderDetails.items.length === 0">
+          <mat-icon>info</mat-icon>
+          <p>Les détails des articles seront disponibles sous peu.</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <div class="invoice-actions" *ngIf="orderDetails.payment_status === 'paid' || orderDetails.invoice_url">
+          <button mat-raised-button color="primary" (click)="downloadInvoice()">
+            <mat-icon>download</mat-icon>
+            Télécharger la facture
+          </button>
+          <button mat-stroked-button color="primary" (click)="viewInvoice()">
+            <mat-icon>visibility</mat-icon>
+            Voir la facture
+          </button>
+        </div>
+        <div class="navigation-actions">
+          <button mat-stroked-button (click)="goToOrders()">
+            <mat-icon>list_alt</mat-icon>
+            Mes commandes
+          </button>
+          <button mat-stroked-button (click)="goToHome()">
+            <mat-icon>home</mat-icon>
+            Continuer mes achats
+          </button>
+        </div>
+      </div>
+
+      <!-- Next Steps -->
+      <div class="next-steps">
+        <h3>Prochaines étapes</h3>
+        <div class="steps">
+          <div class="step">
+            <mat-icon>email</mat-icon>
+            <span>Vous recevrez un email de confirmation</span>
+          </div>
+          <div class="step">
+            <mat-icon>local_shipping</mat-icon>
+            <span>Votre commande sera préparée et expédiée</span>
+          </div>
+          <div class="step">
+            <mat-icon>notifications</mat-icon>
+            <span>Vous serez notifié du suivi de livraison</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

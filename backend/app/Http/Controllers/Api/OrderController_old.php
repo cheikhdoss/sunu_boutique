@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Product;
-use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +17,7 @@ class OrderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $orders = $request->user()->orders()
-            ->with(['items', 'deliveryAddress'])
+            ->with(['items.product', 'deliveryAddress'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -65,13 +63,7 @@ class OrderController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        // Normaliser le paymentMethod
-        $requestData = $request->all();
-        if (isset($requestData['paymentMethod'])) {
-            $requestData['paymentMethod'] = strtolower($requestData['paymentMethod']);
-        }
-        
-        $validator = Validator::make($requestData, [
+        $validator = Validator::make($request->all(), [
             'customerInfo.firstName' => 'required|string|max:255',
             'customerInfo.lastName' => 'required|string|max:255',
             'customerInfo.email' => 'required|email|max:255',
@@ -101,56 +93,25 @@ class OrderController extends Controller
             $data = $validator->validated();
             $user = $request->user();
 
-            // Créer la commande avec la structure correcte de la table
-            $customerInfo = $data['customerInfo'];
-            $deliveryAddress = $data['deliveryAddress'];
-            
+            // Créer la commande
             $order = Order::create([
-                'user_id' => $user ? $user->id : null, // Null pour les commandes invités
+                'user_id' => $user ? $user->id : null,
                 'order_number' => 'CMD-' . strtoupper(uniqid()),
                 'status' => 'pending',
                 'payment_method' => $data['paymentMethod'],
                 'payment_status' => 'pending',
                 'total' => $data['totalAmount'],
-                'subtotal' => $data['totalAmount'],
-                
-                // Informations de livraison
-                'shipping_first_name' => $customerInfo['firstName'],
-                'shipping_last_name' => $customerInfo['lastName'],
-                'shipping_address_line_1' => $deliveryAddress['street'],
-                'shipping_city' => $deliveryAddress['city'],
-                'shipping_postal_code' => $deliveryAddress['postalCode'],
-                'shipping_country' => $deliveryAddress['country'],
-                'shipping_phone' => $customerInfo['phone'],
-                
-                // Informations de facturation (même que livraison pour simplifier)
-                'billing_first_name' => $customerInfo['firstName'],
-                'billing_last_name' => $customerInfo['lastName'],
-                'billing_address_line_1' => $deliveryAddress['street'],
-                'billing_city' => $deliveryAddress['city'],
-                'billing_postal_code' => $deliveryAddress['postalCode'],
-                'billing_country' => $deliveryAddress['country'],
-                'billing_phone' => $customerInfo['phone'],
-                
-                // Notes additionnelles
-                'notes' => $deliveryAddress['additionalInfo'] ?? null,
+                'customer_info' => $data['customerInfo'],
+                'delivery_address' => $data['deliveryAddress'],
             ]);
 
             // Ajouter les articles de la commande
             foreach ($data['items'] as $item) {
-                // Récupérer les informations du produit
-                $product = Product::find($item['productId']);
-                
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['productId'],
-                    'product_name' => $product ? $product->name : 'Produit inconnu',
-                    'product_description' => $product ? $product->description : null,
-                    'product_sku' => $product ? $product->sku : null,
-                    'product_image' => $product ? $product->image : null,
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['price'],
-                    'total_price' => $item['price'] * $item['quantity'],
                 ]);
             }
 
@@ -354,94 +315,5 @@ class OrderController extends Controller
                 'total' => $orders->total(),
             ]
         ]);
-    }
-
-    /**
-     * Récupérer les détails d'une commande (accès public pour les pages de paiement)
-     */
-    public function getOrderDetails($orderId)
-    {
-        try {
-            $order = Order::with(['items', 'user'])->findOrFail($orderId);
-
-            $formattedOrder = [
-                'id' => $order->id,
-                'order_number' => $order->order_number,
-                'total' => $order->total,
-                'payment_status' => $order->payment_status,
-                'status' => $order->status,
-                'created_at' => $order->created_at,
-                'invoice_url' => $order->invoice_url,
-                'items' => $order->items->map(function ($item) {
-                    return [
-                        'product_name' => $item->product_name,
-                        'quantity' => $item->quantity,
-                        'unit_price' => $item->unit_price,
-                        'total_price' => $item->total_price,
-                    ];
-                }),
-            ];
-
-            return response()->json([
-                'success' => true,
-                'data' => $formattedOrder
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Error fetching order details', [
-                'order_id' => $orderId,
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Commande introuvable'
-            ], 404);
-        }
-    }
-
-    /**
-     * Générer une facture pour une commande
-     */
-    public function generateInvoice($orderId)
-    {
-        try {
-            $order = Order::with(['items', 'user'])->findOrFail($orderId);
-            $invoiceService = new InvoiceService();
-
-            // Vérifier que la facture peut être générée
-            if (!$invoiceService->canGenerateInvoice($order)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'La facture ne peut être générée que pour les commandes payées ou confirmées'
-                ], 400);
-            }
-
-            $result = $invoiceService->generateInvoice($order);
-
-            if ($result['success']) {
-                return response()->json([
-                    'success' => true,
-                    'invoice_url' => $result['url'],
-                    'filename' => $result['filename'],
-                    'message' => $result['message']
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => $result['error']
-                ], 500);
-            }
-
-        } catch (\Exception $e) {
-            \Log::error('Error generating invoice', [
-                'order_id' => $orderId,
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors de la génération de la facture'
-            ], 500);
-        }
     }
 }
