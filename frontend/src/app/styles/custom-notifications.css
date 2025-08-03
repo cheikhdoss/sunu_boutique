@@ -1,0 +1,425 @@
+/* ===== NOTIFICATIONS PERSONNALISÉES FUTURISTES ===== */
+
+/* Variables CSS pour les notifications */
+:root {
+  --notification-success: linear-gradient(135deg, #00ff88, #00cc6a);
+  --notification-error: linear-gradient(135deg, #ff4757, #ff3742);
+  --notification-warning: linear-gradient(135deg, #ffa726, #ff9800);
+  --notification-info: linear-gradient(135deg, #42a5f5, #2196f3);
+  --notification-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --notification-border: rgba(255, 255, 255, 0.2);
+  --notification-backdrop: rgba(255, 255, 255, 0.1);
+}
+
+/* Container principal des notifications */
+.custom-notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+/* Base des notifications personnalisées */
+.custom-notification {
+  position: relative;
+  min-width: 350px;
+  max-width: 450px;
+  margin-bottom: 16px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--notification-border);
+  box-shadow: var(--notification-shadow);
+  pointer-events: auto;
+  overflow: hidden;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Animation d'entrée */
+.custom-notification.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Animation de sortie */
+.custom-notification.hide {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* Effet de fond glassmorphism */
+.custom-notification::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--notification-backdrop);
+  border-radius: 16px;
+  z-index: -1;
+}
+
+/* Bordure animée */
+.custom-notification::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.3), 
+    rgba(255, 255, 255, 0.1), 
+    rgba(255, 255, 255, 0.3)
+  );
+  background-size: 200% 200%;
+  animation: borderFlow 3s ease-in-out infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  z-index: -1;
+}
+
+/* Types de notifications */
+.custom-notification.success {
+  background: var(--notification-success);
+  color: white;
+}
+
+.custom-notification.error {
+  background: var(--notification-error);
+  color: white;
+}
+
+.custom-notification.warning {
+  background: var(--notification-warning);
+  color: white;
+}
+
+.custom-notification.info {
+  background: var(--notification-info);
+  color: white;
+}
+
+/* Header de la notification */
+.notification-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.notification-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 16px;
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+.notification-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.notification-close:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Corps de la notification */
+.notification-body {
+  margin-bottom: 16px;
+}
+
+.notification-message {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.95;
+}
+
+/* Actions de la notification */
+.notification-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.notification-action {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.notification-action:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.notification-action.primary {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.notification-action.primary:hover {
+  background: white;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Barre de progression */
+.notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0 0 16px 16px;
+  transform-origin: left;
+  animation: progressBar 4s linear forwards;
+}
+
+/* Effet de particules */
+.notification-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: particleFloat 3s ease-in-out infinite;
+}
+
+/* Effet de brillance */
+.notification-shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shine 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes borderFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes progressBar {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100%) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  50% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .custom-notification-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  .custom-notification {
+    min-width: auto;
+    max-width: none;
+    margin-bottom: 12px;
+  }
+}
+
+/* Styles pour les notifications Material Design personnalisées */
+.mat-mdc-snack-bar-container.success-glow {
+  background: var(--notification-success) !important;
+  color: white !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--notification-shadow) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.mat-mdc-snack-bar-container.success-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    rgba(255, 255, 255, 0.1), 
+    transparent, 
+    rgba(255, 255, 255, 0.1)
+  );
+  animation: shine 2s ease-in-out infinite;
+}
+
+.mat-mdc-snack-bar-container.error-snackbar {
+  background: var(--notification-error) !important;
+  color: white !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--notification-shadow) !important;
+}
+
+.mat-mdc-snack-bar-container.info-snackbar {
+  background: var(--notification-info) !important;
+  color: white !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--notification-shadow) !important;
+}
+
+.mat-mdc-snack-bar-container.premium-notification {
+  animation: notificationSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+.mat-mdc-snack-bar-action {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  margin-left: 12px !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.mat-mdc-snack-bar-action:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+@keyframes notificationSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Effet spécial pour les notifications de panier */
+.cart-notification {
+  position: relative;
+}
+
+.cart-notification::after {
+  content: '🛒';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  animation: cartBounce 0.6s ease-out;
+}
+
+@keyframes cartBounce {
+  0% {
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}

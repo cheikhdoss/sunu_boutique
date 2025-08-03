@@ -1,184 +1,262 @@
-<div class="product-detail-container">
+<div class="product-detail-container cinematic-product">
+  <!-- Arrière-plan animé -->
+  <div class="product-background">
+    <div class="particle-field"></div>
+    <div class="energy-waves"></div>
+    <div class="holographic-grid"></div>
+    <div class="ambient-lights"></div>
+  </div>
+
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-container">
-    <mat-spinner diameter="50"></mat-spinner>
+    <div class="loading-animation">
+      <div class="loading-ring">
+        <div class="loading-core">
+          <mat-icon class="loading-icon">shopping_bag</mat-icon>
+        </div>
+      </div>
+    </div>
     <p>Chargement du produit...</p>
   </div>
 
   <!-- Product Detail -->
-  <div *ngIf="!loading && (product$ | async) as product" class="container">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <button mat-button (click)="goBack()" class="back-button">
+  <div *ngIf="!loading && (product$ | async) as product" class="product-content">
+    <!-- Navigation -->
+    <nav class="product-navigation">
+      <button class="nav-button back-button" (click)="goBack()">
         <mat-icon>arrow_back</mat-icon>
-        Retour aux produits
+        <span>Retour aux produits</span>
+        <div class="button-glow"></div>
       </button>
     </nav>
 
-    <div class="product-detail-content">
-      <!-- Product Images -->
-      <div class="product-images-section">
-        <div class="main-image-container">
-          <img [src]="getImageUrl(product.image)" 
-               [alt]="product.name"
-               class="main-image"
-               (error)="onImageError($event)"
-               (load)="onImageLoad()">
-          
-          <!-- Placeholder pour image indisponible -->
-          <div class="image-placeholder" *ngIf="imageError">
-            <div class="placeholder-content">
-              <mat-icon class="placeholder-icon">image_not_supported</mat-icon>
-              <h3>Image indisponible</h3>
-              <p>L'image de ce produit n'est pas disponible pour le moment</p>
+    <div class="product-showcase">
+      <!-- Section Images -->
+      <div class="product-gallery">
+        <div class="gallery-container">
+          <div class="main-image-wrapper">
+            <div class="image-frame">
+              <img [src]="getImageUrl(product.image)" 
+                   [alt]="product.name"
+                   class="product-image"
+                   (error)="onImageError($event)"
+                   (load)="onImageLoad()">
+              
+              <!-- Placeholder pour image indisponible -->
+              <div class="image-placeholder" *ngIf="imageError">
+                <div class="placeholder-animation">
+                  <div class="placeholder-ring">
+                    <mat-icon class="placeholder-icon">image_not_supported</mat-icon>
+                  </div>
+                </div>
+                <div class="placeholder-content">
+                  <h3>Image indisponible</h3>
+                  <p>L'image de ce produit n'est pas disponible pour le moment</p>
+                </div>
+              </div>
+              
+              <!-- Badge de stock -->
+              <div class="stock-indicator" [class.out-of-stock]="product.stock === 0">
+                <div class="indicator-icon">
+                  <mat-icon>{{ product.stock > 0 ? 'check_circle' : 'cancel' }}</mat-icon>
+                </div>
+                <span>{{ product.stock > 0 ? 'En stock' : 'Rupture' }}</span>
+              </div>
+
+              <!-- Badge de catégorie -->
+              <div class="category-badge">
+                <span>{{ product.category?.name || 'Sans catégorie' }}</span>
+              </div>
             </div>
-          </div>
-          
-          <!-- Stock Badge -->
-          <div class="stock-badge" [class.out-of-stock]="product.stock === 0">
-            <mat-icon>{{ product.stock > 0 ? 'check_circle' : 'cancel' }}</mat-icon>
-            {{ product.stock > 0 ? 'En stock' : 'Rupture de stock' }}
           </div>
         </div>
       </div>
 
-      <!-- Product Information -->
-      <div class="product-info-section">
+      <!-- Section Informations -->
+      <div class="product-information">
+        <!-- Header produit -->
         <div class="product-header">
-          <!-- Category -->
-          <div class="product-category">
-            <mat-chip color="primary">{{ product.category?.name || 'Sans catégorie' }}</mat-chip>
+          <div class="product-title-section">
+            <h1 class="product-title">{{ product.name }}</h1>
+            <div class="title-decoration"></div>
           </div>
 
-          <!-- Product Name -->
-          <h1 class="product-title">{{ product.name }}</h1>
-
-          <!-- Price -->
-          <div class="price-section">
-            <span class="current-price">{{ product.price | currency:'XOF':'symbol':'1.0-0' }}</span>
+          <div class="price-showcase">
+            <div class="price-container">
+              <span class="price-value">{{ product.price | currency:'XOF':'symbol':'1.0-0' }}</span>
+              <div class="price-glow"></div>
+            </div>
           </div>
 
-          <!-- Stock Info -->
-          <div class="stock-info">
-            <mat-icon [class]="product.stock > 0 ? 'text-success' : 'text-error'">
-              {{ product.stock > 0 ? 'inventory' : 'inventory_2' }}
-            </mat-icon>
-            <span [class]="product.stock > 0 ? 'text-success' : 'text-error'">
-              {{ product.stock > 0 ? product.stock + ' en stock' : 'Rupture de stock' }}
+          <div class="stock-details">
+            <div class="stock-icon">
+              <mat-icon [class]="product.stock > 0 ? 'text-success' : 'text-error'">
+                {{ product.stock > 0 ? 'inventory' : 'inventory_2' }}
+              </mat-icon>
+            </div>
+            <span class="stock-text" [class]="product.stock > 0 ? 'text-success' : 'text-error'">
+              {{ product.stock > 0 ? product.stock + ' articles disponibles' : 'Produit indisponible' }}
             </span>
           </div>
         </div>
 
-        <!-- Product Description -->
-        <div class="product-description">
-          <h3>Description</h3>
-          <p>{{ product.description }}</p>
+        <!-- Description -->
+        <div class="product-description-card">
+          <div class="description-header">
+            <h3>Description du produit</h3>
+            <div class="header-line"></div>
+          </div>
+          <div class="description-content">
+            <p>{{ product.description }}</p>
+          </div>
         </div>
 
-        <!-- Quantity Selector and Add to Cart -->
-        <div class="purchase-section" *ngIf="product.stock > 0">
-          <div class="quantity-section">
-            <label class="quantity-label">Quantité</label>
+        <!-- Section d'achat -->
+        <div class="purchase-panel" *ngIf="product.stock > 0">
+          <div class="panel-header">
+            <h3>Commandez maintenant</h3>
+            <div class="header-decoration"></div>
+          </div>
+
+          <div class="quantity-selector">
+            <label class="quantity-label">Quantité souhaitée</label>
             <div class="quantity-controls">
-              <button mat-icon-button 
+              <button class="quantity-button decrease" 
                       (click)="decreaseQuantity()"
-                      [disabled]="quantity <= 1"
-                      class="quantity-btn">
+                      [disabled]="quantity <= 1">
                 <mat-icon>remove</mat-icon>
+                <div class="button-ripple"></div>
               </button>
               
-              <mat-form-field appearance="outline" class="quantity-input">
-                <input matInput 
-                       type="number" 
+              <div class="quantity-display">
+                <input type="number" 
                        [(ngModel)]="quantity"
                        [min]="1"
                        [max]="product.stock"
+                       class="quantity-input"
                        readonly>
-              </mat-form-field>
+                <div class="input-glow"></div>
+              </div>
               
-              <button mat-icon-button 
+              <button class="quantity-button increase" 
                       (click)="increaseQuantity(product.stock)"
-                      [disabled]="quantity >= product.stock"
-                      class="quantity-btn">
+                      [disabled]="quantity >= product.stock">
                 <mat-icon>add</mat-icon>
+                <div class="button-ripple"></div>
               </button>
             </div>
           </div>
 
           <div class="action-buttons">
-            <button mat-raised-button 
-                    color="primary"
-                    class="add-to-cart-btn"
+            <button class="action-button primary-action"
                     (click)="addToCart(product)"
                     [disabled]="product.stock === 0">
-              <mat-icon>add_shopping_cart</mat-icon>
-              Ajouter au panier
+              <span class="button-content">
+                <mat-icon>add_shopping_cart</mat-icon>
+                <span>Ajouter au panier</span>
+              </span>
+              <div class="button-glow"></div>
+              <div class="button-particles"></div>
             </button>
 
-            <button mat-stroked-button 
-                    color="accent"
-                    class="buy-now-btn"
+            <button class="action-button secondary-action"
                     routerLink="/cart">
-              <mat-icon>flash_on</mat-icon>
-              Acheter maintenant
+              <span class="button-content">
+                <mat-icon>flash_on</mat-icon>
+                <span>Acheter maintenant</span>
+              </span>
+              <div class="button-glow"></div>
             </button>
           </div>
         </div>
 
-        <!-- Out of Stock Message -->
-        <div class="out-of-stock-section" *ngIf="product.stock === 0">
-          <mat-card class="out-of-stock-card">
-            <mat-card-content>
-              <div class="out-of-stock-content">
-                <mat-icon class="out-of-stock-icon">inventory_2</mat-icon>
-                <h3>Produit indisponible</h3>
-                <p>Ce produit est actuellement en rupture de stock. Revenez plus tard ou contactez-nous pour plus d'informations.</p>
-                <button mat-button color="primary" routerLink="/">
-                  Voir d'autres produits
-                </button>
-              </div>
-            </mat-card-content>
-          </mat-card>
+        <!-- Message rupture de stock -->
+        <div class="out-of-stock-panel" *ngIf="product.stock === 0">
+          <div class="panel-animation">
+            <div class="warning-ring">
+              <mat-icon class="warning-icon">inventory_2</mat-icon>
+            </div>
+          </div>
+          <div class="panel-content">
+            <h3>Produit indisponible</h3>
+            <p>Ce produit est actuellement en rupture de stock. Revenez plus tard ou découvrez nos autres produits.</p>
+            <button class="explore-button" routerLink="/">
+              <span class="button-content">
+                <mat-icon>explore</mat-icon>
+                <span>Découvrir d'autres produits</span>
+              </span>
+              <div class="button-glow"></div>
+            </button>
+          </div>
         </div>
 
-        <!-- Product Features -->
-        <div class="product-features">
-          <h3>Caractéristiques</h3>
+        <!-- Caractéristiques premium -->
+        <div class="features-showcase">
+          <div class="features-header">
+            <h3>Avantages premium</h3>
+            <div class="header-decoration"></div>
+          </div>
+          
           <div class="features-grid">
-            <div class="feature-item">
-              <mat-icon>local_shipping</mat-icon>
-              <div>
-                <h4>Livraison rapide</h4>
-                <p>Livraison sous 24-48h</p>
+            <div class="feature-card" style="--delay: 0s">
+              <div class="feature-icon">
+                <mat-icon>local_shipping</mat-icon>
+                <div class="icon-glow"></div>
               </div>
+              <div class="feature-content">
+                <h4>Livraison express</h4>
+                <p>Livraison sous 24-48h partout au Sénégal</p>
+              </div>
+              <div class="card-glow"></div>
             </div>
             
-            <div class="feature-item">
-              <mat-icon>verified_user</mat-icon>
-              <div>
+            <div class="feature-card" style="--delay: 0.2s">
+              <div class="feature-icon">
+                <mat-icon>verified_user</mat-icon>
+                <div class="icon-glow"></div>
+              </div>
+              <div class="feature-content">
                 <h4>Garantie qualité</h4>
-                <p>Produits certifiés</p>
+                <p>Produits authentiques et certifiés</p>
               </div>
+              <div class="card-glow"></div>
             </div>
             
-            <div class="feature-item">
-              <mat-icon>support_agent</mat-icon>
-              <div>
-                <h4>Support client</h4>
-                <p>Assistance 7j/7</p>
+            <div class="feature-card" style="--delay: 0.4s">
+              <div class="feature-icon">
+                <mat-icon>support_agent</mat-icon>
+                <div class="icon-glow"></div>
               </div>
+              <div class="feature-content">
+                <h4>Support premium</h4>
+                <p>Assistance dédiée 7j/7</p>
+              </div>
+              <div class="card-glow"></div>
             </div>
             
-            <div class="feature-item">
-              <mat-icon>payment</mat-icon>
-              <div>
+            <div class="feature-card" style="--delay: 0.6s">
+              <div class="feature-icon">
+                <mat-icon>payment</mat-icon>
+                <div class="icon-glow"></div>
+              </div>
+              <div class="feature-content">
                 <h4>Paiement sécurisé</h4>
-                <p>Transactions protégées</p>
+                <p>Transactions 100% protégées</p>
               </div>
+              <div class="card-glow"></div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Éléments décoratifs flottants -->
+  <div class="floating-elements">
+    <div class="float-element element-1">🛍️</div>
+    <div class="float-element element-2">✦</div>
+    <div class="float-element element-3">💎</div>
+    <div class="float-element element-4">◆</div>
+    <div class="float-element element-5">⭐</div>
   </div>
 </div>

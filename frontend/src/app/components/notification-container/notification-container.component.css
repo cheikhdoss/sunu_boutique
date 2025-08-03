@@ -1,0 +1,36 @@
+/* ===== CONTENEUR DE NOTIFICATIONS ===== */
+
+.notification-container {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  pointer-events: none;
+  max-height: calc(100vh - 120px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.notification-container > * {
+  pointer-events: auto;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .notification-container {
+    top: 80px;
+    right: 0;
+    left: 0;
+    align-items: center;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-container {
+    top: 70px;
+    padding: 0 8px;
+  }
+}

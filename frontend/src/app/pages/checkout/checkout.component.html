@@ -8,7 +8,13 @@
       <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
         <!-- Informations client -->
         <div formGroupName="customerInfo" class="form-section">
-          <h3>Informations personnelles</h3>
+          <div class="section-header">
+            <h3>Informations personnelles</h3>
+            <button mat-icon-button type="button" (click)="clearSavedData()" 
+                    matTooltip="Effacer les données sauvegardées">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
           
           <div class="form-row">
             <mat-form-field appearance="outline">
@@ -42,6 +48,24 @@
         <!-- Adresse de livraison -->
         <div formGroupName="deliveryAddress" class="form-section">
           <h3>Adresse de livraison</h3>
+          
+          <!-- Historique des adresses -->
+          <div class="address-history" *ngIf="getAddressHistory().length > 0">
+            <p class="history-label">
+              <mat-icon>history</mat-icon>
+              Adresses récentes :
+            </p>
+            <div class="address-chips">
+              <mat-chip-set>
+                <mat-chip *ngFor="let address of getAddressHistory()" 
+                         (click)="useAddressFromHistory(address)"
+                         class="address-chip">
+                  <mat-icon matChipAvatar>location_on</mat-icon>
+                  {{ address.street }}, {{ address.city }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          </div>
           
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Rue</mat-label>
@@ -80,14 +104,24 @@
           <h3>Mode de paiement</h3>
           
           <mat-radio-group formControlName="paymentMethod" class="payment-methods">
-            <mat-radio-button [value]="paymentMethods.ONLINE">
-              Paiement en ligne
-              <mat-icon>credit_card</mat-icon>
+            <mat-radio-button [value]="paymentMethods.PAYDUNYA" class="payment-option paydunya-option">
+              <div class="payment-option-content">
+                <div class="payment-header">
+                  <mat-icon>{{ getPaymentMethodIcon(paymentMethods.PAYDUNYA) }}</mat-icon>
+                  <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.PAYDUNYA) }}</span>
+                </div>
+                <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.PAYDUNYA) }}</p>
+              </div>
             </mat-radio-button>
             
-            <mat-radio-button [value]="paymentMethods.CASH_ON_DELIVERY">
-              Paiement à la livraison
-              <mat-icon>local_shipping</mat-icon>
+            <mat-radio-button [value]="paymentMethods.CASH_ON_DELIVERY" class="payment-option">
+              <div class="payment-option-content">
+                <div class="payment-header">
+                  <mat-icon>{{ getPaymentMethodIcon(paymentMethods.CASH_ON_DELIVERY) }}</mat-icon>
+                  <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.CASH_ON_DELIVERY) }}</span>
+                </div>
+                <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.CASH_ON_DELIVERY) }}</p>
+              </div>
             </mat-radio-button>
           </mat-radio-group>
         </div>
@@ -95,7 +129,24 @@
         <!-- Résumé de la commande -->
         <div class="order-summary">
           <h3>Résumé de la commande</h3>
-          <p>Total à payer: {{cartService.getTotalAmount() | currency:'EUR'}}</p>
+          <div class="summary-details">
+            <div class="summary-row">
+              <span>Nombre d'articles:</span>
+              <span>{{ cartService.getCartItemsCount() }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Sous-total:</span>
+              <span>{{ cartService.getTotalAmount() | currency:'XOF':'symbol':'1.0-0' }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Livraison:</span>
+              <span class="free-shipping">Gratuite</span>
+            </div>
+            <div class="summary-row total-row">
+              <span><strong>Total à payer:</strong></span>
+              <span class="total-amount"><strong>{{ cartService.getTotalAmount() | currency:'XOF':'symbol':'1.0-0' }}</strong></span>
+            </div>
+          </div>
         </div>
 
         <!-- Bouton de validation -->

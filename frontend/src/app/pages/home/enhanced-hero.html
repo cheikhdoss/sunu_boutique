@@ -1,0 +1,111 @@
+  <!-- Hero Section Redesigné pour Première Impression -->
+  <section class="hero-section modern-hero" #heroSection>
+    <div class="container">
+      <div class="hero-content">
+        <!-- Badge de bienvenue -->
+        <div class="welcome-badge">
+          <span class="badge-icon">🌟</span>
+          <span class="badge-text">Bienvenue chez Sunu Boutique</span>
+        </div>
+
+        <!-- Titre principal accrocheur -->
+        <h1 class="hero-title" #heroTitle>
+          Découvrez l'Excellence
+          <span class="text-accent">Sénégalaise</span>
+        </h1>
+
+        <!-- Sous-titre engageant -->
+        <p class="hero-subtitle" #heroSubtitle>
+          Votre destination premium pour des produits authentiques et de qualité exceptionnelle. 
+          Explorez notre collection soigneusement sélectionnée pour vous offrir le meilleur du Sénégal et d'ailleurs.
+        </p>
+
+        <!-- Points forts -->
+        <div class="hero-highlights">
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <mat-icon>verified</mat-icon>
+            </div>
+            <span>Qualité Garantie</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <mat-icon>local_shipping</mat-icon>
+            </div>
+            <span>Livraison Rapide</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <mat-icon>support_agent</mat-icon>
+            </div>
+            <span>Support 24/7</span>
+          </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="hero-actions">
+          <button mat-raised-button
+                  class="hero-cta primary-cta"
+                  (click)="scrollToProducts()"
+                  #heroCta>
+            <mat-icon>explore</mat-icon>
+            <span>Découvrir nos Produits</span>
+          </button>
+          
+          <button mat-stroked-button
+                  class="hero-cta secondary-cta"
+                  routerLink="/about">
+            <mat-icon>info</mat-icon>
+            <span>En Savoir Plus</span>
+          </button>
+        </div>
+
+        <!-- Indicateurs de confiance -->
+        <div class="trust-indicators">
+          <div class="trust-item">
+            <span class="trust-number">1000+</span>
+            <span class="trust-label">Clients Satisfaits</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-number">500+</span>
+            <span class="trust-label">Produits Premium</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-number">99%</span>
+            <span class="trust-label">Satisfaction Client</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image hero (optionnelle) -->
+      <div class="hero-visual">
+        <div class="visual-container">
+          <div class="floating-product">
+            <div class="product-showcase" *ngIf="featuredProduct">
+              <img [src]="getImageUrl(featuredProduct.imageUrl)" 
+                   [alt]="featuredProduct.name"
+                   class="showcase-image">
+              <div class="product-badge">
+                <span>Produit Vedette</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Éléments décoratifs -->
+          <div class="decorative-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicateur de scroll -->
+    <div class="scroll-indicator">
+      <div class="scroll-arrow">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </div>
+      <span class="scroll-text">Découvrez plus</span>
+    </div>
+  </section>

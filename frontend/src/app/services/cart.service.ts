@@ -74,6 +74,8 @@ export class CartService {
     const item = this.cartItems.find(item => item.product.id === productId);
     if (item) {
       item.quantity = quantity;
+      // S'assurer que le prix est synchronisé avec le produit
+      item.price = item.product.price;
       this.saveCart();
     }
   }
@@ -92,6 +94,6 @@ export class CartService {
   }
 
   getTotalAmount(): number {
-    return this.cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   }
 }

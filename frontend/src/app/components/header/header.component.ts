@@ -23,7 +23,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     CommonModule
   ],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: [
+    './header.component.css',
+    './dropdown-improvements.css',
+    './header-dropdown-fix.css'
+  ]
 })
 export class HeaderComponent implements OnInit {
   cartItemsCount$: Observable<number>;

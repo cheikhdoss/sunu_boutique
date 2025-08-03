@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\DeliveryAddressController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\PayDunyaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +66,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('orders/{order}/cancel', [OrderController::class, 'cancel']);
     Route::get('orders/{order}/invoice', [OrderController::class, 'downloadInvoice']);
 
+    // Payment routes (PayDunya integration)
+    Route::prefix('payments')->group(function () {
+        // PayDunya Payment
+        Route::post('paydunya/initiate', [PayDunyaController::class, 'initiatePayment']);
+        Route::get('paydunya/status', [PayDunyaController::class, 'checkPaymentStatus']);
+    });
+
     // Routes de gestion du profil utilisateur (système alternatif)
     Route::prefix('user')->group(function () {
         Route::get('/profile', [UserController::class, 'getProfile']);
@@ -91,3 +99,32 @@ Route::middleware('auth:sanctum')->group(function () {
 // Routes publiques des ressources
 Route::apiResource('products', ProductController::class);
 Route::apiResource('categories', CategoryController::class);
+Route::post('orders', [OrderController::class, 'store']);
+
+// Routes publiques pour les callbacks de paiement (pas d'authentification requise)
+Route::prefix('payments')->group(function () {
+    // PayDunya callbacks et IPN
+    Route::post('paydunya/ipn', [PayDunyaController::class, 'handleIPN']);
+    Route::get('paydunya/success', [PayDunyaController::class, 'paymentSuccess']);
+    Route::get('paydunya/error', [PayDunyaController::class, 'paymentError']);
+});
+
+// Route publique pour créer une commande en tant qu'invité (si nécessaire)
+Route::post('orders/guest', [OrderController::class, 'storeGuestOrder']);
+
+// Routes publiques pour les détails de commande et factures (pour les pages de paiement)
+Route::get('orders/{orderId}/details', [OrderController::class, 'getOrderDetails']);
+Route::post('orders/{orderId}/generate-invoice', [OrderController::class, 'generateInvoice']);
+Route::post('orders/{orderId}/confirmation-email', [OrderController::class, 'sendConfirmationEmail']);
+Route::post('orders/{orderId}/confirm-payment', [OrderController::class, 'confirmCashOnDeliveryPayment']);
+
+// Routes pour les factures
+Route::prefix('invoices')->group(function () {
+    Route::post('{orderId}/generate', [App\Http\Controllers\InvoiceController::class, 'generate']);
+    Route::get('{orderId}/download', [App\Http\Controllers\InvoiceController::class, 'download']);
+    Route::get('{orderId}/view', [App\Http\Controllers\InvoiceController::class, 'view']);
+    Route::get('{orderId}/url', [App\Http\Controllers\InvoiceController::class, 'getUrl']);
+    Route::post('{orderId}/regenerate', [App\Http\Controllers\InvoiceController::class, 'regenerate']);
+    Route::delete('{orderId}', [App\Http\Controllers\InvoiceController::class, 'delete']);
+    Route::get('stats', [App\Http\Controllers\InvoiceController::class, 'stats']);
+});

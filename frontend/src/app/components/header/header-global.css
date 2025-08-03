@@ -1,0 +1,57 @@
+/* ===== STYLES GLOBAUX POUR LA HEADER FIXE ===== */
+
+/* Compensation pour la header fixe */
+body {
+  padding-top: 80px;
+  transition: padding-top 0.3s ease;
+}
+
+/* Ajustement pour les écrans plus petits */
+@media (max-width: 768px) {
+  body {
+    padding-top: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 65px;
+  }
+}
+
+/* Classe pour header scrollée */
+body.header-scrolled {
+  padding-top: 70px;
+}
+
+@media (max-width: 768px) {
+  body.header-scrolled {
+    padding-top: 65px;
+  }
+}
+
+@media (max-width: 480px) {
+  body.header-scrolled {
+    padding-top: 60px;
+  }
+}
+
+/* Smooth scroll pour toute la page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Amélioration du z-index pour éviter les conflits */
+.header-toolbar {
+  z-index: 1000 !important;
+}
+
+/* Overlay pour les menus */
+.cdk-overlay-container {
+  z-index: 1001 !important;
+}
+
+/* Backdrop pour les overlays */
+.cdk-overlay-backdrop {
+  z-index: 999 !important;
+}

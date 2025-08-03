@@ -1,0 +1,273 @@
+/* SUPPRESSION DES ANIMATIONS 3D POUR LA SECTION COLLECTIONS */
+
+/* Désactivation de la perspective 3D */
+.collections-grid {
+  perspective: none !important;
+}
+
+/* Suppression des transformations 3D des cartes */
+.collection-card {
+  transform-style: flat !important;
+  transform: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.collection-card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 20px rgba(99, 102, 241, 0.2),
+    0 4px 10px rgba(236, 72, 153, 0.1) !important;
+}
+
+/* Simplification des effets d'image */
+.collection-image {
+  transition: all 0.3s ease !important;
+}
+
+.collection-card:hover .collection-image {
+  transform: scale(1.05) !important;
+  filter: brightness(1.1) contrast(1.1) !important;
+}
+
+/* Suppression des animations 3D pour les boutons */
+.collection-action-btn,
+.collection-add-btn {
+  transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.collection-action-btn:hover,
+.collection-add-btn:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+}
+
+/* Désactivation de l'animation de flottement */
+@media (hover: hover) {
+  .collection-card:hover {
+    animation: none !important;
+  }
+}
+
+/* Suppression de l'animation cardFloat */
+@keyframes cardFloat {
+  0%, 100% {
+    transform: translateY(-8px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+
+/* Simplification des effets de profondeur */
+.collection-card::after {
+  display: none !important;
+}
+
+/* Réduction des ombres complexes */
+.collection-card {
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    0 4px 10px rgba(255, 255, 255, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Simplification de l'overlay */
+.collection-overlay {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.9) 0%, 
+    rgba(236, 72, 153, 0.9) 100%) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Boutons d'action simplifiés */
+.collection-action-btn {
+  transform: scale(0.9) translateY(20px) !important;
+  transition: all 0.3s ease !important;
+}
+
+.collection-card:hover .collection-action-btn {
+  transform: scale(1) translateY(0) !important;
+}
+
+/* Suppression des effets de lueur complexes */
+.collection-price::before {
+  display: none !important;
+}
+
+/* Simplification des animations d'entrée */
+@keyframes collectionsCardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Désactivation des micro-animations rotatives */
+.collection-action-btn mat-icon,
+.collection-add-btn mat-icon {
+  transition: none !important;
+}
+
+.collection-action-btn:hover mat-icon,
+.collection-add-btn:hover mat-icon {
+  transform: none !important;
+}
+
+/* Simplification des effets de brillance */
+.collection-add-btn::after,
+.collection-action-btn::after {
+  display: none !important;
+}
+
+/* Réduction des effets de particules */
+.collections-section::before {
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.06) 0%, transparent 60%) !important;
+  animation: none !important;
+}
+
+/* Suppression de l'animation de machine à écrire */
+.collections-title {
+  animation: none !important;
+  border-right: none !important;
+  white-space: normal !important;
+  overflow: visible !important;
+}
+
+/* Simplification des badges */
+.collection-badge::after {
+  display: none !important;
+}
+
+.collection-badge:hover {
+  animation: none !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* Désactivation des animations de compteur */
+.stat-number,
+.stat-label {
+  animation: none !important;
+}
+
+/* Simplification des animations d'entrée */
+.collections-header {
+  animation: none !important;
+}
+
+.collections-search-wrapper {
+  animation: none !important;
+}
+
+/* Performance - Désactivation des propriétés coûteuses */
+.collection-card {
+  will-change: auto !important;
+  backface-visibility: visible !important;
+}
+
+/* Suppression des effets de parallaxe */
+.collections-section {
+  background-attachment: scroll !important;
+}
+
+/* Simplification pour tous les appareils */
+@media (max-width: 1200px) {
+  .collection-card,
+  .collection-card:hover {
+    transform: none !important;
+    transform-style: flat !important;
+  }
+  
+  .collection-card:hover {
+    transform: translateY(-5px) scale(1.01) !important;
+  }
+  
+  .collection-card:hover .collection-image {
+    transform: scale(1.03) !important;
+  }
+}
+
+/* Optimisation mobile renforcée */
+@media (max-width: 768px) {
+  .collection-card {
+    transition: all 0.2s ease !important;
+  }
+  
+  .collection-card:hover {
+    transform: translateY(-3px) !important;
+  }
+  
+  .collection-card:hover .collection-image {
+    transform: scale(1.02) !important;
+  }
+  
+  .collection-action-btn,
+  .collection-add-btn {
+    transition: all 0.2s ease !important;
+  }
+}
+
+/* Mode de performance élevée */
+@media (prefers-reduced-motion: reduce) {
+  .collection-card,
+  .collection-card:hover,
+  .collection-image,
+  .collection-action-btn,
+  .collection-add-btn {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Suppression des animations de particules flottantes */
+@keyframes floatingParticles {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+}
+
+/* Désactivation des effets de focus complexes */
+.collection-action-btn:focus,
+.collection-add-btn:focus {
+  outline: 2px solid rgba(99, 102, 241, 0.8) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* Simplification de l'état vide */
+.collections-empty-state {
+  animation: none !important;
+}
+
+/* Réduction des délais d'animation en cascade */
+.collection-card:nth-child(1),
+.collection-card:nth-child(2),
+.collection-card:nth-child(3),
+.collection-card:nth-child(4),
+.collection-card:nth-child(5),
+.collection-card:nth-child(6) {
+  animation-delay: 0s !important;
+}
+
+/* Suppression des effets de loading complexes */
+.loading-container::after {
+  display: none !important;
+}
+
+/* Simplification des transitions de couleur */
+.collection-name {
+  transition: color 0.2s ease !important;
+}
+
+.collection-card:hover .collection-name {
+  color: #6366f1 !important;
+  text-shadow: none !important;
+}

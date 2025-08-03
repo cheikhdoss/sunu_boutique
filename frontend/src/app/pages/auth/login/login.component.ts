@@ -53,11 +53,9 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     
     // Si l'utilisateur est déjà connecté, le rediriger
-    this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.router.navigate([this.returnUrl]);
-      }
-    });
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate([this.returnUrl]);
+    }
   }
 
   onSubmit(): void {
@@ -84,7 +82,7 @@ export class LoginComponent implements OnInit {
         );
         
         // Rediriger vers l'URL demandée ou la page d'accueil
-        this.router.navigate([this.returnUrl]);
+        this.router.navigateByUrl(this.returnUrl); // Utiliser navigateByUrl pour gérer les URLs complètes
       },
       error: (error) => {
         console.error('Erreur de connexion:', error);
