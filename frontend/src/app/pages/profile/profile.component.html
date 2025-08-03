@@ -1,417 +1,583 @@
-<div class="profile-container">
-  <div class="profile-header">
-    <h1>Mon Profil</h1>
-    <p>Gérez vos informations personnelles, adresses et consultez votre historique de commandes</p>
+<div class="profile-container cinematic-profile">
+  <!-- Arrière-plan animé -->
+  <div class="profile-background">
+    <div class="particle-field"></div>
+    <div class="energy-waves"></div>
+    <div class="holographic-grid"></div>
+    <div class="ambient-lights"></div>
   </div>
 
-  <!-- Section de présentation de l'utilisateur -->
-  <mat-card class="user-presentation-card" *ngIf="currentUser">
-    <div class="user-presentation">
-      <div class="user-avatar">
-        <img *ngIf="avatarPreview || currentUser.avatar" 
-             [src]="avatarPreview || currentUser.avatar" 
-             alt="Avatar" 
-             class="user-avatar-image">
-        <div *ngIf="!avatarPreview && !currentUser.avatar" class="user-avatar-placeholder">
+  <!-- Header de profil -->
+  <div class="profile-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>Mon Profil</h1>
+        <p>Gérez vos informations personnelles et consultez votre activité</p>
+      </div>
+      <div class="header-decoration">
+        <div class="decoration-ring">
           <mat-icon>person</mat-icon>
         </div>
       </div>
-      <div class="user-info">
+    </div>
+  </div>
+
+  <!-- Carte de présentation utilisateur -->
+  <div class="user-showcase-card" *ngIf="currentUser">
+    <div class="showcase-background"></div>
+    <div class="showcase-content">
+      <div class="user-avatar-section">
+        <div class="avatar-ring">
+          <div class="avatar-core">
+            <img *ngIf="avatarPreview || currentUser.avatar" 
+                 [src]="avatarPreview || currentUser.avatar" 
+                 alt="Avatar" 
+                 class="user-avatar-image">
+            <div *ngIf="!avatarPreview && !currentUser.avatar" class="avatar-placeholder">
+              <mat-icon>person</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div class="avatar-status">
+          <div class="status-indicator online"></div>
+          <span>En ligne</span>
+        </div>
+      </div>
+      
+      <div class="user-info-section">
         <h2 class="user-name">{{ currentUser.name }}</h2>
         <p class="user-email">{{ currentUser.email }}</p>
-        <p class="user-phone" *ngIf="currentUser.phone">
-          <mat-icon>phone</mat-icon>
-          {{ currentUser.phone }}
-        </p>
+        <div class="user-details">
+          <div class="detail-item" *ngIf="currentUser.phone">
+            <mat-icon>phone</mat-icon>
+            <span>{{ currentUser.phone }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>calendar_today</mat-icon>
+            <span>Membre depuis {{ currentUser.created_at | date:'MMMM yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="user-stats">
+        <div class="stat-item">
+          <div class="stat-value">{{ orderHistory.length }}</div>
+          <div class="stat-label">Commandes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ deliveryAddresses.length }}</div>
+          <div class="stat-label">Adresses</div>
+        </div>
       </div>
     </div>
-  </mat-card>
+  </div>
 
-  <mat-card class="profile-card">
-    <mat-tab-group>
-      <!-- Onglet Informations personnelles -->
-      <mat-tab label="Informations personnelles">
-        <div class="tab-content">
-          <!-- Section Avatar -->
-          <div class="avatar-section">
-            <h3>Photo de profil</h3>
-            <div class="avatar-container">
-              <div class="avatar-preview">
-                <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" class="avatar-image">
-                <div *ngIf="!avatarPreview" class="avatar-placeholder">
-                  <mat-icon>person</mat-icon>
-                </div>
-              </div>
-              <div class="avatar-actions">
-                <input type="file" #avatarInput (change)="onAvatarSelected($event)" 
-                       accept="image/*" style="display: none;">
-                <button mat-raised-button color="primary" (click)="avatarInput.click()">
-                  <mat-icon>photo_camera</mat-icon>
-                  Choisir une photo
-                </button>
-                <button mat-button color="primary" (click)="uploadAvatar()" 
-                        [disabled]="!avatarFile || isLoading" *ngIf="avatarFile">
-                  <mat-icon>upload</mat-icon>
-                  Uploader
-                </button>
-                <button mat-button color="warn" (click)="deleteAvatar()" 
-                        *ngIf="avatarPreview && !avatarFile">
-                  <mat-icon>delete</mat-icon>
-                  Supprimer
-                </button>
+  <!-- Navigation des onglets -->
+  <div class="profile-navigation">
+    <div class="nav-tabs">
+      <button class="nav-tab" 
+              [class.active]="activeTab === 'profile'"
+              (click)="setActiveTab('profile')">
+        <mat-icon>person</mat-icon>
+        <span>Profil</span>
+      </button>
+      <button class="nav-tab" 
+              [class.active]="activeTab === 'addresses'"
+              (click)="setActiveTab('addresses')">
+        <mat-icon>location_on</mat-icon>
+        <span>Adresses</span>
+      </button>
+      <button class="nav-tab" 
+              [class.active]="activeTab === 'orders'"
+              (click)="setActiveTab('orders')">
+        <mat-icon>shopping_bag</mat-icon>
+        <span>Commandes</span>
+      </button>
+      <button class="nav-tab" 
+              [class.active]="activeTab === 'security'"
+              (click)="setActiveTab('security')">
+        <mat-icon>security</mat-icon>
+        <span>Sécurité</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenu des onglets -->
+  <div class="profile-content">
+    <!-- Onglet Profil -->
+    <div class="tab-panel" *ngIf="activeTab === 'profile'">
+      <div class="panel-header">
+        <h3>Informations personnelles</h3>
+        <p>Modifiez vos informations de profil et votre photo</p>
+      </div>
+
+      <!-- Section Avatar -->
+      <div class="content-card avatar-card">
+        <div class="card-header">
+          <h4>Photo de profil</h4>
+          <p>Personnalisez votre avatar</p>
+        </div>
+        <div class="avatar-editor">
+          <div class="avatar-preview-large">
+            <div class="preview-ring">
+              <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" class="preview-image">
+              <div *ngIf="!avatarPreview" class="preview-placeholder">
+                <mat-icon>person</mat-icon>
               </div>
             </div>
           </div>
-
-          <mat-divider></mat-divider>
-
-          <!-- Formulaire profil -->
-          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Nom complet</mat-label>
-                <input matInput formControlName="name" placeholder="Votre nom complet">
-                <mat-error>{{ getErrorMessage(profileForm, 'name') }}</mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Adresse email</mat-label>
-                <input matInput type="email" formControlName="email" placeholder="votre@email.com">
-                <mat-error>{{ getErrorMessage(profileForm, 'email') }}</mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Téléphone</mat-label>
-                <input matInput formControlName="phone" placeholder="+33 1 23 45 67 89">
-                <mat-error>{{ getErrorMessage(profileForm, 'phone') }}</mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-actions">
-              <button mat-raised-button color="primary" type="submit" 
-                      [disabled]="profileForm.invalid || isLoading">
-                <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
-                <mat-icon *ngIf="!isLoading">save</mat-icon>
-                {{ isLoading ? 'Mise à jour...' : 'Mettre à jour' }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </mat-tab>
-
-      <!-- Onglet Adresses de livraison -->
-      <mat-tab label="Adresses de livraison">
-        <div class="tab-content">
-          <div class="addresses-header">
-            <h3>Mes adresses de livraison</h3>
-            <button mat-raised-button color="primary" (click)="isAddingAddress = true" 
-                    *ngIf="!isAddingAddress">
-              <mat-icon>add</mat-icon>
-              Ajouter une adresse
+          <div class="avatar-controls">
+            <input type="file" #avatarInput (change)="onAvatarSelected($event)" 
+                   accept="image/*" style="display: none;">
+            <button class="control-button primary" (click)="avatarInput.click()">
+              <mat-icon>photo_camera</mat-icon>
+              <span>Choisir une photo</span>
+            </button>
+            <button class="control-button secondary" (click)="uploadAvatar()" 
+                    [disabled]="!avatarFile || isLoading" *ngIf="avatarFile">
+              <mat-icon>upload</mat-icon>
+              <span>Uploader</span>
+            </button>
+            <button class="control-button danger" (click)="deleteAvatar()" 
+                    *ngIf="avatarPreview && !avatarFile">
+              <mat-icon>delete</mat-icon>
+              <span>Supprimer</span>
             </button>
           </div>
+        </div>
+      </div>
 
-          <!-- Formulaire d'ajout d'adresse -->
-          <mat-card class="address-form-card" *ngIf="isAddingAddress">
-            <mat-card-header>
-              <mat-card-title>Nouvelle adresse</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <form [formGroup]="addressForm" (ngSubmit)="addAddress()">
-                <div class="form-row">
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Libellé de l'adresse</mat-label>
-                    <input matInput formControlName="label" placeholder="Ex: Domicile, Bureau">
-                    <mat-error>{{ getErrorMessage(addressForm, 'label') }}</mat-error>
-                  </mat-form-field>
-                </div>
+      <!-- Formulaire profil -->
+      <div class="content-card profile-form-card">
+        <div class="card-header">
+          <h4>Informations de base</h4>
+          <p>Mettez à jour vos informations personnelles</p>
+        </div>
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+          <div class="form-grid">
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">person</mat-icon>
+                <input type="text" 
+                       formControlName="name" 
+                       placeholder="Nom complet"
+                       class="premium-input">
+                <label class="floating-label">Nom complet</label>
+                <div class="input-border"></div>
+              </div>
+              <div class="error-message" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+                {{getErrorMessage(profileForm, 'name')}}
+              </div>
+            </div>
 
-                <div class="form-row two-columns">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Prénom</mat-label>
-                    <input matInput formControlName="first_name">
-                    <mat-error>{{ getErrorMessage(addressForm, 'first_name') }}</mat-error>
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Nom</mat-label>
-                    <input matInput formControlName="last_name">
-                    <mat-error>{{ getErrorMessage(addressForm, 'last_name') }}</mat-error>
-                  </mat-form-field>
-                </div>
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">email</mat-icon>
+                <input type="email" 
+                       formControlName="email" 
+                       placeholder="Adresse email"
+                       class="premium-input">
+                <label class="floating-label">Adresse email</label>
+                <div class="input-border"></div>
+              </div>
+              <div class="error-message" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                {{getErrorMessage(profileForm, 'email')}}
+              </div>
+            </div>
 
-                <div class="form-row">
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Adresse complète</mat-label>
-                    <input matInput formControlName="address" placeholder="Numéro et nom de rue">
-                    <mat-error>{{ getErrorMessage(addressForm, 'address') }}</mat-error>
-                  </mat-form-field>
-                </div>
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">phone</mat-icon>
+                <input type="tel" 
+                       formControlName="phone" 
+                       placeholder="Téléphone"
+                       class="premium-input">
+                <label class="floating-label">Téléphone</label>
+                <div class="input-border"></div>
+              </div>
+              <div class="error-message" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+                {{getErrorMessage(profileForm, 'phone')}}
+              </div>
+            </div>
+          </div>
 
-                <div class="form-row two-columns">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Ville</mat-label>
-                    <input matInput formControlName="city">
-                    <mat-error>{{ getErrorMessage(addressForm, 'city') }}</mat-error>
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Code postal</mat-label>
-                    <input matInput formControlName="postal_code" placeholder="75001">
-                    <mat-error>{{ getErrorMessage(addressForm, 'postal_code') }}</mat-error>
-                  </mat-form-field>
-                </div>
+          <div class="form-actions">
+            <button type="submit" 
+                    class="action-button primary"
+                    [disabled]="profileForm.invalid || isLoading">
+              <span class="button-content">
+                <mat-icon *ngIf="!isLoading">save</mat-icon>
+                <mat-icon *ngIf="isLoading" class="spinning">hourglass_empty</mat-icon>
+                <span>{{ isLoading ? 'Mise à jour...' : 'Mettre à jour' }}</span>
+              </span>
+              <div class="button-glow"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-                <div class="form-row two-columns">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Pays</mat-label>
-                    <mat-select formControlName="country">
-                      <mat-option value="France">France</mat-option>
-                      <mat-option value="Belgique">Belgique</mat-option>
-                      <mat-option value="Suisse">Suisse</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Téléphone</mat-label>
-                    <input matInput formControlName="phone" placeholder="+33 1 23 45 67 89">
-                    <mat-error>{{ getErrorMessage(addressForm, 'phone') }}</mat-error>
-                  </mat-form-field>
-                </div>
+    <!-- Onglet Adresses -->
+    <div class="tab-panel" *ngIf="activeTab === 'addresses'">
+      <div class="panel-header">
+        <h3>Adresses de livraison</h3>
+        <p>Gérez vos adresses de livraison</p>
+        <button class="add-button" (click)="isAddingAddress = true" *ngIf="!isAddingAddress">
+          <mat-icon>add</mat-icon>
+          <span>Ajouter une adresse</span>
+        </button>
+      </div>
 
-                <div class="form-actions">
-                  <button mat-button type="button" (click)="isAddingAddress = false; addressForm.reset()">
-                    Annuler
-                  </button>
-                  <button mat-raised-button color="primary" type="submit" 
-                          [disabled]="addressForm.invalid">
-                    <mat-icon>save</mat-icon>
-                    Enregistrer
-                  </button>
-                </div>
-              </form>
-            </mat-card-content>
-          </mat-card>
+      <!-- Formulaire d'ajout d'adresse -->
+      <div class="content-card address-form-card" *ngIf="isAddingAddress">
+        <div class="card-header">
+          <h4>Nouvelle adresse</h4>
+          <p>Ajoutez une nouvelle adresse de livraison</p>
+        </div>
+        <form [formGroup]="addressForm" (ngSubmit)="addAddress()">
+          <div class="form-grid">
+            <div class="input-group full-width">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">label</mat-icon>
+                <input type="text" 
+                       formControlName="label" 
+                       placeholder="Libellé de l'adresse"
+                       class="premium-input">
+                <label class="floating-label">Libellé (ex: Domicile, Bureau)</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
 
-          <!-- Liste des adresses -->
-          <div class="addresses-list" *ngIf="deliveryAddresses.length > 0">
-            <mat-card class="address-card" *ngFor="let address of deliveryAddresses">
-              <mat-card-header>
-                <div class="address-header">
-                  <div class="address-label">
-                    <h4>{{ address.label }}</h4>
-                    <mat-chip *ngIf="address.is_default" color="primary" selected>
-                      Par défaut
-                    </mat-chip>
-                  </div>
-                  <div class="address-actions">
-                    <button mat-icon-button (click)="editAddress(address)">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn" (click)="deleteAddress(address.id!)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </div>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="address-details">
-                  <p><strong>{{ address.first_name }} {{ address.last_name }}</strong></p>
-                  <p>{{ address.address }}</p>
-                  <p>{{ address.postal_code }} {{ address.city }}</p>
-                  <p>{{ address.country }}</p>
-                  <p><mat-icon>phone</mat-icon> {{ address.phone }}</p>
-                </div>
-              </mat-card-content>
-              <mat-card-actions *ngIf="!address.is_default">
-                <button mat-button color="primary" (click)="setDefaultAddress(address.id!)">
-                  <mat-icon>star</mat-icon>
-                  Définir par défaut
-                </button>
-              </mat-card-actions>
-            </mat-card>
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">person</mat-icon>
+                <input type="text" 
+                       formControlName="first_name" 
+                       placeholder="Prénom"
+                       class="premium-input">
+                <label class="floating-label">Prénom</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">person_outline</mat-icon>
+                <input type="text" 
+                       formControlName="last_name" 
+                       placeholder="Nom"
+                       class="premium-input">
+                <label class="floating-label">Nom</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
+
+            <div class="input-group full-width">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">home</mat-icon>
+                <input type="text" 
+                       formControlName="address" 
+                       placeholder="Adresse complète"
+                       class="premium-input">
+                <label class="floating-label">Adresse complète</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">location_city</mat-icon>
+                <input type="text" 
+                       formControlName="city" 
+                       placeholder="Ville"
+                       class="premium-input">
+                <label class="floating-label">Ville</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">markunread_mailbox</mat-icon>
+                <input type="text" 
+                       formControlName="postal_code" 
+                       placeholder="Code postal"
+                       class="premium-input">
+                <label class="floating-label">Code postal</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-wrapper select-wrapper">
+                <mat-icon class="input-icon">public</mat-icon>
+                <select formControlName="country" class="premium-select">
+                  <option value="">Sélectionner</option>
+                  <option value="France">France</option>
+                  <option value="Belgique">Belgique</option>
+                  <option value="Suisse">Suisse</option>
+                </select>
+                <label class="floating-label">Pays</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">phone</mat-icon>
+                <input type="tel" 
+                       formControlName="phone" 
+                       placeholder="Téléphone"
+                       class="premium-input">
+                <label class="floating-label">Téléphone</label>
+                <div class="input-border"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" 
+                    class="action-button secondary"
+                    (click)="isAddingAddress = false; addressForm.reset()">
+              <span class="button-content">
+                <mat-icon>close</mat-icon>
+                <span>Annuler</span>
+              </span>
+            </button>
+            <button type="submit" 
+                    class="action-button primary"
+                    [disabled]="addressForm.invalid">
+              <span class="button-content">
+                <mat-icon>save</mat-icon>
+                <span>Enregistrer</span>
+              </span>
+              <div class="button-glow"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Liste des adresses -->
+      <div class="addresses-grid" *ngIf="deliveryAddresses.length > 0">
+        <div class="address-card" *ngFor="let address of deliveryAddresses">
+          <div class="address-header">
+            <div class="address-label">
+              <h4>{{ address.label }}</h4>
+              <div class="address-badge" *ngIf="address.is_default">Par défaut</div>
+            </div>
+            <div class="address-actions">
+              <button class="action-icon" (click)="editAddress(address)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="action-icon danger" (click)="deleteAddress(address.id!)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div class="address-content">
+            <div class="address-details">
+              <p class="recipient">{{ address.first_name }} {{ address.last_name }}</p>
+              <p class="street">{{ address.address }}</p>
+              <p class="location">{{ address.postal_code }} {{ address.city }}</p>
+              <p class="country">{{ address.country }}</p>
+              <p class="phone">
+                <mat-icon>phone</mat-icon>
+                {{ address.phone }}
+              </p>
+            </div>
+          </div>
+          <div class="address-footer" *ngIf="!address.is_default">
+            <button class="set-default-button" (click)="setDefaultAddress(address.id!)">
+              <mat-icon>star</mat-icon>
+              <span>Définir par défaut</span>
+            </button>
           </div>
         </div>
-      </mat-tab>
+      </div>
+    </div>
 
-      <!-- Onglet Historique des commandes -->
-      <mat-tab label="Historique des commandes">
-        <div class="tab-content">
-          <div class="orders-header">
-            <h3>Mes commandes</h3>
-            <p>Consultez l'état de vos commandes et téléchargez vos factures</p>
+    <!-- Onglet Commandes -->
+    <div class="tab-panel" *ngIf="activeTab === 'orders'">
+      <div class="panel-header">
+        <h3>Historique des commandes</h3>
+        <p>Consultez l'état de vos commandes et téléchargez vos factures</p>
+      </div>
+
+      <div class="orders-list" *ngIf="orderHistory.length > 0; else noOrdersTemplate">
+        <div class="order-card" *ngFor="let order of orderHistory">
+          <div class="order-header">
+            <div class="order-info">
+              <h4>{{ order.order_number }}</h4>
+              <p class="order-date">{{ order.date | date:'dd MMMM yyyy' }}</p>
+            </div>
+            <div class="order-status">
+              <div class="status-badge" [attr.data-status]="order.status">
+                {{ getStatusLabel(order.status) }}
+              </div>
+              <div class="order-total">{{ order.total | currency:'EUR':'symbol':'1.2-2' }}</div>
+            </div>
           </div>
 
-          <div class="orders-list" *ngIf="orderHistory.length > 0; else noOrdersTemplate">
-            <mat-expansion-panel class="order-panel" *ngFor="let order of orderHistory">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <div class="order-summary">
-                    <div class="order-info">
-                      <strong>{{ order.order_number }}</strong>
-                      <span class="order-date">{{ order.date | date:'dd/MM/yyyy' }}</span>
-                    </div>
-                    <div class="order-status">
-                      <mat-chip [color]="getStatusColor(order.status)" selected>
-                        {{ getStatusLabel(order.status) }}
-                      </mat-chip>
-                      <span class="order-total">{{ order.total | currency:'EUR':'symbol':'1.2-2' }}</span>
-                    </div>
+          <div class="order-content">
+            <!-- Articles -->
+            <div class="order-items">
+              <h5>Articles commandés</h5>
+              <div class="item-list">
+                <div class="order-item" *ngFor="let item of order.items">
+                  <div class="item-info">
+                    <span class="item-name">{{ item.name }}</span>
+                    <span class="item-quantity">{{ item.quantity }} × {{ item.unit_price | currency:'EUR':'symbol':'1.2-2' }}</span>
                   </div>
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-
-              <div class="order-details">
-                <!-- Informations de paiement -->
-                <div class="payment-info">
-                  <h4>Informations de paiement</h4>
-                  <div class="payment-details">
-                    <div class="payment-item">
-                      <span class="label">Mode de paiement:</span>
-                      <span class="value">{{ getPaymentMethodLabel(order.payment_method) }}</span>
-                    </div>
-                    <div class="payment-item">
-                      <span class="label">Statut du paiement:</span>
-                      <mat-chip [color]="(order.payment_status === 'paye' || order.payment_status === 'paid') ? 'primary' : 'warn'" selected>
-                        {{ getPaymentStatusLabel(order.payment_status) }}
-                      </mat-chip>
-                    </div>
-                  </div>
-                </div>
-
-                <mat-divider></mat-divider>
-
-                <!-- Articles commandés -->
-                <div class="order-items">
-                  <h4>Articles commandés</h4>
-                  <div class="item" *ngFor="let item of order.items">
-                    <div class="item-info">
-                      <span class="item-name">{{ item.name }}</span>
-                      <span class="item-details">
-                        {{ item.quantity }} × {{ item.unit_price | currency:'EUR':'symbol':'1.2-2' }}
-                      </span>
-                    </div>
-                    <div class="item-total">
-                      {{ item.total_price | currency:'EUR':'symbol':'1.2-2' }}
-                    </div>
-                  </div>
-                  <div class="order-total-line">
-                    <strong>Total: {{ order.total | currency:'EUR':'symbol':'1.2-2' }}</strong>
-                  </div>
-                </div>
-
-                <mat-divider></mat-divider>
-
-                <!-- Adresse de livraison avec vérification de sécurité -->
-                <div class="delivery-info" *ngIf="order.delivery_address">
-                  <h4>Adresse de livraison</h4>
-                  <div class="delivery-address">
-                    <p><strong>{{ order.delivery_address.first_name }} {{ order.delivery_address.last_name }}</strong></p>
-                    <p>{{ order.delivery_address.address }}</p>
-                    <p>{{ order.delivery_address.postal_code }} {{ order.delivery_address.city }}</p>
-                    <p>{{ order.delivery_address.country }}</p>
-                  </div>
-                </div>
-
-                <!-- Adresse de livraison alternative si pas d'adresse liée -->
-                <div class="delivery-info" *ngIf="!order.delivery_address">
-                  <h4>Adresse de livraison</h4>
-                  <div class="delivery-address">
-                    <p><em>Adresse non disponible</em></p>
-                  </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="order-actions">
-                  <!-- Actions de facture -->
-                  <div class="invoice-actions" *ngIf="canDownloadInvoice(order)">
-                    <button mat-raised-button color="primary" (click)="downloadInvoice(order)">
-                      <mat-icon>download</mat-icon>
-                      Télécharger la facture
-                    </button>
-                    <button mat-stroked-button color="primary" (click)="viewInvoice(order)">
-                      <mat-icon>visibility</mat-icon>
-                      Voir la facture
-                    </button>
-                    <button mat-button color="accent" (click)="generateInvoice(order)" 
-                            *ngIf="!order.invoice_url && canDownloadInvoice(order)">
-                      <mat-icon>receipt</mat-icon>
-                      Générer la facture
-                    </button>
-                  </div>
-                  
-                  <!-- Autres actions -->
-                  <div class="other-actions">
-                    <button mat-button (click)="reorderItems(order)" 
-                            *ngIf="order.status === 'livree'">
-                      <mat-icon>refresh</mat-icon>
-                      Recommander
-                    </button>
-                    <button mat-button color="warn" (click)="cancelOrder(order)" 
-                            *ngIf="order.status === 'en_attente'">
-                      <mat-icon>cancel</mat-icon>
-                      Annuler la commande
-                    </button>
-                  </div>
+                  <div class="item-price">{{ item.total_price | currency:'EUR':'symbol':'1.2-2' }}</div>
                 </div>
               </div>
-            </mat-expansion-panel>
+            </div>
+
+            <!-- Paiement -->
+            <div class="payment-info">
+              <h5>Paiement</h5>
+              <div class="payment-details">
+                <div class="payment-method">
+                  <span>{{ getPaymentMethodLabel(order.payment_method) }}</span>
+                </div>
+                <div class="payment-status" [attr.data-status]="order.payment_status">
+                  {{ getPaymentStatusLabel(order.payment_status) }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Livraison -->
+            <div class="delivery-info" *ngIf="order.delivery_address">
+              <h5>Livraison</h5>
+              <div class="delivery-address">
+                <p>{{ order.delivery_address.first_name }} {{ order.delivery_address.last_name }}</p>
+                <p>{{ order.delivery_address.address }}</p>
+                <p>{{ order.delivery_address.postal_code }} {{ order.delivery_address.city }}</p>
+              </div>
+            </div>
           </div>
 
-          <ng-template #noOrdersTemplate>
-            <div class="no-orders">
-              <mat-icon class="no-orders-icon">shopping_bag</mat-icon>
-              <h3>Aucune commande</h3>
-              <p>Vous n'avez pas encore passé de commande.</p>
-              <button mat-raised-button color="primary" routerLink="/">
-                <mat-icon>shopping_cart</mat-icon>
-                Commencer mes achats
-              </button>
-            </div>
-          </ng-template>
+          <div class="order-actions">
+            <button class="order-action-button" (click)="downloadInvoice(order)" 
+                    *ngIf="canDownloadInvoice(order)">
+              <mat-icon>download</mat-icon>
+              <span>Facture</span>
+            </button>
+            <button class="order-action-button" (click)="reorderItems(order)" 
+                    *ngIf="order.status === 'livree'">
+              <mat-icon>refresh</mat-icon>
+              <span>Recommander</span>
+            </button>
+            <button class="order-action-button danger" (click)="cancelOrder(order)" 
+                    *ngIf="order.status === 'en_attente'">
+              <mat-icon>cancel</mat-icon>
+              <span>Annuler</span>
+            </button>
+          </div>
         </div>
-      </mat-tab>
+      </div>
 
-      <!-- Onglet Mot de passe -->
-      <mat-tab label="Mot de passe">
-        <div class="tab-content">
-          <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Mot de passe actuel</mat-label>
-                <input matInput type="password" formControlName="currentPassword">
-                <mat-error>{{ getErrorMessage(passwordForm, 'currentPassword') }}</mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Nouveau mot de passe</mat-label>
-                <input matInput type="password" formControlName="newPassword">
-                <mat-error>{{ getErrorMessage(passwordForm, 'newPassword') }}</mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Confirmer le nouveau mot de passe</mat-label>
-                <input matInput type="password" formControlName="confirmPassword">
-                <mat-error>{{ getErrorMessage(passwordForm, 'confirmPassword') }}</mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-actions">
-              <button mat-raised-button color="primary" type="submit" 
-                      [disabled]="passwordForm.invalid || isLoading">
-                <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
-                <mat-icon *ngIf="!isLoading">lock</mat-icon>
-                {{ isLoading ? 'Mise à jour...' : 'Changer le mot de passe' }}
-              </button>
-            </div>
-          </form>
+      <ng-template #noOrdersTemplate>
+        <div class="empty-state">
+          <div class="empty-icon">
+            <mat-icon>shopping_bag</mat-icon>
+          </div>
+          <h4>Aucune commande</h4>
+          <p>Vous n'avez pas encore passé de commande.</p>
+          <button class="action-button primary" routerLink="/">
+            <span class="button-content">
+              <mat-icon>shopping_cart</mat-icon>
+              <span>Commencer mes achats</span>
+            </span>
+            <div class="button-glow"></div>
+          </button>
         </div>
-      </mat-tab>
-    </mat-tab-group>
-  </mat-card>
+      </ng-template>
+    </div>
+
+    <!-- Onglet Sécurité -->
+    <div class="tab-panel" *ngIf="activeTab === 'security'">
+      <div class="panel-header">
+        <h3>Sécurité du compte</h3>
+        <p>Modifiez votre mot de passe et gérez la sécurité</p>
+      </div>
+
+      <div class="content-card security-card">
+        <div class="card-header">
+          <h4>Changer le mot de passe</h4>
+          <p>Assurez-vous d'utiliser un mot de passe fort</p>
+        </div>
+        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+          <div class="form-grid">
+            <div class="input-group full-width">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">lock</mat-icon>
+                <input type="password" 
+                       formControlName="currentPassword" 
+                       placeholder="Mot de passe actuel"
+                       class="premium-input">
+                <label class="floating-label">Mot de passe actuel</label>
+                <div class="input-border"></div>
+              </div>
+              <div class="error-message" *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+                {{getErrorMessage(passwordForm, 'currentPassword')}}
+              </div>
+            </div>
+
+            <div class="input-group full-width">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">lock_outline</mat-icon>
+                <input type="password" 
+                       formControlName="newPassword" 
+                       placeholder="Nouveau mot de passe"
+                       class="premium-input">
+                <label class="floating-label">Nouveau mot de passe</label>
+                <div class="input-border"></div>
+              </div>
+              <div class="error-message" *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+                {{getErrorMessage(passwordForm, 'newPassword')}}
+              </div>
+            </div>
+
+            <div class="input-group full-width">
+              <div class="input-wrapper">
+                <mat-icon class="input-icon">lock_clock</mat-icon>
+                <input type="password" 
+                       formControlName="confirmPassword" 
+                       placeholder="Confirmer le mot de passe"
+                       class="premium-input">
+                <label class="floating-label">Confirmer le mot de passe</label>
+                <div class="input-border"></div>
+              </div>
+              <div class="error-message" *ngIf="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched">
+                {{getErrorMessage(passwordForm, 'confirmPassword')}}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" 
+                    class="action-button primary"
+                    [disabled]="passwordForm.invalid || isLoading">
+              <span class="button-content">
+                <mat-icon *ngIf="!isLoading">security</mat-icon>
+                <mat-icon *ngIf="isLoading" class="spinning">hourglass_empty</mat-icon>
+                <span>{{ isLoading ? 'Mise à jour...' : 'Changer le mot de passe' }}</span>
+              </span>
+              <div class="button-glow"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Éléments décoratifs flottants -->
+  <div class="floating-elements">
+    <div class="float-element element-1">👤</div>
+    <div class="float-element element-2">✦</div>
+    <div class="float-element element-3">📍</div>
+    <div class="float-element element-4">◆</div>
+    <div class="float-element element-5">🛍️</div>
+  </div>
 </div>

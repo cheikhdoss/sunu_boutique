@@ -71,6 +71,35 @@ export class ForgotPasswordComponent {
     });
   }
 
+  resendEmail(): void {
+    if (this.isLoading) {
+      return;
+    }
+
+    this.isLoading = true;
+    const { email } = this.forgotPasswordForm.value;
+
+    this.authService.forgotPassword(email).subscribe({
+      next: (response) => {
+        this.snackBar.open(
+          'Email de réinitialisation renvoyé avec succès',
+          'Fermer',
+          { duration: 5000 }
+        );
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erreur lors du renvoi:', error);
+        this.snackBar.open(
+          error.error?.message || 'Une erreur est survenue lors du renvoi.',
+          'Fermer',
+          { duration: 5000 }
+        );
+        this.isLoading = false;
+      }
+    });
+  }
+
   getErrorMessage(field: string): string {
     const control = this.forgotPasswordForm.get(field);
     if (!control || !control.errors || !control.touched) return '';

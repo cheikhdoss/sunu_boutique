@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrderService } from '../../services/order.service';
 import { CartService } from '../../services/cart.service';
 import { PayDunyaService } from '../../services/paydunya.service';
+import { AuthService } from '../../services/auth.service';
 import { Order, PaymentMethod } from '../../models/order.interface';
 import { firstValueFrom } from 'rxjs';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
@@ -62,7 +63,8 @@ export class CheckoutComponent implements OnInit {
     protected cartService: CartService,
     private payDunyaService: PayDunyaService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authService: AuthService
   ) {
     this.checkoutForm = this.fb.group({
       customerInfo: this.fb.group({
@@ -90,8 +92,29 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
-    // Charger les données sauvegardées du client
-    this.loadSavedCustomerData();
+    // Restaurer les données du formulaire après une redirection de connexion/inscription
+    const savedFormData = localStorage.getItem('checkout_form_data');
+    if (savedFormData) {
+      this.checkoutForm.patchValue(JSON.parse(savedFormData));
+      localStorage.removeItem('checkout_form_data');
+    } else {
+      // Sinon, charger les données client habituelles
+      this.loadSavedCustomerData();
+    }
+
+    // Rediriger si l'utilisateur non authentifié choisit le paiement en ligne
+    this.checkoutForm.get('paymentMethod')?.valueChanges.subscribe(value => {
+      if (value === ExtendedPaymentMethod.PAYDUNYA && !this.authService.isAuthenticated()) {
+        // Sauvegarder les données du formulaire pour les restaurer après la connexion
+        localStorage.setItem('checkout_form_data', JSON.stringify(this.checkoutForm.value));
+
+        this.snackBar.open('Veuillez vous connecter ou créer un compte pour payer en ligne.', 'OK', {
+          duration: 5000,
+          verticalPosition: 'top'
+        });
+        this.router.navigate(['/auth/login'], { queryParams: { returnUrl: '/checkout' } });
+      }
+    });
   }
 
   async onSubmit(): Promise<void> {
@@ -370,9 +393,8 @@ export class CheckoutComponent implements OnInit {
         throw new Error('ID de commande manquant');
       }
 
-      await firstValueFrom(
-        this.orderService.sendOrderConfirmationEmail({ id: orderId })
-      );
+      // L'email de confirmation est maintenant envoyé automatiquement lors de la création
+      // Pas besoin d'appel supplémentaire
 
       this.cartService.clearCart();
       this.snackBar.open('Commande confirmée avec succès !', 'OK', { duration: 5000 });

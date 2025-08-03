@@ -99,8 +99,6 @@ Route::middleware('auth:sanctum')->group(function () {
 // Routes publiques des ressources
 Route::apiResource('products', ProductController::class);
 Route::apiResource('categories', CategoryController::class);
-
-// Route temporaire pour tester la création de commande
 Route::post('orders', [OrderController::class, 'store']);
 
 // Routes publiques pour les callbacks de paiement (pas d'authentification requise)
@@ -110,6 +108,9 @@ Route::prefix('payments')->group(function () {
     Route::get('paydunya/success', [PayDunyaController::class, 'paymentSuccess']);
     Route::get('paydunya/error', [PayDunyaController::class, 'paymentError']);
 });
+
+// Route publique pour créer une commande en tant qu'invité (si nécessaire)
+Route::post('orders/guest', [OrderController::class, 'storeGuestOrder']);
 
 // Routes publiques pour les détails de commande et factures (pour les pages de paiement)
 Route::get('orders/{orderId}/details', [OrderController::class, 'getOrderDetails']);

@@ -1,0 +1,145 @@
+/* OVERRIDE COMPLET DES EFFETS 3D - SECTION COLLECTIONS */
+
+/* Force la suppression de tous les effets 3D */
+.collections-grid,
+.collections-grid * {
+  perspective: none !important;
+  transform-style: flat !important;
+}
+
+/* Cartes produits - Suppression complète des effets 3D */
+.collection-card {
+  transform: none !important;
+  transform-style: flat !important;
+  transition: all 0.3s ease !important;
+  perspective: none !important;
+}
+
+.collection-card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  animation: none !important;
+}
+
+/* Images - Effets simplifiés */
+.collection-image {
+  transition: transform 0.3s ease !important;
+}
+
+.collection-card:hover .collection-image {
+  transform: scale(1.05) !important;
+}
+
+/* Suppression des pseudo-éléments 3D */
+.collection-card::after {
+  display: none !important;
+}
+
+/* Boutons - Effets simplifiés */
+.collection-action-btn,
+.collection-add-btn {
+  transform: scale(0.9) !important;
+  transition: all 0.3s ease !important;
+}
+
+.collection-card:hover .collection-action-btn,
+.collection-card:hover .collection-add-btn {
+  transform: scale(1) !important;
+}
+
+/* Suppression des animations de rotation */
+.collection-action-btn mat-icon,
+.collection-add-btn mat-icon {
+  transition: none !important;
+  transform: none !important;
+}
+
+.collection-action-btn:hover mat-icon,
+.collection-add-btn:hover mat-icon {
+  transform: none !important;
+}
+
+/* Suppression des effets de lueur complexes */
+.collection-price::before {
+  display: none !important;
+}
+
+/* Suppression des effets de brillance */
+.collection-add-btn::after,
+.collection-action-btn::after {
+  display: none !important;
+}
+
+/* Suppression de l'animation de machine à écrire */
+.collections-title {
+  animation: none !important;
+  border-right: none !important;
+  white-space: normal !important;
+  overflow: visible !important;
+}
+
+/* Suppression des animations de badges */
+.collection-badge::after {
+  display: none !important;
+}
+
+.collection-badge:hover {
+  animation: none !important;
+  transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* Suppression des animations de statistiques */
+.stat-number,
+.stat-label {
+  animation: none !important;
+}
+
+/* Suppression des animations d'entrée */
+.collections-header,
+.collections-search-wrapper {
+  animation: none !important;
+}
+
+/* Suppression des délais d'animation en cascade */
+.collection-card:nth-child(1),
+.collection-card:nth-child(2),
+.collection-card:nth-child(3),
+.collection-card:nth-child(4),
+.collection-card:nth-child(5),
+.collection-card:nth-child(6) {
+  animation-delay: 0s !important;
+  animation: none !important;
+}
+
+/* Suppression des particules flottantes */
+.collections-section::before {
+  animation: none !important;
+}
+
+/* Performance optimisée */
+.collection-card {
+  will-change: auto !important;
+  backface-visibility: visible !important;
+}
+
+/* Suppression du parallaxe */
+.collections-section {
+  background-attachment: scroll !important;
+}
+
+/* Mode performance pour tous les appareils */
+* {
+  transform-style: flat !important;
+  perspective: none !important;
+}
+
+/* Respect des préférences utilisateur */
+@media (prefers-reduced-motion: reduce) {
+  .collection-card,
+  .collection-card *,
+  .collections-section,
+  .collections-section * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

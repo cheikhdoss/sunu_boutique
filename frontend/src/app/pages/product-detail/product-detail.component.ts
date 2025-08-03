@@ -5,15 +5,14 @@ import { MaterialModule } from '../../material.module';
 import { FormsModule } from '@angular/forms';
 import { ProductService, Product } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationService } from '../../services/notification.service';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import {MatChip} from '@angular/material/chips';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, MaterialModule, FormsModule, MatChip],
+  imports: [CommonModule, RouterModule, MaterialModule, FormsModule],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
@@ -29,7 +28,7 @@ export class ProductDetailComponent implements OnInit {
     private router: Router,
     private productService: ProductService,
     private cartService: CartService,
-    private snackBar: MatSnackBar
+    private notificationService: NotificationService
   ) {
     this.product$ = this.route.params.pipe(
       switchMap(params => {
@@ -49,11 +48,10 @@ export class ProductDetailComponent implements OnInit {
       },
       error: (error) => {
         this.loading = false;
-        this.snackBar.open('Produit non trouvé', 'Fermer', {
-          duration: 3000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top'
-        });
+        this.notificationService.error(
+          'Produit introuvable',
+          'Le produit demandé n\'existe pas ou n\'est plus disponible.'
+        );
         this.router.navigate(['/']);
       }
     });
@@ -62,23 +60,33 @@ export class ProductDetailComponent implements OnInit {
   addToCart(product: Product): void {
     if (product.stock >= this.quantity) {
       this.cartService.addToCart(product, this.quantity);
-      this.snackBar.open(`${this.quantity} x ${product.name} ajouté(s) au panier`, 'Fermer', {
-        duration: 3000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top'
-      });
+      
+      this.notificationService.cart(
+        'Produit ajouté !',
+        `${this.quantity} x ${product.name} ajouté${this.quantity > 1 ? 's' : ''} au panier`,
+        {
+          label: 'Voir le panier',
+          callback: () => {
+            this.router.navigate(['/cart']);
+          }
+        }
+      );
     } else {
-      this.snackBar.open('Quantité non disponible en stock', 'Fermer', {
-        duration: 3000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top'
-      });
+      this.notificationService.warning(
+        'Stock insuffisant',
+        'La quantité demandée n\'est pas disponible en stock.'
+      );
     }
   }
 
   increaseQuantity(maxStock: number): void {
     if (this.quantity < maxStock) {
       this.quantity++;
+    } else {
+      this.notificationService.info(
+        'Limite atteinte',
+        `Maximum ${maxStock} article${maxStock > 1 ? 's' : ''} disponible${maxStock > 1 ? 's' : ''} en stock.`
+      );
     }
   }
 
@@ -91,9 +99,10 @@ export class ProductDetailComponent implements OnInit {
   getImageUrl(imagePath: string): string {
     if (!imagePath) return '/assets/images/placeholder.svg';
     if (imagePath.startsWith('http')) return imagePath;
-
-    // Gérer les différents formats de chemin d'image du backend
-    if (imagePath.startsWith('products/')) {
+    
+    if (imagePath.startsWith('storage/')) {
+      return `http://localhost:8000/${imagePath}`;
+    } else if (imagePath.startsWith('products/')) {
       return `http://localhost:8000/storage/${imagePath}`;
     } else {
       return `http://localhost:8000/storage/products/${imagePath}`;

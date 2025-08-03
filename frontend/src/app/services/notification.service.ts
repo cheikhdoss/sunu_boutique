@@ -1,69 +1,123 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, ComponentRef, ViewContainerRef, ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
 
-export interface Notification {
+export interface NotificationData {
   id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: 'success' | 'error' | 'warning' | 'info' | 'cart';
   title: string;
   message: string;
   duration?: number;
+  icon?: string;
+  action?: {
+    label: string;
+    callback: () => void;
+  };
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  private notificationsSubject = new BehaviorSubject<Notification[]>([]);
-  public notifications$ = this.notificationsSubject.asObservable();
+  private notifications: NotificationData[] = [];
+  private notificationSubject = new Subject<NotificationData[]>();
+  private container: ViewContainerRef | null = null;
 
-  constructor() {}
+  constructor(
+    private appRef: ApplicationRef,
+    private injector: EnvironmentInjector
+  ) {}
 
-  private generateId(): string {
-    return Math.random().toString(36).substr(2, 9);
+  setContainer(container: ViewContainerRef) {
+    this.container = container;
   }
 
-  show(notification: Omit<Notification, 'id'>): void {
-    const duration = notification.duration || 5000;
-    const newNotification: Notification = {
-      ...notification,
-      id: this.generateId(),
-      duration: duration
+  getNotifications(): Observable<NotificationData[]> {
+    return this.notificationSubject.asObservable();
+  }
+
+  show(notification: Omit<NotificationData, 'id'>): string {
+    const id = this.generateId();
+    const fullNotification: NotificationData = {
+      id,
+      duration: 5000,
+      ...notification
     };
 
-    const currentNotifications = this.notificationsSubject.value;
-    this.notificationsSubject.next([...currentNotifications, newNotification]);
+    this.notifications.push(fullNotification);
+    this.notificationSubject.next([...this.notifications]);
 
     // Auto-remove after duration
-    if (duration > 0) {
+    if (fullNotification.duration && fullNotification.duration > 0) {
       setTimeout(() => {
-        this.remove(newNotification.id);
-      }, duration);
+        this.remove(id);
+      }, fullNotification.duration);
     }
+
+    return id;
+  }
+
+  success(title: string, message: string, duration?: number): string {
+    return this.show({
+      type: 'success',
+      title,
+      message,
+      duration,
+      icon: 'check_circle'
+    });
+  }
+
+  error(title: string, message: string, duration?: number): string {
+    return this.show({
+      type: 'error',
+      title,
+      message,
+      duration: duration || 7000,
+      icon: 'error'
+    });
+  }
+
+  warning(title: string, message: string, duration?: number): string {
+    return this.show({
+      type: 'warning',
+      title,
+      message,
+      duration,
+      icon: 'warning'
+    });
+  }
+
+  info(title: string, message: string, duration?: number): string {
+    return this.show({
+      type: 'info',
+      title,
+      message,
+      duration,
+      icon: 'info'
+    });
+  }
+
+  cart(title: string, message: string, action?: { label: string; callback: () => void }): string {
+    return this.show({
+      type: 'cart',
+      title,
+      message,
+      duration: 6000,
+      icon: 'shopping_cart',
+      action
+    });
   }
 
   remove(id: string): void {
-    const currentNotifications = this.notificationsSubject.value;
-    const filteredNotifications = currentNotifications.filter(n => n.id !== id);
-    this.notificationsSubject.next(filteredNotifications);
-  }
-
-  success(title: string, message: string, duration?: number): void {
-    this.show({ type: 'success', title, message, duration });
-  }
-
-  error(title: string, message: string, duration?: number): void {
-    this.show({ type: 'error', title, message, duration });
-  }
-
-  warning(title: string, message: string, duration?: number): void {
-    this.show({ type: 'warning', title, message, duration });
-  }
-
-  info(title: string, message: string, duration?: number): void {
-    this.show({ type: 'info', title, message, duration });
+    this.notifications = this.notifications.filter(n => n.id !== id);
+    this.notificationSubject.next([...this.notifications]);
   }
 
   clear(): void {
-    this.notificationsSubject.next([]);
+    this.notifications = [];
+    this.notificationSubject.next([]);
+  }
+
+  private generateId(): string {
+    return Math.random().toString(36).substr(2, 9);
   }
 }

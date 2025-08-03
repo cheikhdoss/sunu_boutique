@@ -1,0 +1,56 @@
+<div [class]="getNotificationClass()">
+  <!-- Arrière-plan animé -->
+  <div class="notification-background">
+    <div class="background-particles"></div>
+    <div class="background-glow"></div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="notification-content">
+    <!-- Icône avec animation -->
+    <div class="notification-icon-container">
+      <div class="icon-ring">
+        <div class="icon-core">
+          <mat-icon [class]="getIconClass()">{{ notification.icon }}</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Texte de notification -->
+    <div class="notification-text">
+      <h4 class="notification-title">{{ notification.title }}</h4>
+      <p class="notification-message">{{ notification.message }}</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="notification-actions">
+      <!-- Bouton d'action personnalisé -->
+      <button *ngIf="notification.action" 
+              class="action-button"
+              (click)="onAction()">
+        <span class="button-content">
+          <span>{{ notification.action.label }}</span>
+        </span>
+        <div class="button-glow"></div>
+      </button>
+
+      <!-- Bouton de fermeture -->
+      <button class="close-button" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+        <div class="close-ripple"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Barre de progression -->
+  <div class="progress-container" *ngIf="notification.duration && notification.duration > 0">
+    <div class="progress-bar" [style.width.%]="progressWidth"></div>
+  </div>
+
+  <!-- Effets décoratifs -->
+  <div class="notification-effects">
+    <div class="effect-sparkle effect-1">✦</div>
+    <div class="effect-sparkle effect-2">◆</div>
+    <div class="effect-sparkle effect-3">✦</div>
+  </div>
+</div>

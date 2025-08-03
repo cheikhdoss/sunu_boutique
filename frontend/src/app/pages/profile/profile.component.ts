@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
+import { RouterLink } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { DeliveryAddressService, DeliveryAddress } from '../../services/delivery-address.service';
@@ -33,7 +34,8 @@ import { Router } from '@angular/router';
     MatSelectModule,
     MatChipsModule,
     MatExpansionModule,
-    MatDividerModule
+    MatDividerModule,
+    RouterLink
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
@@ -45,6 +47,7 @@ export class ProfileComponent implements OnInit {
   currentUser: User | null = null;
   isLoading = false;
   isAddingAddress = false;
+  activeTab = 'profile';
   
   // Données
   deliveryAddresses: DeliveryAddress[] = [];
@@ -97,6 +100,10 @@ export class ProfileComponent implements OnInit {
         this.router.navigate(['/auth/login']);
       }
     });
+  }
+
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
   }
 
   // Charger le profil complet depuis l'API
@@ -206,12 +213,10 @@ export class ProfileComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const statusLabels: { [key: string]: string } = {
-      // Statuts français (anciens)
       'en_attente': 'En attente',
       'expediee': 'Expédiée',
       'livree': 'Livrée',
       'annulee': 'Annulée',
-      // Statuts anglais (nouveaux)
       'pending': 'En attente',
       'confirmed': 'Confirmée',
       'processing': 'En préparation',
@@ -224,11 +229,9 @@ export class ProfileComponent implements OnInit {
 
   getPaymentStatusLabel(status: string): string {
     const statusLabels: { [key: string]: string } = {
-      // Statuts français (anciens)
       'en_attente': 'En attente',
       'paye': 'Payé',
       'echec': 'Échec',
-      // Statuts anglais (nouveaux)
       'pending': 'En attente',
       'processing': 'En cours',
       'paid': 'Payé',
@@ -240,10 +243,8 @@ export class ProfileComponent implements OnInit {
 
   getPaymentMethodLabel(method: string): string {
     const methodLabels: { [key: string]: string } = {
-      // Méthodes françaises (anciennes)
       'avant_livraison': 'Paiement en ligne',
       'apres_livraison': 'Paiement à la livraison',
-      // Méthodes anglaises (nouvelles)
       'online': 'Paiement en ligne',
       'cash_on_delivery': 'Paiement à la livraison'
     };
@@ -252,12 +253,10 @@ export class ProfileComponent implements OnInit {
 
   getStatusColor(status: string): string {
     const statusColors: { [key: string]: string } = {
-      // Statuts français (anciens)
       'en_attente': 'warn',
       'expediee': 'accent',
       'livree': 'primary',
       'annulee': '',
-      // Statuts anglais (nouveaux)
       'pending': 'warn',
       'confirmed': 'accent',
       'processing': 'accent',
@@ -269,21 +268,18 @@ export class ProfileComponent implements OnInit {
   }
 
   downloadInvoice(order: Order): void {
-    // Utiliser le nouveau système de factures
     window.open(`http://localhost:8000/api/invoices/${order.id}/download`, '_blank');
   }
 
   viewInvoice(order: Order): void {
-    // Voir la facture dans le navigateur
     window.open(`http://localhost:8000/api/invoices/${order.id}/view`, '_blank');
   }
 
   generateInvoice(order: Order): void {
-    // Générer une nouvelle facture
     this.orderService.generateInvoice(order.id).subscribe({
       next: (response) => {
         this.snackBar.open('Facture générée avec succès', 'Fermer', { duration: 3000 });
-        this.loadOrderHistory(); // Recharger pour mettre à jour l'URL de facture
+        this.loadOrderHistory();
       },
       error: (error) => {
         console.error('Erreur lors de la génération de la facture:', error);
@@ -293,20 +289,14 @@ export class ProfileComponent implements OnInit {
   }
 
   canDownloadInvoice(order: Order): boolean {
-    // Vérifier les statuts de paiement (français et anglais)
     const isPaid = order.payment_status === 'paid' || order.payment_status === 'paye';
-    
-    // Vérifier les statuts de commande (français et anglais)
     const isDelivered = order.status === 'delivered' || order.status === 'livree';
-    
-    // Vérifier si une facture existe déjà
     const hasInvoice = order.invoice_url !== null && order.invoice_url !== undefined;
     
     return isPaid || isDelivered || hasInvoice;
   }
 
   reorderItems(order: Order): void {
-    // Ajouter les articles au panier - à implémenter avec le service panier
     this.snackBar.open('Articles ajoutés au panier', 'Fermer', { duration: 3000 });
     console.log('Recommander:', order);
   }
@@ -320,7 +310,7 @@ export class ProfileComponent implements OnInit {
     this.orderService.cancelOrder(order.id).subscribe({
       next: (response) => {
         this.snackBar.open(response.message, 'Fermer', { duration: 3000 });
-        this.loadOrderHistory(); // Recharger la liste
+        this.loadOrderHistory();
       },
       error: (error) => {
         console.error('Erreur lors de l\'annulation de la commande:', error);
@@ -351,14 +341,19 @@ export class ProfileComponent implements OnInit {
 
     this.profileService.updateProfile(profileData).subscribe({
       next: (response) => {
-        this.snackBar.open(response.message, 'Fermer', { duration: 3000 });
-        // Mettre à jour les données utilisateur dans le service auth
+        this.snackBar.open(response.message, 'Fermer', { 
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
         this.authService.updateCurrentUser(response.user);
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Erreur lors de la mise à jour du profil:', error);
-        this.snackBar.open('Erreur lors de la mise à jour du profil', 'Fermer', { duration: 3000 });
+        this.snackBar.open('Erreur lors de la mise à jour du profil', 'Fermer', { 
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
         this.isLoading = false;
       }
     });
@@ -378,29 +373,32 @@ export class ProfileComponent implements OnInit {
 
     this.profileService.updatePassword(passwordData).subscribe({
       next: (response) => {
-        this.snackBar.open(response.message, 'Fermer', { duration: 3000 });
+        this.snackBar.open(response.message, 'Fermer', { 
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
         this.passwordForm.reset();
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Erreur lors de la mise à jour du mot de passe:', error);
-        this.snackBar.open('Erreur lors de la mise à jour du mot de passe', 'Fermer', { duration: 3000 });
+        this.snackBar.open('Erreur lors de la mise à jour du mot de passe', 'Fermer', { 
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
         this.isLoading = false;
       }
     });
   }
 
-  // Gestion de l'avatar
   onAvatarSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      // Vérifier le type de fichier
       if (!file.type.startsWith('image/')) {
         this.snackBar.open('Veuillez sélectionner une image', 'Fermer', { duration: 3000 });
         return;
       }
 
-      // Vérifier la taille (max 2MB)
       if (file.size > 2 * 1024 * 1024) {
         this.snackBar.open('L\'image ne doit pas dépasser 2MB', 'Fermer', { duration: 3000 });
         return;
@@ -408,7 +406,6 @@ export class ProfileComponent implements OnInit {
 
       this.avatarFile = file;
 
-      // Créer un aperçu
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.avatarPreview = e.target.result;
@@ -427,14 +424,20 @@ export class ProfileComponent implements OnInit {
 
     this.profileService.uploadAvatar(this.avatarFile).subscribe({
       next: (response) => {
-        this.snackBar.open(response.message, 'Fermer', { duration: 3000 });
+        this.snackBar.open(response.message, 'Fermer', { 
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
         this.avatarPreview = response.avatar_url;
         this.avatarFile = null;
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Erreur lors de l\'upload de l\'avatar:', error);
-        this.snackBar.open('Erreur lors de l\'upload de l\'avatar', 'Fermer', { duration: 3000 });
+        this.snackBar.open('Erreur lors de l\'upload de l\'avatar', 'Fermer', { 
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
         this.isLoading = false;
       }
     });
@@ -443,13 +446,19 @@ export class ProfileComponent implements OnInit {
   deleteAvatar(): void {
     this.profileService.deleteAvatar().subscribe({
       next: (response) => {
-        this.snackBar.open(response.message, 'Fermer', { duration: 3000 });
+        this.snackBar.open(response.message, 'Fermer', { 
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
         this.avatarPreview = null;
         this.avatarFile = null;
       },
       error: (error) => {
         console.error('Erreur lors de la suppression de l\'avatar:', error);
-        this.snackBar.open('Erreur lors de la suppression de l\'avatar', 'Fermer', { duration: 3000 });
+        this.snackBar.open('Erreur lors de la suppression de l\'avatar', 'Fermer', { 
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }
@@ -469,6 +478,14 @@ export class ProfileComponent implements OnInit {
     }
     if (control.errors['passwordMismatch']) {
       return 'Les mots de passe ne correspondent pas';
+    }
+    if (control.errors['pattern']) {
+      if (field === 'phone') {
+        return 'Format de téléphone invalide';
+      }
+      if (field === 'postal_code') {
+        return 'Code postal invalide (5 chiffres)';
+      }
     }
     return 'Valeur invalide';
   }

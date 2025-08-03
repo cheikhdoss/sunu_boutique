@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -44,11 +44,14 @@ export class RegisterComponent implements OnInit {
   hidePassword = true;
   hidePasswordConfirmation = true;
   isLoading = false;
+  currentStep = 1;
+  returnUrl: string = '/';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
     this.personalInfoForm = this.fb.group({
@@ -62,17 +65,19 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       password_confirmation: ['', [Validators.required]],
-      terms: [false, [Validators.requiredTrue]]
+      terms: [false, [Validators.requiredTrue]],
+      newsletter: [false]
     }, { validators: this.passwordMatchValidator });
   }
 
   ngOnInit(): void {
+    // Récupérer l'URL de retour depuis les paramètres de requête
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
     // Si l'utilisateur est déjà connecté, le rediriger
-    this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.router.navigate(['/']);
-      }
-    });
+    if (this.authService.isAuthenticated()) {
+      this.router.navigateByUrl(this.returnUrl);
+    }
   }
 
   passwordMatchValidator(form: FormGroup) {
@@ -84,6 +89,18 @@ export class RegisterComponent implements OnInit {
       return { passwordMismatch: true };
     }
     return null;
+  }
+
+  nextStep(): void {
+    if (this.currentStep === 1 && this.personalInfoForm.valid) {
+      this.currentStep = 2;
+    }
+  }
+
+  previousStep(): void {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
   }
 
   onSubmit(): void {
@@ -101,8 +118,9 @@ export class RegisterComponent implements OnInit {
         new Date(this.personalInfoForm.value.date_of_birth).toISOString().split('T')[0] : undefined
     };
 
-    // Supprimer le champ terms qui n'est pas nécessaire pour l'API
+    // Supprimer les champs qui ne sont pas nécessaires pour l'API
     delete (registerData as any).terms;
+    delete (registerData as any).newsletter;
 
     this.authService.register(registerData).subscribe({
       next: (response) => {
@@ -114,7 +132,7 @@ export class RegisterComponent implements OnInit {
             panelClass: ['success-snackbar']
           }
         );
-        this.router.navigate(['/']);
+        this.router.navigateByUrl(this.returnUrl);
       },
       error: (error) => {
         console.error('Erreur d\'inscription:', error);
@@ -155,9 +173,10 @@ export class RegisterComponent implements OnInit {
 
   getPasswordStrengthColor(): string {
     const strength = this.getPasswordStrength();
-    if (strength < 50) return 'warn';
-    if (strength < 75) return 'accent';
-    return 'primary';
+    if (strength < 25) return '#ef4444';
+    if (strength < 50) return '#f59e0b';
+    if (strength < 75) return '#3b82f6';
+    return '#10b981';
   }
 
   getPasswordStrengthLabel(): string {

@@ -1,0 +1,351 @@
+/* GRILLE 3 COLONNES POUR LA SECTION COLLECTIONS */
+
+/* Grille principale - 3 produits par ligne */
+.collections-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 40px !important;
+  margin-top: 80px !important;
+  padding-bottom: 100px !important;
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Cartes produits optimisées pour 3 colonnes */
+.collection-card {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: auto !important;
+  aspect-ratio: 0.8 !important; /* Ratio hauteur/largeur pour uniformité */
+}
+
+/* Container d'image adapté */
+.collection-image-container {
+  height: 280px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* Image responsive dans la grille 3 colonnes */
+.collection-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Contenu adapté pour 3 colonnes */
+.collection-content {
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  height: calc(100% - 280px) !important;
+}
+
+/* Titre produit optimisé */
+.collection-name {
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 12px !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Description optimisée */
+.collection-description {
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+  margin-bottom: 20px !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex-grow: 1 !important;
+}
+
+/* Footer adapté */
+.collection-footer {
+  margin-top: auto !important;
+  padding-top: 16px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Prix optimisé pour 3 colonnes */
+.collection-price {
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 12px !important;
+}
+
+/* Bouton adapté */
+.collection-add-btn {
+  width: 100% !important;
+  padding: 12px 20px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+}
+
+/* Chip catégorie optimisé */
+.collection-category-chip {
+  font-size: 0.7rem !important;
+  padding: 6px 12px !important;
+  margin-bottom: 12px !important;
+}
+
+/* Badge stock optimisé */
+.collection-stock-badge {
+  top: 16px !important;
+  right: 16px !important;
+  padding: 6px 12px !important;
+  font-size: 0.75rem !important;
+}
+
+/* Responsive Design pour la grille 3 colonnes */
+
+/* Large Desktop (>1400px) - 3 colonnes avec plus d'espace */
+@media (min-width: 1401px) {
+  .collections-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 50px !important;
+    max-width: 1600px !important;
+  }
+  
+  .collection-card {
+    aspect-ratio: 0.85 !important;
+  }
+  
+  .collection-image-container {
+    height: 320px !important;
+  }
+  
+  .collection-content {
+    padding: 32px !important;
+    height: calc(100% - 320px) !important;
+  }
+  
+  .collection-name {
+    font-size: 1.4rem !important;
+  }
+  
+  .collection-description {
+    font-size: 1rem !important;
+  }
+  
+  .collection-price {
+    font-size: 1.8rem !important;
+  }
+}
+
+/* Desktop (1200px-1400px) - 3 colonnes standard */
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .collections-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 40px !important;
+    max-width: 1300px !important;
+  }
+}
+
+/* Medium Desktop (992px-1199px) - 3 colonnes compactes */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .collections-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 30px !important;
+    max-width: 1100px !important;
+  }
+  
+  .collection-image-container {
+    height: 240px !important;
+  }
+  
+  .collection-content {
+    padding: 20px !important;
+    height: calc(100% - 240px) !important;
+  }
+  
+  .collection-name {
+    font-size: 1.1rem !important;
+  }
+  
+  .collection-description {
+    font-size: 0.85rem !important;
+  }
+  
+  .collection-price {
+    font-size: 1.4rem !important;
+  }
+}
+
+/* Tablet (768px-991px) - 2 colonnes */
+@media (min-width: 768px) and (max-width: 991px) {
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 30px !important;
+    max-width: 800px !important;
+  }
+  
+  .collection-card {
+    aspect-ratio: 0.9 !important;
+  }
+  
+  .collection-image-container {
+    height: 260px !important;
+  }
+  
+  .collection-content {
+    padding: 24px !important;
+    height: calc(100% - 260px) !important;
+  }
+}
+
+/* Mobile Large (576px-767px) - 2 colonnes compactes */
+@media (min-width: 576px) and (max-width: 767px) {
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+    max-width: 600px !important;
+    margin-top: 60px !important;
+    padding-bottom: 60px !important;
+  }
+  
+  .collection-card {
+    aspect-ratio: 1 !important;
+  }
+  
+  .collection-image-container {
+    height: 200px !important;
+  }
+  
+  .collection-content {
+    padding: 16px !important;
+    height: calc(100% - 200px) !important;
+  }
+  
+  .collection-name {
+    font-size: 1rem !important;
+  }
+  
+  .collection-description {
+    font-size: 0.8rem !important;
+    -webkit-line-clamp: 2 !important;
+  }
+  
+  .collection-price {
+    font-size: 1.3rem !important;
+  }
+  
+  .collection-add-btn {
+    padding: 10px 16px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Mobile Small (<576px) - 1 colonne */
+@media (max-width: 575px) {
+  .collections-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    max-width: 400px !important;
+    margin-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+  
+  .collection-card {
+    aspect-ratio: 1.1 !important;
+    max-width: 350px !important;
+    margin: 0 auto !important;
+  }
+  
+  .collection-image-container {
+    height: 220px !important;
+  }
+  
+  .collection-content {
+    padding: 20px !important;
+    height: calc(100% - 220px) !important;
+  }
+  
+  .collection-name {
+    font-size: 1.1rem !important;
+  }
+  
+  .collection-description {
+    font-size: 0.9rem !important;
+    -webkit-line-clamp: 3 !important;
+  }
+  
+  .collection-price {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Optimisation pour les écrans très larges */
+@media (min-width: 1800px) {
+  .collections-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    max-width: 1800px !important;
+    gap: 60px !important;
+  }
+}
+
+/* Ajustements pour les cartes dans la grille 3 colonnes */
+.collections-grid .collection-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+/* Uniformisation des hauteurs */
+.collections-grid .collection-card .collection-content {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.collections-grid .collection-card .collection-footer {
+  margin-top: auto !important;
+}
+
+/* Espacement uniforme pour les éléments */
+.collections-grid .collection-category {
+  margin-bottom: 8px !important;
+}
+
+.collections-grid .collection-name {
+  margin-bottom: 8px !important;
+}
+
+.collections-grid .collection-description {
+  margin-bottom: 16px !important;
+}
+
+/* Optimisation des overlay pour 3 colonnes */
+.collections-grid .collection-overlay {
+  gap: 12px !important;
+  padding: 20px !important;
+}
+
+.collections-grid .collection-action-btn {
+  padding: 10px 16px !important;
+  font-size: 0.8rem !important;
+  min-width: 120px !important;
+}
+
+/* Amélioration de la lisibilité */
+.collections-grid .collection-name,
+.collections-grid .collection-description {
+  text-align: left !important;
+}
+
+.collections-grid .collection-price-section {
+  text-align: left !important;
+}

@@ -1,10 +1,10 @@
-/* Section titre "En Vedette" avec animation Apple-style */
+/* Section titre "En Vedette" avec design moderne */
 .featured-title-section {
-  padding: 120px 0;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+  padding: 100px 0 80px;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   position: relative;
   overflow: hidden;
-  min-height: 400px;
+  min-height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,29 +18,44 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(63, 164, 238, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(233, 30, 99, 0.1) 0%, transparent 50%);
-  animation: backgroundPulse 8s ease-in-out infinite;
+    radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+  animation: backgroundFlow 12s ease-in-out infinite;
+}
+
+.featured-title-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+  opacity: 0.3;
+  animation: gridMove 20s linear infinite;
 }
 
 .featured-title-wrapper {
   text-align: center;
   position: relative;
-  z-index: 2;
-  max-width: 800px;
+  z-index: 3;
+  max-width: 900px;
   margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .featured-title.apple-style {
-  font-size: clamp(4rem, 8vw, 8rem);
-  font-weight: 700;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 800;
   background: linear-gradient(
     135deg,
     #ffffff 0%,
-    #e0e0e0 25%,
-    #ffffff 50%,
-    #f0f0f0 75%,
-    #ffffff 100%
+    #e2e8f0 20%,
+    #cbd5e1 40%,
+    #94a3b8 60%,
+    #64748b 80%,
+    #475569 100%
   );
   background-size: 200% 200%;
   -webkit-background-clip: text;
@@ -48,16 +63,41 @@
   -webkit-text-fill-color: transparent;
   text-shadow: 
     0 0 30px rgba(255, 255, 255, 0.3),
-    0 0 60px rgba(255, 255, 255, 0.2);
-  letter-spacing: -0.02em;
-  line-height: 0.9;
-  margin: 0;
+    0 0 60px rgba(99, 102, 241, 0.2),
+    0 0 90px rgba(236, 72, 153, 0.1);
+  letter-spacing: -0.03em;
+  line-height: 0.85;
+  margin: 0 0 1rem 0;
   position: relative;
-  animation: titleGlow 4s ease-in-out infinite;
+  animation: subtleTitleGlow 8s ease-in-out infinite;
   transform-origin: center;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
 }
 
 .featured-title.apple-style::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(
+    45deg,
+    rgba(99, 102, 241, 0.2) 0%,
+    rgba(236, 72, 153, 0.2) 25%,
+    rgba(14, 165, 233, 0.2) 50%,
+    rgba(168, 85, 247, 0.2) 75%,
+    rgba(99, 102, 241, 0.2) 100%
+  );
+  background-size: 300% 300%;
+  border-radius: 20px;
+  filter: blur(15px);
+  opacity: 0.4;
+  animation: subtleAura 12s ease-in-out infinite;
+  z-index: -1;
+}
+
+.featured-title.apple-style::after {
   content: 'En Vedette';
   position: absolute;
   top: 0;
@@ -66,45 +106,71 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.7) 30%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(255, 255, 255, 0.7) 70%,
     transparent 100%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerEffect 3s ease-in-out infinite;
+  animation: subtleShimmer 6s ease-in-out infinite;
   z-index: 1;
 }
 
-
 .featured-title.apple-stylev2 {
-  font-size: clamp(4rem, 8vw, 8rem);
-  font-weight: 700;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 800;
   background: linear-gradient(
     135deg,
-    #014dff 0%,
-    rgb(0, 73, 170) 25%,
-    #00267e 50%,
-    #001546 75%,
-    #000d2c 100%
+    #3b82f6 0%,
+    #1d4ed8 25%,
+    #1e40af 50%,
+    #1e3a8a 75%,
+    #172554 100%
   );
-  background-size: 200% 200%;
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 
-    0 0 30px rgba(0, 28, 244, 0.3),
-    0 0 60px rgba(255, 255, 255, 0.2);
-  letter-spacing: -0.02em;
-  line-height: 0.9;
-  margin: 0;
+    0 0 20px rgba(59, 130, 246, 0.2),
+    0 0 40px rgba(29, 78, 216, 0.15),
+    0 0 60px rgba(30, 64, 175, 0.1);
+  letter-spacing: -0.03em;
+  line-height: 0.85;
+  margin: 0 0 1rem 0;
   position: relative;
-  animation: titleGlow 4s ease-in-out infinite;
+  animation: modernTitleGlow 6s ease-in-out infinite;
   transform-origin: center;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
 }
 
 .featured-title.apple-stylev2::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(
+    45deg,
+    rgba(59, 130, 246, 0.15) 0%,
+    rgba(29, 78, 216, 0.15) 25%,
+    rgba(30, 64, 175, 0.15) 50%,
+    rgba(30, 58, 138, 0.15) 75%,
+    rgba(59, 130, 246, 0.15) 100%
+  );
+  background-size: 400% 400%;
+  border-radius: 20px;
+  filter: blur(15px);
+  opacity: 0.3;
+  animation: modernAura 8s ease-in-out infinite;
+  z-index: -1;
+}
+
+.featured-title.apple-stylev2::after {
   content: 'Nos Produits';
   position: absolute;
   top: 0;
@@ -113,30 +179,170 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(36, 36, 36, 0.8) 50%,
+    rgba(59, 130, 246, 0.9) 30%,
+    rgba(29, 78, 216, 1) 50%,
+    rgba(59, 130, 246, 0.9) 70%,
     transparent 100%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerEffect 3s ease-in-out infinite;
+  animation: modernShimmer 4s ease-in-out infinite;
   z-index: 1;
 }
 
-
 .featured-subtitle {
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 2rem;
-  font-weight: 300;
-  letter-spacing: 0.05em;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
   opacity: 0;
-  transform: translateY(30px);
-  animation: subtitleFadeIn 1s ease-out 0.8s forwards;
+  transform: translateY(40px);
+  animation: modernSubtitleFadeIn 1.2s ease-out 0.6s forwards;
+  position: relative;
 }
 
-/* Animations */
+.featured-subtitle::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.8), transparent);
+  border-radius: 1px;
+  animation: subtitleLine 2s ease-in-out infinite;
+}
+
+/* Nouvelles animations modernes */
+@keyframes modernTitleGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 20px rgba(255, 255, 255, 0.2),
+      0 0 40px rgba(99, 102, 241, 0.15),
+      0 0 60px rgba(236, 72, 153, 0.1);
+    transform: scale(1) rotateX(0deg);
+    background-position: 0% 50%;
+  }
+  25% {
+    text-shadow: 
+      0 0 25px rgba(255, 255, 255, 0.25),
+      0 0 50px rgba(99, 102, 241, 0.2),
+      0 0 75px rgba(236, 72, 153, 0.15);
+    transform: scale(1.01) rotateX(2deg);
+    background-position: 25% 50%;
+  }
+  50% {
+    text-shadow: 
+      0 0 30px rgba(255, 255, 255, 0.3),
+      0 0 60px rgba(99, 102, 241, 0.25),
+      0 0 90px rgba(236, 72, 153, 0.2);
+    transform: scale(1.02) rotateX(0deg);
+    background-position: 50% 50%;
+  }
+  75% {
+    text-shadow: 
+      0 0 25px rgba(255, 255, 255, 0.25),
+      0 0 50px rgba(99, 102, 241, 0.2),
+      0 0 75px rgba(236, 72, 153, 0.15);
+    transform: scale(1.01) rotateX(-2deg);
+    background-position: 75% 50%;
+  }
+}
+
+@keyframes modernAura {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.2;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    background-position: 25% 25%;
+    opacity: 0.3;
+    transform: scale(1.05) rotate(1deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.4;
+    transform: scale(1.1) rotate(0deg);
+  }
+  75% {
+    background-position: 75% 75%;
+    opacity: 0.3;
+    transform: scale(1.05) rotate(-1deg);
+  }
+}
+
+@keyframes modernShimmer {
+  0% {
+    background-position: -200% 0;
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 200% 0;
+    opacity: 0.7;
+  }
+}
+
+@keyframes modernSubtitleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.9);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(20px) scale(0.95);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes backgroundFlow {
+  0%, 100% {
+    background-position: 0% 50%, 100% 50%, 50% 0%;
+    opacity: 0.8;
+  }
+  33% {
+    background-position: 50% 0%, 50% 100%, 0% 50%;
+    opacity: 1;
+  }
+  66% {
+    background-position: 100% 50%, 0% 50%, 100% 100%;
+    opacity: 0.9;
+  }
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(10px, 10px);
+  }
+}
+
+@keyframes subtitleLine {
+  0%, 100% {
+    width: 60px;
+    opacity: 0.6;
+  }
+  50% {
+    width: 120px;
+    opacity: 1;
+  }
+}
+
 @keyframes titleGlow {
   0%, 100% {
     text-shadow: 

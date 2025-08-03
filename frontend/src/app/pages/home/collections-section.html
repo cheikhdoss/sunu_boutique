@@ -1,0 +1,125 @@
+  <!-- Collections Section - Découvrez nos collections -->
+  <section class="collections-section" #productsSection>
+    <div class="container">
+      <!-- Header de la section -->
+      <div class="collections-header" #sectionHeader>
+        <h2 class="collections-title">Découvrez nos Collections</h2>
+        <p class="collections-subtitle">
+          Une sélection exceptionnelle de produits premium, soigneusement choisis pour vous offrir 
+          le meilleur de la qualité et du style. Explorez nos collections exclusives.
+        </p>
+        
+        <!-- Badges décoratifs -->
+        <div class="collections-badges">
+          <div class="collection-badge">✨ Qualité Premium</div>
+          <div class="collection-badge">🚀 Livraison Rapide</div>
+          <div class="collection-badge">🛡️ Garantie Incluse</div>
+          <div class="collection-badge">💎 Produits Exclusifs</div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="collections-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ (filteredProducts$ | async)?.length || 0 }}+</span>
+            <span class="stat-label">Produits</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ (categories$ | async)?.length || 0 }}+</span>
+            <span class="stat-label">Catégories</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Satisfaction</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre de recherche -->
+      <div class="collections-search-wrapper">
+        <app-product-search-bar
+          (searchChange)="onSearch($event)"
+          (categoryChange)="onCategoryChange($event)"
+          (sortChange)="onSortChange($event)">
+        </app-product-search-bar>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="cyberpunk-loader" #cyberpunkLoader></div>
+        <p class="neon-text">Chargement de nos collections...</p>
+      </div>
+
+      <!-- Collections Grid -->
+      <div *ngIf="!loading" class="collections-grid" #productsGrid>
+        <div *ngFor="let product of filteredProducts$ | async; trackBy: trackByProductId; let i = index"
+             class="collection-card"
+             [attr.data-product-id]="product.id"
+             [attr.data-index]="i"
+             (mouseenter)="onCardHover(product.id, true, $event)"
+             (mouseleave)="onCardHover(product.id, false, $event)">
+
+          <div class="collection-image-container">
+            <img [src]="getImageUrl(product.image)"
+                 [alt]="product.name"
+                 class="collection-image"
+                 (error)="$any($event.target).src='/assets/images/placeholder.svg'">
+
+            <div class="collection-overlay">
+              <button mat-raised-button
+                      class="collection-action-btn"
+                      [routerLink]="['/product', product.id]">
+                <mat-icon>visibility</mat-icon>
+                Voir Détails
+              </button>
+              <button mat-raised-button
+                      class="collection-action-btn"
+                      [disabled]="product.stock === 0"
+                      (click)="addToCart(product, $event)">
+                <mat-icon>add_shopping_cart</mat-icon>
+                {{ product.stock > 0 ? 'Ajouter' : 'Rupture' }}
+              </button>
+            </div>
+
+            <div class="collection-stock-badge" [class.out-of-stock]="product.stock === 0">
+              {{ product.stock > 0 ? 'En stock' : 'Rupture' }}
+            </div>
+          </div>
+
+          <div class="collection-content">
+            <div class="collection-category">
+              <mat-chip class="collection-category-chip">
+                {{ product.category?.name || 'Sans catégorie' }}
+              </mat-chip>
+            </div>
+
+            <h3 class="collection-name">{{ product.name }}</h3>
+            <p class="collection-description">{{ product.description | slice:0:120 }}...</p>
+
+            <div class="collection-footer">
+              <div class="collection-price-section">
+                <span class="collection-price">{{ formatPrice(product.price) }}</span>
+              </div>
+
+              <button mat-raised-button
+                      class="collection-add-btn"
+                      [disabled]="product.stock === 0"
+                      [attr.data-product-id]="product.id"
+                      (mouseenter)="onButtonHover(product.id, true, $event)"
+                      (mouseleave)="onButtonHover(product.id, false, $event)"
+                      (click)="addToCart(product, $event)">
+                <mat-icon>add_shopping_cart</mat-icon>
+                {{ product.stock > 0 ? 'Ajouter' : 'Indisponible' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && (filteredProducts$ | async)?.length === 0" class="collections-empty-state" #emptyState>
+        <mat-icon class="collections-empty-icon">inventory_2</mat-icon>
+        <h3>Aucune collection trouvée</h3>
+        <p>Essayez de modifier vos critères de recherche pour découvrir nos produits</p>
+      </div>
+    </div>
+  </section>

@@ -10,6 +10,7 @@ use App\Services\InvoiceService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class OrderController extends Controller
 {
@@ -99,14 +100,21 @@ class OrderController extends Controller
 
         try {
             $data = $validator->validated();
+
+            // Récupérer l'utilisateur authentifié, s'il y en a un
             $user = $request->user();
+
+            // Si aucun utilisateur n'est authentifié, essayer de le trouver par email
+            if (!$user && isset($data['customerInfo']['email'])) {
+                $user = User::where('email', $data['customerInfo']['email'])->first();
+            }
 
             // Créer la commande avec la structure correcte de la table
             $customerInfo = $data['customerInfo'];
             $deliveryAddress = $data['deliveryAddress'];
             
             $order = Order::create([
-                'user_id' => $user ? $user->id : null, // Null pour les commandes invités
+                'user_id' => $user ? $user->id : null, // Utilisateur connecté obligatoire maintenant
                 'order_number' => 'CMD-' . strtoupper(uniqid()),
                 'status' => 'pending',
                 'payment_method' => $data['paymentMethod'],
@@ -165,6 +173,9 @@ class OrderController extends Controller
             // Charger les relations pour la réponse
             $order->load('items');
 
+            // Envoyer l'email de confirmation immédiatement après la création
+            $this->sendOrderConfirmationEmail($order);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Commande créée avec succès',
@@ -174,7 +185,132 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             \Log::error('Order creation error', [
                 'error' => $e->getMessage(),
-                'user_id' => $user ? $user->id : null
+                'user_id' => $user->id
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la création de la commande'
+            ], 500);
+        }
+    }
+
+    /**
+     * Create a new order for guest users (fallback)
+     */
+    public function storeGuestOrder(Request $request): JsonResponse
+    {
+        // Normaliser le paymentMethod
+        $requestData = $request->all();
+        if (isset($requestData['paymentMethod'])) {
+            $requestData['paymentMethod'] = strtolower($requestData['paymentMethod']);
+        }
+        
+        $validator = Validator::make($requestData, [
+            'customerInfo.firstName' => 'required|string|max:255',
+            'customerInfo.lastName' => 'required|string|max:255',
+            'customerInfo.email' => 'required|email|max:255',
+            'customerInfo.phone' => 'required|string|max:20',
+            'deliveryAddress.street' => 'required|string|max:255',
+            'deliveryAddress.city' => 'required|string|max:255',
+            'deliveryAddress.postalCode' => 'required|string|max:10',
+            'deliveryAddress.country' => 'required|string|max:255',
+            'deliveryAddress.additionalInfo' => 'nullable|string|max:500',
+            'paymentMethod' => 'required|in:online,cash_on_delivery',
+            'items' => 'required|array|min:1',
+            'items.*.productId' => 'required|integer|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price' => 'required|numeric|min:0',
+            'totalAmount' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Données invalides',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $data = $validator->validated();
+
+            // Créer la commande avec la structure correcte de la table
+            $customerInfo = $data['customerInfo'];
+            $deliveryAddress = $data['deliveryAddress'];
+            
+            $order = Order::create([
+                'user_id' => null, // Commande invité
+                'order_number' => 'CMD-' . strtoupper(uniqid()),
+                'status' => 'pending',
+                'payment_method' => $data['paymentMethod'],
+                'payment_status' => 'pending',
+                'total' => $data['totalAmount'],
+                'subtotal' => $data['totalAmount'],
+                
+                // Informations de livraison
+                'shipping_first_name' => $customerInfo['firstName'],
+                'shipping_last_name' => $customerInfo['lastName'],
+                'shipping_address_line_1' => $deliveryAddress['street'],
+                'shipping_city' => $deliveryAddress['city'],
+                'shipping_postal_code' => $deliveryAddress['postalCode'],
+                'shipping_country' => $deliveryAddress['country'],
+                'shipping_phone' => $customerInfo['phone'],
+                
+                // Informations de facturation (même que livraison pour simplifier)
+                'billing_first_name' => $customerInfo['firstName'],
+                'billing_last_name' => $customerInfo['lastName'],
+                'billing_address_line_1' => $deliveryAddress['street'],
+                'billing_city' => $deliveryAddress['city'],
+                'billing_postal_code' => $deliveryAddress['postalCode'],
+                'billing_country' => $deliveryAddress['country'],
+                'billing_phone' => $customerInfo['phone'],
+                
+                // Informations client en JSON pour l'OrderObserver
+                'customer_info' => json_encode([
+                    'firstName' => $customerInfo['firstName'],
+                    'lastName' => $customerInfo['lastName'],
+                    'email' => $customerInfo['email'],
+                    'phone' => $customerInfo['phone']
+                ]),
+                
+                // Notes additionnelles
+                'notes' => $deliveryAddress['additionalInfo'] ?? null,
+            ]);
+
+            // Ajouter les articles de la commande
+            foreach ($data['items'] as $item) {
+                // Récupérer les informations du produit
+                $product = Product::find($item['productId']);
+                
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['productId'],
+                    'product_name' => $product ? $product->name : 'Produit inconnu',
+                    'product_description' => $product ? $product->description : null,
+                    'product_sku' => $product ? $product->sku : null,
+                    'product_image' => $product ? $product->image : null,
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['price'],
+                    'total_price' => $item['price'] * $item['quantity'],
+                ]);
+            }
+
+            // Charger les relations pour la réponse
+            $order->load('items');
+
+            // Envoyer l'email de confirmation immédiatement après la création
+            $this->sendOrderConfirmationEmail($order);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Commande créée avec succès',
+                'data' => $order
+            ], 201);
+
+        } catch (\Exception $e) {
+            \Log::error('Guest order creation error', [
+                'error' => $e->getMessage()
             ]);
 
             return response()->json([

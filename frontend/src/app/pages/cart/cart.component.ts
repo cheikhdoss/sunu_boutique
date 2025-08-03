@@ -5,7 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
-import { RouterLink } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink, Router } from '@angular/router';
 import { CartService, CartItem } from '../../services/cart.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
@@ -20,6 +21,7 @@ import { Observable } from 'rxjs';
     MatIconModule,
     MatChipsModule,
     MatDividerModule,
+    MatTooltipModule,
     RouterLink
   ],
   templateUrl: './cart.component.html',
@@ -30,7 +32,8 @@ export class CartComponent implements OnInit {
 
   constructor(
     protected cartService: CartService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {
     this.cartItems$ = this.cartService.cart$;
   }
@@ -101,7 +104,7 @@ export class CartComponent implements OnInit {
   }
 
   proceedToCheckout(): void {
-    window.location.href = '/checkout';
+    this.router.navigate(['/checkout']);
   }
 
   trackByProductId(index: number, item: CartItem): number {

@@ -1,0 +1,360 @@
+<div class="home-container">
+  <!-- Hero Section Redesigné pour Première Impression -->
+  <section class="hero-section modern-hero" #heroSection>
+    <div class="container">
+      <div class="hero-content">
+        <!-- Badge de bienvenue -->
+        <div class="welcome-badge">
+          <span class="badge-icon">🌟</span>
+          <span class="badge-text">Bienvenue chez Sunu Boutique</span>
+        </div>
+
+        <!-- Titre principal accrocheur -->
+        <h1 class="hero-title" #heroTitle>
+          Découvrez l'Excellence
+          <span class="text-accent">Sénégalaise</span>
+        </h1>
+
+        <!-- Sous-titre engageant -->
+        <p class="hero-subtitle" #heroSubtitle>
+          Votre destination premium pour des produits authentiques et de qualité exceptionnelle. 
+          Explorez notre collection soigneusement sélectionnée pour vous offrir le meilleur du Sénégal et d'ailleurs.
+        </p>
+
+        <!-- Points forts -->
+        <div class="hero-highlights">
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <mat-icon>verified</mat-icon>
+            </div>
+            <span>Qualité Garantie</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <mat-icon>local_shipping</mat-icon>
+            </div>
+            <span>Livraison Rapide</span>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">
+              <mat-icon>support_agent</mat-icon>
+            </div>
+            <span>Support 24/7</span>
+          </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="hero-actions">
+          <button mat-raised-button
+                  class="hero-cta primary-cta"
+                  (click)="scrollToProducts()"
+                  #heroCta>
+            <mat-icon>explore</mat-icon>
+            <span>Découvrir nos Produits</span>
+          </button>
+          
+          <button mat-stroked-button
+                  class="hero-cta secondary-cta"
+                  (click)="scrollToProducts()">
+            <mat-icon>info</mat-icon>
+            <span>En Savoir Plus</span>
+          </button>
+        </div>
+
+        <!-- Indicateurs de confiance -->
+        <div class="trust-indicators">
+          <div class="trust-item">
+            <span class="trust-number">1000+</span>
+            <span class="trust-label">Clients Satisfaits</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-number">{{ (filteredProducts$ | async)?.length || 500 }}+</span>
+            <span class="trust-label">Produits Premium</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-number">99%</span>
+            <span class="trust-label">Satisfaction Client</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image hero -->
+      <div class="hero-visual">
+        <div class="visual-container">
+          <div class="floating-product">
+            <div class="product-showcase" *ngIf="featuredProduct">
+              <img [src]="getImageUrl(featuredProduct.imageUrl)" 
+                   [alt]="featuredProduct.name"
+                   class="showcase-image">
+              <div class="product-badge">
+                <span>Produit Vedette</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Éléments décoratifs -->
+          <div class="decorative-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicateur de scroll -->
+    <div class="scroll-indicator" (click)="scrollToProducts()">
+      <div class="scroll-arrow">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </div>
+      <span class="scroll-text">Découvrez plus</span>
+    </div>
+  </section>
+
+  <!-- Section titre "En Vedette" avec animation Apple-style -->
+  <section class="featured-title-section" #featuredTitleSection>
+    <div class="container">
+      <div class="featured-title-wrapper" #featuredTitleWrapper>
+        <h2 class="featured-title apple-style" #featuredTitle>En Vedette</h2>
+        <div class="featured-subtitle" #featuredSubtitle>
+          Découvrez notre sélection exceptionnelle
+        </div>
+      </div>
+    </div>
+
+  <!-- Bannière produit vedette -->
+  <app-simple-featured-banner *ngIf="featuredProduct" [product]="featuredProduct"></app-simple-featured-banner>
+
+  </section>
+
+  <!-- Collections Section - Découvrez nos collections -->
+  <section class="collections-section" #productsSection>
+    <div class="container">
+      <!-- Header de la section -->
+      <div class="collections-header" #sectionHeader>
+        <h2 class="collections-title">Découvrez nos Collections</h2>
+        <p class="collections-subtitle">
+          Une sélection exceptionnelle de produits premium, soigneusement choisis pour vous offrir 
+          le meilleur de la qualité et du style. Explorez nos collections exclusives.
+        </p>
+        
+        <!-- Badges décoratifs -->
+        <div class="collections-badges">
+          <div class="collection-badge">✨ Qualité Premium</div>
+          <div class="collection-badge">🚀 Livraison Rapide</div>
+          <div class="collection-badge">🛡️ Garantie Incluse</div>
+          <div class="collection-badge">💎 Produits Exclusifs</div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="collections-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ (filteredProducts$ | async)?.length || 0 }}+</span>
+            <span class="stat-label">Produits</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ (categories$ | async)?.length || 0 }}+</span>
+            <span class="stat-label">Catégories</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Satisfaction</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre de recherche -->
+      <div class="collections-search-wrapper">
+        <app-product-search-bar
+          (searchChange)="onSearch($event)"
+          (categoryChange)="onCategoryChange($event)"
+          (sortChange)="onSortChange($event)">
+        </app-product-search-bar>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="cyberpunk-loader" #cyberpunkLoader></div>
+        <p class="neon-text">Chargement de nos collections...</p>
+      </div>
+
+      <!-- Collections Grid -->
+      <div *ngIf="!loading" class="collections-grid" #productsGrid>
+        <div *ngFor="let product of filteredProducts$ | async; trackBy: trackByProductId; let i = index"
+             class="collection-card"
+             [attr.data-product-id]="product.id"
+             [attr.data-index]="i"
+             (mouseenter)="onCardHover(product.id, true, $event)"
+             (mouseleave)="onCardHover(product.id, false, $event)">
+
+          <div class="collection-image-container">
+            <img [src]="getImageUrl(product.image)"
+                 [alt]="product.name"
+                 class="collection-image"
+                 (error)="$any($event.target).src='/assets/images/placeholder.svg'">
+
+            <div class="collection-overlay">
+              <button mat-raised-button
+                      class="collection-action-btn"
+                      [routerLink]="['/product', product.id]">
+                <mat-icon>visibility</mat-icon>
+                Voir Détails
+              </button>
+              <button mat-raised-button
+                      class="collection-action-btn"
+                      [disabled]="product.stock === 0"
+                      (click)="addToCart(product, $event)">
+                <mat-icon>add_shopping_cart</mat-icon>
+                {{ product.stock > 0 ? 'Ajouter' : 'Rupture' }}
+              </button>
+            </div>
+
+            <div class="collection-stock-badge" [class.out-of-stock]="product.stock === 0">
+              {{ product.stock > 0 ? 'En stock' : 'Rupture' }}
+            </div>
+          </div>
+
+          <div class="collection-content">
+            <div class="collection-category">
+              <mat-chip class="collection-category-chip">
+                {{ product.category?.name || 'Sans catégorie' }}
+              </mat-chip>
+            </div>
+
+            <h3 class="collection-name">{{ product.name }}</h3>
+            <p class="collection-description">{{ product.description | slice:0:120 }}...</p>
+
+            <div class="collection-footer">
+              <div class="collection-price-section">
+                <span class="collection-price">{{ formatPrice(product.price) }}</span>
+              </div>
+
+              <button mat-raised-button
+                      class="collection-add-btn"
+                      [disabled]="product.stock === 0"
+                      [attr.data-product-id]="product.id"
+                      (mouseenter)="onButtonHover(product.id, true, $event)"
+                      (mouseleave)="onButtonHover(product.id, false, $event)"
+                      (click)="addToCart(product, $event)">
+                <mat-icon>add_shopping_cart</mat-icon>
+                {{ product.stock > 0 ? 'Ajouter' : 'Indisponible' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && (filteredProducts$ | async)?.length === 0" class="collections-empty-state" #emptyState>
+        <mat-icon class="collections-empty-icon">inventory_2</mat-icon>
+        <h3>Aucune collection trouvée</h3>
+        <p>Essayez de modifier vos critères de recherche pour découvrir nos produits</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Marquee SUNU Boutique -->
+  <section class="marquee-section">
+    <div class="marquee-container">
+      <div class="marquee-track">
+        <div class="marquee-content">
+          <span class="marquee-text">SUNU BOUTIQUE</span>
+          <span class="marquee-separator">✦</span>
+          <span class="marquee-text">VOTRE DESTINATION SHOPPING</span>
+          <span class="marquee-separator">✧</span>
+          <span class="marquee-text">QUALITÉ PREMIUM</span>
+          <span class="marquee-separator">✦</span>
+          <span class="marquee-text">SUNU BOUTIQUE</span>
+          <span class="marquee-separator">✧</span>
+          <span class="marquee-text">VOTRE DESTINATION SHOPPING</span>
+          <span class="marquee-separator">✦</span>
+          <span class="marquee-text">QUALITÉ PREMIUM</span>
+          <span class="marquee-separator">✧</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer-section">
+    <div class="container">
+      <div class="footer-content">
+        <!-- Company Info -->
+        <div class="footer-column">
+          <h3 class="footer-title">Sunu Boutique</h3>
+          <p class="footer-description">
+            Votre destination pour des produits de qualité premium.
+            Nous sélectionnons avec soin chaque article pour vous offrir le meilleur.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="Facebook">
+              <mat-icon>facebook</mat-icon>
+            </a>
+            <a href="#" class="social-link" aria-label="Instagram">
+              <mat-icon>camera_alt</mat-icon>
+            </a>
+            <a href="#" class="social-link" aria-label="Twitter">
+              <mat-icon>alternate_email</mat-icon>
+            </a>
+            <a href="#" class="social-link" aria-label="LinkedIn">
+              <mat-icon>business</mat-icon>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-column">
+          <h4 class="footer-subtitle">Liens rapides</h4>
+          <ul class="footer-links">
+            <li><a href="#" routerLink="/">Accueil</a></li>
+            <li><a href="#" routerLink="/products">Produits</a></li>
+            <li><a href="#" routerLink="/cart">Panier</a></li>
+            <li><a href="#">À propos</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Categories -->
+        <div class="footer-column">
+          <h4 class="footer-subtitle">Catégories</h4>
+          <ul class="footer-links">
+            <li *ngFor="let category of categories$ | async | slice:0:5">
+              <a href="#">{{ category.name }}</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="footer-column">
+          <h4 class="footer-subtitle">Contact</h4>
+          <div class="contact-info">
+            <div class="contact-item">
+              <mat-icon>location_on</mat-icon>
+              <span>Dakar, Sénégal</span>
+            </div>
+            <div class="contact-item">
+              <mat-icon>phone</mat-icon>
+              <span>+221 77 123 45 67</span>
+            </div>
+            <div class="contact-item">
+              <mat-icon>email</mat-icon>
+              <span>contact&#64;sunuboutique.sn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <p>&copy; 2024 Sunu Boutique. Tous droits réservés.</p>
+          <div class="footer-bottom-links">
+            <a href="#">Politique de confidentialité</a>
+            <a href="#">Conditions d'utilisation</a>
+            <a href="#">Mentions légales</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

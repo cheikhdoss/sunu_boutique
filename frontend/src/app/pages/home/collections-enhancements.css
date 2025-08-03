@@ -1,0 +1,321 @@
+/* AMÉLIORATIONS SUPPLÉMENTAIRES POUR LA SECTION COLLECTIONS */
+
+/* Animation d'entrée pour les cartes */
+@keyframes collectionsCardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.collection-card {
+  animation: collectionsCardReveal 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Délai d'animation pour créer un effet en cascade */
+.collection-card:nth-child(1) { animation-delay: 0.1s; }
+.collection-card:nth-child(2) { animation-delay: 0.2s; }
+.collection-card:nth-child(3) { animation-delay: 0.3s; }
+.collection-card:nth-child(4) { animation-delay: 0.4s; }
+.collection-card:nth-child(5) { animation-delay: 0.5s; }
+.collection-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Effet de parallaxe pour l'arrière-plan */
+.collections-section {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Amélioration des badges avec micro-animations */
+.collection-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.collection-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4), 
+    transparent);
+  transition: left 0.8s;
+}
+
+.collection-badge:hover::after {
+  left: 100%;
+}
+
+/* Animation pour les statistiques */
+@keyframes countUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.stat-number {
+  animation: countUp 1s ease-out 0.5s both;
+}
+
+.stat-label {
+  animation: countUp 1s ease-out 0.7s both;
+}
+
+/* Effet de lueur pour les prix */
+.collection-price {
+  position: relative;
+  display: inline-block;
+}
+
+.collection-price::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -10px;
+  right: -10px;
+  bottom: -5px;
+  background: linear-gradient(45deg, #6366f1, #ec4899);
+  border-radius: 10px;
+  opacity: 0;
+  filter: blur(15px);
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.collection-card:hover .collection-price::before {
+  opacity: 0.3;
+}
+
+/* Amélioration de l'overlay avec effet de verre */
+.collection-overlay {
+  backdrop-filter: blur(15px);
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.9) 0%, 
+    rgba(236, 72, 153, 0.9) 100%);
+}
+
+/* Effet de rotation pour les icônes au hover */
+.collection-action-btn mat-icon,
+.collection-add-btn mat-icon {
+  transition: transform 0.3s ease;
+}
+
+.collection-action-btn:hover mat-icon,
+.collection-add-btn:hover mat-icon {
+  transform: rotate(360deg);
+}
+
+/* Amélioration du titre avec effet de machine à écrire */
+@keyframes typewriter {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 50% { border-color: transparent; }
+  51%, 100% { border-color: #6366f1; }
+}
+
+.collections-title {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid #6366f1;
+  animation: typewriter 3s steps(30) 1s both, blink 1s infinite;
+}
+
+/* Effet de particules flottantes */
+.collections-section::before {
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 30% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 70% 20%, rgba(34, 197, 94, 0.08) 0%, transparent 40%),
+    /* Particules */
+    radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 30% 60%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 
+    100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    200px 200px, 300px 300px, 250px 250px, 180px 180px;
+  animation: floatingParticles 20s linear infinite;
+}
+
+@keyframes floatingParticles {
+  0% {
+    background-position: 
+      0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%,
+      0px 0px, 0px 0px, 0px 0px, 0px 0px;
+  }
+  100% {
+    background-position: 
+      0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%,
+      200px 200px, -300px 300px, 250px -250px, -180px 180px;
+  }
+}
+
+/* Amélioration des transitions pour les cartes */
+.collection-card {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Effet de focus pour l'accessibilité */
+.collection-action-btn:focus,
+.collection-add-btn:focus {
+  outline: 3px solid rgba(99, 102, 241, 0.5);
+  outline-offset: 2px;
+}
+
+/* Animation pour le chargement */
+.loading-container {
+  position: relative;
+}
+
+.loading-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(99, 102, 241, 0.3);
+  border-top: 3px solid #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Amélioration responsive pour tablettes */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .collections-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 40px;
+  }
+  
+  .collections-title {
+    font-size: 3.5rem;
+  }
+  
+  .collections-stats {
+    gap: 50px;
+  }
+}
+
+/* Optimisations pour les écrans haute résolution */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .collection-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Mode sombre amélioré */
+@media (prefers-color-scheme: dark) {
+  .collections-section {
+    background: linear-gradient(135deg, 
+      #000000 0%, 
+      #0a0a0f 20%, 
+      #1a1a2e 40%, 
+      #16213e 60%, 
+      #0f3460 80%, 
+      #000000 100%);
+  }
+  
+  .collection-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Animation pour les éléments qui entrent dans le viewport */
+@keyframes slideInFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.collections-header {
+  animation: slideInFromBottom 1s ease-out;
+}
+
+.collections-search-wrapper {
+  animation: slideInFromBottom 1s ease-out 0.3s both;
+}
+
+/* Effet de survol pour les badges */
+.collection-badge:hover {
+  animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: translateY(-3px) scale(1.05); }
+  50% { transform: translateY(-5px) scale(1.08); }
+}
+
+/* Amélioration de l'état vide */
+.collections-empty-state {
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Effet de brillance pour les boutons */
+.collection-add-btn,
+.collection-action-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.collection-add-btn::after,
+.collection-action-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, 
+    transparent 30%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 70%);
+  transform: rotate(45deg);
+  transition: transform 0.6s;
+  opacity: 0;
+}
+
+.collection-add-btn:hover::after,
+.collection-action-btn:hover::after {
+  opacity: 1;
+  transform: rotate(45deg) translate(50%, 50%);
+}

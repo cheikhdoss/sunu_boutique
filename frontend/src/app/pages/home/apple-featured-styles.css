@@ -1,0 +1,316 @@
+x/* SECTION EN VEDETTE - DESIGN APPLE STYLE */
+.featured-title-section {
+  padding: 100px 0 80px;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured-title-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+  animation: backgroundFlow 12s ease-in-out infinite;
+}
+
+.featured-title-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+  opacity: 0.3;
+  animation: gridMove 20s linear infinite;
+}
+
+.featured-title-wrapper {
+  text-align: center;
+  position: relative;
+  z-index: 3;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.featured-title.apple-style {
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 800;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #e2e8f0 20%,
+    #cbd5e1 40%,
+    #94a3b8 60%,
+    #64748b 80%,
+    #475569 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.3),
+    0 0 60px rgba(99, 102, 241, 0.2),
+    0 0 90px rgba(236, 72, 153, 0.1);
+  letter-spacing: -0.03em;
+  line-height: 0.85;
+  margin: 0 0 1rem 0;
+  position: relative;
+  animation: subtleTitleGlow 8s ease-in-out infinite;
+  transform-origin: center;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+}
+
+.featured-title.apple-style::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(
+    45deg,
+    rgba(99, 102, 241, 0.2) 0%,
+    rgba(236, 72, 153, 0.2) 25%,
+    rgba(14, 165, 233, 0.2) 50%,
+    rgba(168, 85, 247, 0.2) 75%,
+    rgba(99, 102, 241, 0.2) 100%
+  );
+  background-size: 300% 300%;
+  border-radius: 20px;
+  filter: blur(15px);
+  opacity: 0.4;
+  animation: subtleAura 12s ease-in-out infinite;
+  z-index: -1;
+}
+
+.featured-title.apple-style::after {
+  content: 'En Vedette';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 30%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(255, 255, 255, 0.7) 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: subtleShimmer 6s ease-in-out infinite;
+  z-index: 1;
+}
+
+.featured-subtitle {
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: modernSubtitleFadeIn 1.2s ease-out 0.6s forwards;
+  position: relative;
+}
+
+.featured-subtitle::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.8), transparent);
+  border-radius: 1px;
+  animation: subtitleLine 2s ease-in-out infinite;
+}
+
+/* Animations pour la section En Vedette */
+@keyframes subtleTitleGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 30px rgba(255, 255, 255, 0.3),
+      0 0 60px rgba(99, 102, 241, 0.2),
+      0 0 90px rgba(236, 72, 153, 0.1);
+    transform: scale(1);
+    background-position: 0% 50%;
+  }
+  50% {
+    text-shadow: 
+      0 0 40px rgba(255, 255, 255, 0.4),
+      0 0 80px rgba(99, 102, 241, 0.3),
+      0 0 120px rgba(236, 72, 153, 0.2);
+    transform: scale(1.01);
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes subtleAura {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.5;
+    transform: scale(1.05) rotate(1deg);
+  }
+}
+
+@keyframes subtleShimmer {
+  0% {
+    background-position: -200% 0;
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 200% 0;
+    opacity: 0.7;
+  }
+}
+
+@keyframes modernSubtitleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.9);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(20px) scale(0.95);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes backgroundFlow {
+  0%, 100% {
+    background-position: 0% 50%, 100% 50%, 50% 0%;
+    opacity: 0.8;
+  }
+  33% {
+    background-position: 50% 0%, 50% 100%, 0% 50%;
+    opacity: 1;
+  }
+  66% {
+    background-position: 100% 50%, 0% 50%, 100% 100%;
+    opacity: 0.9;
+  }
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(10px, 10px);
+  }
+}
+
+@keyframes subtitleLine {
+  0%, 100% {
+    width: 60px;
+    opacity: 0.6;
+  }
+  50% {
+    width: 120px;
+    opacity: 1;
+  }
+}
+
+/* Animation d'apparition au scroll */
+.featured-title-section.animate-in .featured-title.apple-style {
+  animation: 
+    titleAppear 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+    subtleTitleGlow 8s ease-in-out infinite 1.2s;
+}
+
+@keyframes titleAppear {
+  from {
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive pour la section En Vedette */
+@media (max-width: 768px) {
+  .featured-title-section {
+    padding: 80px 0 !important;
+    min-height: 300px !important;
+  }
+  
+  .featured-title.apple-style {
+    font-size: clamp(3rem, 12vw, 6rem) !important;
+  }
+  
+  .featured-subtitle {
+    font-size: 1.2rem !important;
+    margin-top: 1.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-title-section {
+    padding: 60px 0 !important;
+    min-height: 250px !important;
+  }
+  
+  .featured-title.apple-style {
+    font-size: clamp(2.5rem, 15vw, 5rem) !important;
+  }
+  
+  .featured-subtitle {
+    font-size: 1rem !important;
+    margin-top: 1rem !important;
+  }
+}
+
+/* Amélioration de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .featured-title.apple-style,
+  .featured-title.apple-style::before,
+  .featured-subtitle,
+  .featured-title-section::before {
+    animation: none !important;
+  }
+  
+  .featured-title.apple-style {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .featured-subtitle {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
