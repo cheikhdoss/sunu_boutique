@@ -66,6 +66,8 @@ return [
 
     'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost:4200'),
 
+    'logo_url' => env('APP_LOGO_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -90,11 +92,11 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => 'fr',
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => 'fr',
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => 'fr_FR',
 
     /*
     |--------------------------------------------------------------------------

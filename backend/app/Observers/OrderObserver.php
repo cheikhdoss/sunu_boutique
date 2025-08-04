@@ -3,10 +3,10 @@
 namespace App\Observers;
 
 use App\Models\Order;
-use App\Mail\OrderPaidNotification;
-use App\Mail\OrderStatusChangedMail;
+use App\Notifications\PaymentConfirmed;
+use App\Notifications\OrderStatusUpdated;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class OrderObserver
 {
@@ -121,8 +121,8 @@ class OrderObserver
             }
 
             // Envoyer l'email
-            Mail::to($recipientEmail, $recipientName)
-                ->send(new OrderPaidNotification($order));
+            $user = $order->user ?? (object)['email' => $recipientEmail, 'name' => $recipientName];
+            Notification::send($user, new PaymentConfirmed($order));
 
             Log::info('Payment confirmation email sent', [
                 'order_id' => $order->id,
@@ -161,9 +161,9 @@ class OrderObserver
                 return;
             }
 
-            // Envoyer l'email
-            Mail::to($recipientEmail, $recipientName)
-                ->send(new OrderStatusChangedMail($order, $oldStatus, $newStatus));
+            // Envoyer la notification
+            $user = $order->user ?? (object)['email' => $recipientEmail, 'name' => $recipientName];
+            Notification::send($user, new OrderStatusUpdated($order));
 
             Log::info('Status change email sent', [
                 'order_id' => $order->id,

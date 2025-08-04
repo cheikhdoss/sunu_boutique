@@ -19,10 +19,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { environment } from '../../../environments/environment';
 
 // Options de paiement simplifiées
 export enum ExtendedPaymentMethod {
-  PAYDUNYA = 'paydunya',
+  CARD = 'card',
+  WAVE = 'wave',
+  ORANGE_MONEY = 'orange_money',
+  FREE_MONEY = 'free_money',
   CASH_ON_DELIVERY = 'cash_on_delivery'
 }
 
@@ -56,6 +60,7 @@ export class CheckoutComponent implements OnInit {
   checkoutForm: FormGroup;
   paymentMethods = ExtendedPaymentMethod;
   isSubmitting = false;
+  backendUrl = environment.apiUrl.replace('/api', '');
 
   constructor(
     private fb: FormBuilder,
@@ -80,7 +85,7 @@ export class CheckoutComponent implements OnInit {
         country: ['', Validators.required],
         additionalInfo: ['']
       }),
-      paymentMethod: [ExtendedPaymentMethod.PAYDUNYA, Validators.required]
+      paymentMethod: [ExtendedPaymentMethod.CARD, Validators.required]
     });
   }
 
@@ -104,7 +109,7 @@ export class CheckoutComponent implements OnInit {
 
     // Rediriger si l'utilisateur non authentifié choisit le paiement en ligne
     this.checkoutForm.get('paymentMethod')?.valueChanges.subscribe(value => {
-      if (value === ExtendedPaymentMethod.PAYDUNYA && !this.authService.isAuthenticated()) {
+      if (value !== ExtendedPaymentMethod.CASH_ON_DELIVERY && !this.authService.isAuthenticated()) {
         // Sauvegarder les données du formulaire pour les restaurer après la connexion
         localStorage.setItem('checkout_form_data', JSON.stringify(this.checkoutForm.value));
 
@@ -155,15 +160,10 @@ export class CheckoutComponent implements OnInit {
       this.saveCustomerDataAfterOrder(formValue);
 
       // Traitement selon le mode de paiement
-      switch (formValue.paymentMethod) {
-        case ExtendedPaymentMethod.PAYDUNYA:
-          await this.processPayDunyaPayment(order);
-          break;
-        case ExtendedPaymentMethod.CASH_ON_DELIVERY:
-          await this.processCashOnDelivery(order);
-          break;
-        default:
-          throw new Error('Mode de paiement non supporté');
+      if (formValue.paymentMethod === ExtendedPaymentMethod.CASH_ON_DELIVERY) {
+        await this.processCashOnDelivery(order);
+      } else {
+        await this.processPayDunyaPayment(order);
       }
 
     } catch (err: any) {
@@ -306,7 +306,7 @@ export class CheckoutComponent implements OnInit {
     localStorage.removeItem('deliveryAddress');
     localStorage.removeItem('preferredPaymentMethod');
     this.checkoutForm.reset();
-    this.checkoutForm.get('paymentMethod')?.setValue(ExtendedPaymentMethod.PAYDUNYA);
+    this.checkoutForm.get('paymentMethod')?.setValue(ExtendedPaymentMethod.CARD);
     this.snackBar.open('Données effacées', 'OK', { duration: 2000 });
   }
 
@@ -419,11 +419,10 @@ export class CheckoutComponent implements OnInit {
    */
   private mapPaymentMethod(extendedMethod: ExtendedPaymentMethod): PaymentMethod {
     switch (extendedMethod) {
-      case ExtendedPaymentMethod.PAYDUNYA:
-        return 'online' as PaymentMethod;
       case ExtendedPaymentMethod.CASH_ON_DELIVERY:
         return 'cash_on_delivery' as PaymentMethod;
       default:
+        // Toutes les autres méthodes sont des paiements en ligne
         return 'online' as PaymentMethod;
     }
   }
@@ -432,42 +431,42 @@ export class CheckoutComponent implements OnInit {
    * Obtenir le libellé d'une méthode de paiement
    */
   getPaymentMethodLabel(method: ExtendedPaymentMethod): string {
-    switch (method) {
-      case ExtendedPaymentMethod.PAYDUNYA:
-        return 'PayDunya (Carte bancaire, Mobile Money)';
-      case ExtendedPaymentMethod.CASH_ON_DELIVERY:
-        return 'Paiement à la livraison';
-      default:
-        return 'Paiement en ligne';
-    }
+    const labels = {
+      [ExtendedPaymentMethod.CARD]: 'Carte Bancaire',
+      [ExtendedPaymentMethod.WAVE]: 'Wave',
+      [ExtendedPaymentMethod.ORANGE_MONEY]: 'Orange Money',
+      [ExtendedPaymentMethod.FREE_MONEY]: 'Free Money',
+      [ExtendedPaymentMethod.CASH_ON_DELIVERY]: 'Paiement à la livraison',
+    };
+    return labels[method] || 'Paiement en ligne';
   }
 
   /**
    * Obtenir l'icône d'une méthode de paiement
    */
   getPaymentMethodIcon(method: ExtendedPaymentMethod): string {
-    switch (method) {
-      case ExtendedPaymentMethod.PAYDUNYA:
-        return 'credit_card';
-      case ExtendedPaymentMethod.CASH_ON_DELIVERY:
-        return 'local_shipping';
-      default:
-        return 'payment';
-    }
+    const icons = {
+      [ExtendedPaymentMethod.CARD]: 'credit_card',
+      [ExtendedPaymentMethod.WAVE]: 'phone_iphone',
+      [ExtendedPaymentMethod.ORANGE_MONEY]: 'phone_iphone',
+      [ExtendedPaymentMethod.FREE_MONEY]: 'phone_iphone',
+      [ExtendedPaymentMethod.CASH_ON_DELIVERY]: 'local_shipping',
+    };
+    return icons[method] || 'payment';
   }
 
   /**
    * Obtenir la description d'une méthode de paiement
    */
   getPaymentMethodDescription(method: ExtendedPaymentMethod): string {
-    switch (method) {
-      case ExtendedPaymentMethod.PAYDUNYA:
-        return 'Carte bancaire, Orange Money, MTN, Moov Money';
-      case ExtendedPaymentMethod.CASH_ON_DELIVERY:
-        return 'Payez en espèces à la réception de votre commande';
-      default:
-        return 'Paiement en ligne sécurisé';
-    }
+    const descriptions = {
+      [ExtendedPaymentMethod.CARD]: 'Paiement sécurisé par carte via PayDunya.',
+      [ExtendedPaymentMethod.WAVE]: 'Paiement sécurisé avec votre compte Wave.',
+      [ExtendedPaymentMethod.ORANGE_MONEY]: 'Paiement sécurisé avec Orange Money.',
+      [ExtendedPaymentMethod.FREE_MONEY]: 'Paiement sécurisé avec Free Money.',
+      [ExtendedPaymentMethod.CASH_ON_DELIVERY]: 'Payez en espèces à la réception de votre commande.',
+    };
+    return descriptions[method] || 'Paiement en ligne sécurisé';
   }
 
   getErrorMessage(formGroupName: string, controlName: string): string {

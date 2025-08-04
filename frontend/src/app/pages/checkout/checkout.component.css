@@ -349,6 +349,13 @@
   margin-bottom: 0.5rem;
 }
 
+.payment-logo {
+  height: 24px; /* ou 1.5rem */
+  width: auto;
+  object-fit: contain;
+  margin-right: 0.75rem; /* pour aligner avec l'icône */
+}
+
 .payment-header mat-icon {
   color: #7dd3fc;
   font-size: 1.5rem;

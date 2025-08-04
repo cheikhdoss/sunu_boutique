@@ -173,8 +173,10 @@ class OrderController extends Controller
             // Charger les relations pour la réponse
             $order->load('items');
 
-            // Envoyer l'email de confirmation immédiatement après la création
-            $this->sendOrderConfirmationEmail($order);
+            // Envoyer l'email de confirmation uniquement pour le paiement à la livraison
+            if ($order->payment_method === 'cash_on_delivery') {
+                $this->sendOrderConfirmationEmail($order);
+            }
 
             return response()->json([
                 'success' => true,
@@ -299,8 +301,10 @@ class OrderController extends Controller
             // Charger les relations pour la réponse
             $order->load('items');
 
-            // Envoyer l'email de confirmation immédiatement après la création
-            $this->sendOrderConfirmationEmail($order);
+            // Envoyer l'email de confirmation uniquement pour le paiement à la livraison
+            if ($order->payment_method === 'cash_on_delivery') {
+                $this->sendOrderConfirmationEmail($order);
+            }
 
             return response()->json([
                 'success' => true,
