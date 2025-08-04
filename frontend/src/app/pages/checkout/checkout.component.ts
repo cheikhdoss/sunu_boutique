@@ -57,11 +57,10 @@ export enum ExtendedPaymentMethod {
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
-  backendUrl = environment.apiUrl.replace('/api', ''); // Obtenir l'URL de base du backend
-
   checkoutForm: FormGroup;
   paymentMethods = ExtendedPaymentMethod;
   isSubmitting = false;
+  backendUrl = environment.apiUrl.replace('/api', '');
 
   constructor(
     private fb: FormBuilder,
@@ -445,17 +444,6 @@ export class CheckoutComponent implements OnInit {
   /**
    * Obtenir l'icône d'une méthode de paiement
    */
-  getPaymentMethodLogo(method: ExtendedPaymentMethod): string | null {
-    const logos: { [key: string]: string } = {
-      [ExtendedPaymentMethod.WAVE]: '/storage/wave.png',
-      [ExtendedPaymentMethod.ORANGE_MONEY]: '/storage/orangemoney.png',
-      [ExtendedPaymentMethod.FREE_MONEY]: '/storage/freemoney.png',
-    };
-
-    const path = logos[method];
-    return path ? `${this.backendUrl}${path}` : null;
-  }
-
   getPaymentMethodIcon(method: ExtendedPaymentMethod): string {
     const icons = {
       [ExtendedPaymentMethod.CARD]: 'credit_card',

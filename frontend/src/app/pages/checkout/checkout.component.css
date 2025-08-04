@@ -350,7 +350,7 @@
 }
 
 .payment-logo {
-  height: 40px; /* ou 2.5rem */
+  height: 24px; /* ou 1.5rem */
   width: auto;
   object-fit: contain;
   margin-right: 0.75rem; /* pour aligner avec l'icône */

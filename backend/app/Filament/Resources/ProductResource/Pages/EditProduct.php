@@ -16,4 +16,13 @@ class EditProduct extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (!empty($data['images'])) {
+            $data['image'] = $data['images'][0];
+        }
+
+        return $data;
+    }
 }

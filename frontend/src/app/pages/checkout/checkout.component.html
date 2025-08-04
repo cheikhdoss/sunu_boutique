@@ -119,7 +119,7 @@
             <mat-radio-button [value]="paymentMethods.WAVE" class="payment-option">
               <div class="payment-option-content">
                 <div class="payment-header">
-                  <img [src]="getPaymentMethodLogo(paymentMethods.WAVE)" alt="Wave" class="payment-logo" *ngIf="getPaymentMethodLogo(paymentMethods.WAVE)">
+                  <img [src]="backendUrl + '/storage/wave.png'" alt="Wave" class="payment-logo">
                   <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.WAVE) }}</span>
                 </div>
                 <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.WAVE) }}</p>
@@ -130,7 +130,7 @@
             <mat-radio-button [value]="paymentMethods.ORANGE_MONEY" class="payment-option">
               <div class="payment-option-content">
                 <div class="payment-header">
-                  <img [src]="getPaymentMethodLogo(paymentMethods.ORANGE_MONEY)" alt="Orange Money" class="payment-logo" *ngIf="getPaymentMethodLogo(paymentMethods.ORANGE_MONEY)">
+                  <img [src]="backendUrl + '/storage/orangemoney.png'" alt="Orange Money" class="payment-logo">
                   <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.ORANGE_MONEY) }}</span>
                 </div>
                 <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.ORANGE_MONEY) }}</p>
@@ -141,7 +141,7 @@
             <mat-radio-button [value]="paymentMethods.FREE_MONEY" class="payment-option">
               <div class="payment-option-content">
                 <div class="payment-header">
-                  <img [src]="getPaymentMethodLogo(paymentMethods.FREE_MONEY)" alt="Free Money" class="payment-logo" *ngIf="getPaymentMethodLogo(paymentMethods.FREE_MONEY)">
+                  <img [src]="backendUrl + '/storage/freemoney.png'" alt="Free Money" class="payment-logo">
                   <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.FREE_MONEY) }}</span>
                 </div>
                 <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.FREE_MONEY) }}</p>
