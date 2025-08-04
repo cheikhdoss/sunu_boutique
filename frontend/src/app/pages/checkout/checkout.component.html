@@ -104,16 +104,51 @@
           <h3>Mode de paiement</h3>
           
           <mat-radio-group formControlName="paymentMethod" class="payment-methods">
-            <mat-radio-button [value]="paymentMethods.PAYDUNYA" class="payment-option paydunya-option">
+            <!-- Paiement par Carte Bancaire -->
+            <mat-radio-button [value]="paymentMethods.CARD" class="payment-option">
               <div class="payment-option-content">
                 <div class="payment-header">
-                  <mat-icon>{{ getPaymentMethodIcon(paymentMethods.PAYDUNYA) }}</mat-icon>
-                  <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.PAYDUNYA) }}</span>
+                  <mat-icon>{{ getPaymentMethodIcon(paymentMethods.CARD) }}</mat-icon>
+                  <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.CARD) }}</span>
                 </div>
-                <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.PAYDUNYA) }}</p>
+                <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.CARD) }}</p>
+              </div>
+            </mat-radio-button>
+
+            <!-- Paiement par Wave -->
+            <mat-radio-button [value]="paymentMethods.WAVE" class="payment-option">
+              <div class="payment-option-content">
+                <div class="payment-header">
+                  <img [src]="getPaymentMethodLogo(paymentMethods.WAVE)" alt="Wave" class="payment-logo" *ngIf="getPaymentMethodLogo(paymentMethods.WAVE)">
+                  <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.WAVE) }}</span>
+                </div>
+                <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.WAVE) }}</p>
+              </div>
+            </mat-radio-button>
+
+            <!-- Paiement par Orange Money -->
+            <mat-radio-button [value]="paymentMethods.ORANGE_MONEY" class="payment-option">
+              <div class="payment-option-content">
+                <div class="payment-header">
+                  <img [src]="getPaymentMethodLogo(paymentMethods.ORANGE_MONEY)" alt="Orange Money" class="payment-logo" *ngIf="getPaymentMethodLogo(paymentMethods.ORANGE_MONEY)">
+                  <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.ORANGE_MONEY) }}</span>
+                </div>
+                <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.ORANGE_MONEY) }}</p>
+              </div>
+            </mat-radio-button>
+
+            <!-- Paiement par Free Money -->
+            <mat-radio-button [value]="paymentMethods.FREE_MONEY" class="payment-option">
+              <div class="payment-option-content">
+                <div class="payment-header">
+                  <img [src]="getPaymentMethodLogo(paymentMethods.FREE_MONEY)" alt="Free Money" class="payment-logo" *ngIf="getPaymentMethodLogo(paymentMethods.FREE_MONEY)">
+                  <span class="payment-title">{{ getPaymentMethodLabel(paymentMethods.FREE_MONEY) }}</span>
+                </div>
+                <p class="payment-description">{{ getPaymentMethodDescription(paymentMethods.FREE_MONEY) }}</p>
               </div>
             </mat-radio-button>
             
+            <!-- Paiement à la livraison -->
             <mat-radio-button [value]="paymentMethods.CASH_ON_DELIVERY" class="payment-option">
               <div class="payment-option-content">
                 <div class="payment-header">
