@@ -6,6 +6,7 @@ use App\Models\Order;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Storage;
 
 class OrderExportService
 {
@@ -45,14 +46,15 @@ class OrderExportService
         // Créer le fichier
         $writer = new Xlsx($spreadsheet);
         $filename = 'commandes_' . now()->format('Y-m-d_His') . '.xlsx';
-        $path = storage_path('app/public/exports/' . $filename);
+        $path = 'exports/' . $filename;
+        $fullPath = Storage::disk('public')->path($path);
         
         // Créer le dossier s'il n'existe pas
-        if (!file_exists(dirname($path))) {
-            mkdir(dirname($path), 0755, true);
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
         }
         
-        $writer->save($path);
+        $writer->save($fullPath);
         
         return $filename;
     }

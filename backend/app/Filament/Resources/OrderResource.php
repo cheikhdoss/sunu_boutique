@@ -13,6 +13,8 @@ use Filament\Tables\Table;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class OrderResource extends Resource
 {
@@ -104,7 +106,7 @@ class OrderResource extends Resource
                     ->action(function (array $data, Collection $records) {
                         $service = new \App\Services\OrderExportService();
                         $filename = $service->exportOrders($records);
-                        return response()->download(storage_path('app/public/exports/' . $filename));
+                        return response()->download(Storage::disk('public')->path('exports/' . $filename));
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Exporter les commandes')
