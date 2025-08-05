@@ -100,7 +100,7 @@ class OrderResource extends Resource
             ->headerActions([
                 Tables\Actions\Action::make('export')
                     ->label('Exporter les commandes')
-                    ->icon('heroicon-o-document-download')
+                    ->icon('heroicon-o-arrow-down-tray')
                     ->action(function (array $data, Collection $records) {
                         $service = new \App\Services\OrderExportService();
                         $filename = $service->exportOrders($records);
