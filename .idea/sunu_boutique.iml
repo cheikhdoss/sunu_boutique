@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/backend/app" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/backend/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/backend/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/backend/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/backend/tests" isTestSource="true" packagePrefix="Tests\" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/anourvalar/eloquent-serialize" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/barryvdh/laravel-dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/bezhansalleh/filament-language-switch" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/blade-ui-kit/blade-heroicons" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/blade-ui-kit/blade-icons" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/danharrin/date-format-converter" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/danharrin/livewire-rate-limiting" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/doctrine/dbal" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/doctrine/deprecations" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/dompdf/dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/dompdf/php-font-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/dompdf/php-svg-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/actions" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/filament" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/forms" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/infolists" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/notifications" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/support" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/tables" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/filament/widgets" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/kirschbaum-development/eloquent-power-joins" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/laravel/sanctum" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/league/csv" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/livewire/livewire" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/masterminds/html5" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/openspout/openspout" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/psr/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/ryangjchandler/blade-capture-directive" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/sabberworm/php-css-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/spatie/color" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/spatie/invade" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/spatie/laravel-package-tools" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/html-sanitizer" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/maatwebsite/excel" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/phpoffice/phpexcel" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

@@ -1,0 +1,190 @@
+<div class="about-container">
+  <!-- Header -->
+  <div class="about-header">
+    <div class="header-content">
+      <h1>À propos de SunuBoutique</h1>
+      <p>Votre partenaire de confiance pour un shopping en ligne authentique au Sénégal</p>
+    </div>
+    <div class="header-decoration">
+      <mat-icon>info</mat-icon>
+    </div>
+  </div>
+
+  <!-- Notre histoire -->
+  <div class="story-section">
+    <div class="story-content">
+      <div class="story-text">
+        <h2>Notre histoire</h2>
+        <p class="story-intro">
+          SunuBoutique est née d'une vision simple : démocratiser l'accès aux produits de qualité 
+          pour tous les Sénégalais, où qu'ils se trouvent.
+        </p>
+        <p>
+          Fondée en 2020 par deux développeurs passionnés, Cheikh Sidy Makhtar Mbodji et Saura Mansour, 
+          notre plateforme s'est rapidement imposée comme une référence dans l'e-commerce local. 
+          Nous croyons fermement que chaque Sénégalais mérite d'avoir accès aux meilleurs produits, 
+          qu'ils soient locaux ou internationaux.
+        </p>
+        <p>
+          Aujourd'hui, nous sommes fiers de servir plus de 10 000 clients à travers tout le pays, 
+          en proposant une expérience d'achat en ligne simple, sécurisée et adaptée aux réalités locales.
+        </p>
+      </div>
+      <div class="story-image">
+        <div class="image-placeholder">
+          <mat-icon>storefront</mat-icon>
+          <p>SunuBoutique</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-section">
+    <h2>SunuBoutique en chiffres</h2>
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of stats">
+        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-label">{{ stat.label }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nos valeurs -->
+  <div class="values-section">
+    <h2>Nos valeurs</h2>
+    <p class="values-intro">
+      Ces valeurs guident chacune de nos actions et définissent notre engagement envers vous
+    </p>
+    <div class="values-grid">
+      <div class="value-card" *ngFor="let value of values">
+        <div class="value-icon">
+          <mat-icon>{{ value.icon }}</mat-icon>
+        </div>
+        <h3>{{ value.title }}</h3>
+        <p>{{ value.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <h2>Notre parcours</h2>
+    <div class="timeline">
+      <div class="timeline-item" *ngFor="let milestone of milestones; let i = index" 
+           [class.timeline-left]="i % 2 === 0" 
+           [class.timeline-right]="i % 2 === 1">
+        <div class="timeline-content">
+          <div class="timeline-year">{{ milestone.year }}</div>
+          <h3>{{ milestone.title }}</h3>
+          <p>{{ milestone.description }}</p>
+        </div>
+        <div class="timeline-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notre équipe -->
+  <div class="team-section">
+    <h2>Notre équipe</h2>
+    <p class="team-intro">
+      Les développeurs passionnés derrière SunuBoutique
+    </p>
+    <div class="team-grid">
+      <div class="team-member" *ngFor="let member of teamMembers">
+        <div class="member-image">
+          <div class="image-placeholder">
+            <mat-icon>person</mat-icon>
+          </div>
+        </div>
+        <div class="member-info">
+          <h3>{{ member.name }}</h3>
+          <p class="member-role">{{ member.role }}</p>
+          <p class="member-description">{{ member.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notre mission -->
+  <div class="mission-section">
+    <div class="mission-content">
+      <div class="mission-text">
+        <h2>Notre mission</h2>
+        <p>
+          Faciliter l'accès aux produits de qualité pour tous les Sénégalais en proposant 
+          une plateforme e-commerce moderne, sécurisée et adaptée aux besoins locaux.
+        </p>
+        <div class="mission-points">
+          <div class="mission-point">
+            <mat-icon>check_circle</mat-icon>
+            <span>Promouvoir les produits locaux et l'artisanat sénégalais</span>
+          </div>
+          <div class="mission-point">
+            <mat-icon>check_circle</mat-icon>
+            <span>Offrir une expérience d'achat simple et sécurisée</span>
+          </div>
+          <div class="mission-point">
+            <mat-icon>check_circle</mat-icon>
+            <span>Contribuer au développement de l'économie numérique</span>
+          </div>
+          <div class="mission-point">
+            <mat-icon>check_circle</mat-icon>
+            <span>Créer des emplois et soutenir l'entrepreneuriat local</span>
+          </div>
+        </div>
+      </div>
+      <div class="mission-visual">
+        <div class="mission-circle">
+          <mat-icon>rocket_launch</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Partenaires -->
+  <div class="partners-section">
+    <h2>Nos partenaires</h2>
+    <p>Nous travaillons avec les meilleurs pour vous offrir une expérience exceptionnelle</p>
+    <div class="partners-grid">
+      <div class="partner-card">
+        <mat-icon>payment</mat-icon>
+        <h3>PayDunya</h3>
+        <p>Solutions de paiement mobile</p>
+      </div>
+      <div class="partner-card">
+        <mat-icon>local_shipping</mat-icon>
+        <h3>Partenaires logistiques</h3>
+        <p>Réseau de livraison national</p>
+      </div>
+      <div class="partner-card">
+        <mat-icon>store</mat-icon>
+        <h3>Marchands locaux</h3>
+        <p>Plus de 50 partenaires</p>
+      </div>
+      <div class="partner-card">
+        <mat-icon>security</mat-icon>
+        <h3>Sécurité</h3>
+        <p>Transactions sécurisées</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call to action -->
+  <div class="cta-section">
+    <div class="cta-content">
+      <h2>Rejoignez l'aventure SunuBoutique</h2>
+      <p>Découvrez nos produits et faites partie de notre communauté grandissante</p>
+      <div class="cta-actions">
+        <button mat-raised-button color="primary" routerLink="/" class="cta-button">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>Commencer mes achats</span>
+        </button>
+        <button mat-stroked-button routerLink="/contact" class="cta-button">
+          <mat-icon>contact_support</mat-icon>
+          <span>Nous contacter</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
