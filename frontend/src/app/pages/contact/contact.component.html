@@ -1,0 +1,191 @@
+<div class="contact-container">
+  <!-- Header -->
+  <div class="contact-header">
+    <div class="header-content">
+      <h1>Nous contacter</h1>
+      <p>Notre équipe est là pour vous aider et répondre à toutes vos questions</p>
+    </div>
+    <div class="header-decoration">
+      <mat-icon>contact_support</mat-icon>
+    </div>
+  </div>
+
+  <!-- Informations de contact -->
+  <div class="contact-info-section">
+    <h2>Nos coordonnées</h2>
+    <div class="contact-methods">
+      <div class="contact-method" *ngFor="let method of contactMethods">
+        <div class="method-icon">
+          <mat-icon>{{ method.icon }}</mat-icon>
+        </div>
+        <div class="method-content">
+          <h3>{{ method.title }}</h3>
+          <p class="method-value">{{ method.value }}</p>
+          <p class="method-description">{{ method.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire de contact -->
+  <div class="contact-form-section">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>Envoyez-nous un message</h2>
+        <p>Remplissez le formulaire ci-dessous et nous vous répondrons rapidement</p>
+      </div>
+
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nom complet *</mat-label>
+            <input matInput formControlName="name" placeholder="Votre nom complet">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-error *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched">
+              {{ getErrorMessage('name') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email *</mat-label>
+            <input matInput formControlName="email" placeholder="votre@email.com">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched">
+              {{ getErrorMessage('email') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Téléphone</mat-label>
+            <input matInput formControlName="phone" placeholder="+221 77 123 45 67">
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error *ngIf="contactForm.get('phone')?.invalid && contactForm.get('phone')?.touched">
+              {{ getErrorMessage('phone') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Catégorie *</mat-label>
+            <mat-select formControlName="category">
+              <mat-option value="general">Question générale</mat-option>
+              <mat-option value="order">Commande</mat-option>
+              <mat-option value="payment">Paiement</mat-option>
+              <mat-option value="delivery">Livraison</mat-option>
+              <mat-option value="product">Produit</mat-option>
+              <mat-option value="account">Compte</mat-option>
+              <mat-option value="complaint">Réclamation</mat-option>
+            </mat-select>
+            <mat-icon matSuffix>category</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="form-field full-width">
+          <mat-label>Sujet *</mat-label>
+          <input matInput formControlName="subject" placeholder="Résumé de votre demande">
+          <mat-icon matSuffix>subject</mat-icon>
+          <mat-error *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched">
+            {{ getErrorMessage('subject') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field full-width">
+          <mat-label>Message *</mat-label>
+          <textarea matInput 
+                    formControlName="message" 
+                    rows="6" 
+                    placeholder="Décrivez votre demande en détail..."></textarea>
+          <mat-icon matSuffix>message</mat-icon>
+          <mat-error *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched">
+            {{ getErrorMessage('message') }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-raised-button 
+                  color="primary" 
+                  type="submit" 
+                  [disabled]="isLoading"
+                  class="submit-button">
+            <mat-icon *ngIf="!isLoading">send</mat-icon>
+            <mat-icon *ngIf="isLoading" class="spinning">hourglass_empty</mat-icon>
+            <span>{{ isLoading ? 'Envoi en cours...' : 'Envoyer le message' }}</span>
+          </button>
+          
+          <button mat-stroked-button 
+                  type="button" 
+                  (click)="contactForm.reset(); contactForm.patchValue({category: 'general'})"
+                  [disabled]="isLoading">
+            <mat-icon>refresh</mat-icon>
+            <span>Réinitialiser</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- FAQ rapide -->
+    <div class="quick-faq">
+      <h3>Questions fréquentes</h3>
+      <p>Peut-être que votre réponse se trouve déjà ici :</p>
+      <div class="faq-links">
+        <a *ngFor="let faq of faqQuickLinks" 
+           [routerLink]="faq.link" 
+           class="faq-link">
+          <mat-icon>help_outline</mat-icon>
+          <span>{{ faq.question }}</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+      <div class="help-center-link">
+        <button mat-raised-button routerLink="/help" color="accent">
+          <mat-icon>help_center</mat-icon>
+          <span>Voir le centre d'aide complet</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section réseaux sociaux -->
+  <div class="social-section">
+    <h2>Suivez-nous</h2>
+    <p>Restez connecté avec nous sur les réseaux sociaux</p>
+    <div class="social-links">
+      <a href="#" class="social-link facebook">
+        <mat-icon>facebook</mat-icon>
+        <span>Facebook</span>
+      </a>
+      <a href="#" class="social-link instagram">
+        <mat-icon>camera_alt</mat-icon>
+        <span>Instagram</span>
+      </a>
+      <a href="#" class="social-link twitter">
+        <mat-icon>alternate_email</mat-icon>
+        <span>Twitter</span>
+      </a>
+      <a href="#" class="social-link whatsapp">
+        <mat-icon>chat</mat-icon>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Engagement de service -->
+  <div class="service-commitment">
+    <div class="commitment-card">
+      <mat-icon>schedule</mat-icon>
+      <h3>Réponse rapide</h3>
+      <p>Nous nous engageons à répondre à vos messages dans les 24 heures</p>
+    </div>
+    <div class="commitment-card">
+      <mat-icon>support_agent</mat-icon>
+      <h3>Support personnalisé</h3>
+      <p>Chaque demande est traitée avec attention par notre équipe dédiée</p>
+    </div>
+    <div class="commitment-card">
+      <mat-icon>verified</mat-icon>
+      <h3>Satisfaction garantie</h3>
+      <p>Votre satisfaction est notre priorité absolue</p>
+    </div>
+  </div>
+</div>

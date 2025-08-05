@@ -1,0 +1,215 @@
+<div class="help-container">
+  <!-- Header -->
+  <div class="help-header">
+    <div class="header-content">
+      <h1>Centre d'aide</h1>
+      <p>Trouvez rapidement les réponses à vos questions</p>
+    </div>
+    <div class="header-decoration">
+      <mat-icon>help_center</mat-icon>
+    </div>
+  </div>
+
+  <!-- Barre de recherche -->
+  <div class="search-section">
+    <div class="search-container">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Rechercher dans l'aide</mat-label>
+        <input matInput placeholder="Ex: comment passer une commande ?">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Navigation rapide -->
+  <div class="quick-nav">
+    <h2>Catégories d'aide</h2>
+    <div class="categories-grid">
+      <div class="category-card" *ngFor="let category of helpCategories" 
+           (click)="scrollToSection(category.title.toLowerCase())">
+        <div class="category-icon">
+          <mat-icon>{{ category.icon }}</mat-icon>
+        </div>
+        <div class="category-content">
+          <h3>{{ category.title }}</h3>
+          <p>{{ category.description }}</p>
+          <div class="category-items">
+            <span *ngFor="let item of category.items" class="item-tag">{{ item }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="faq-section" id="faq">
+    <h2>Questions fréquentes</h2>
+    <div class="faq-list">
+      <mat-expansion-panel *ngFor="let faq of faqItems; let i = index" 
+                          class="faq-item"
+                          [expanded]="faq.expanded">
+        <mat-expansion-panel-header (click)="toggleFaq(i)">
+          <mat-panel-title>
+            <mat-icon class="faq-icon">help_outline</mat-icon>
+            {{ faq.question }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="faq-answer">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </mat-expansion-panel>
+    </div>
+  </div>
+
+  <!-- Sections détaillées -->
+  <div class="detailed-sections">
+    <!-- Section Commandes -->
+    <div class="help-section" id="commandes">
+      <h2>
+        <mat-icon>shopping_bag</mat-icon>
+        Gestion des commandes
+      </h2>
+      <div class="section-content">
+        <div class="help-card">
+          <h3>Passer une commande</h3>
+          <ol>
+            <li>Parcourez notre catalogue et ajoutez vos articles au panier</li>
+            <li>Cliquez sur l'icône panier en haut à droite</li>
+            <li>Vérifiez vos articles et cliquez sur "Passer commande"</li>
+            <li>Remplissez vos informations de livraison</li>
+            <li>Choisissez votre mode de paiement</li>
+            <li>Confirmez votre commande</li>
+          </ol>
+        </div>
+        
+        <div class="help-card">
+          <h3>Suivre votre commande</h3>
+          <p>Une fois connecté, rendez-vous dans "Mon profil" > "Commandes" pour voir l'état de vos commandes :</p>
+          <ul>
+            <li><strong>En attente</strong> : Commande reçue, en cours de traitement</li>
+            <li><strong>En cours</strong> : Commande préparée</li>
+            <li><strong>Expédiée</strong> : Commande en route vers vous</li>
+            <li><strong>Livrée</strong> : Commande reçue</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Paiement -->
+    <div class="help-section" id="paiement">
+      <h2>
+        <mat-icon>payment</mat-icon>
+        Modes de paiement
+      </h2>
+      <div class="section-content">
+        <div class="help-card">
+          <h3>PayDunya (Paiement en ligne)</h3>
+          <p>Payez en toute sécurité avec :</p>
+          <div class="payment-methods">
+            <div class="payment-method">
+              <mat-icon>phone_android</mat-icon>
+              <span>Orange Money</span>
+            </div>
+            <div class="payment-method">
+              <mat-icon>account_balance_wallet</mat-icon>
+              <span>Free Money</span>
+            </div>
+            <div class="payment-method">
+              <mat-icon>waves</mat-icon>
+              <span>Wave</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="help-card">
+          <h3>Paiement à la livraison</h3>
+          <p>Disponible pour certaines zones de Dakar. Payez en espèces lors de la réception de votre commande.</p>
+          <div class="alert-info">
+            <mat-icon>info</mat-icon>
+            <span>Préparez le montant exact, nos livreurs n'ont pas toujours la monnaie.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Livraison -->
+    <div class="help-section" id="livraison">
+      <h2>
+        <mat-icon>local_shipping</mat-icon>
+        Livraison
+      </h2>
+      <div class="section-content">
+        <div class="help-card">
+          <h3>Zones et délais de livraison</h3>
+          <div class="delivery-zones">
+            <div class="zone">
+              <h4>Dakar Centre</h4>
+              <p>1-2 jours ouvrables</p>
+            </div>
+            <div class="zone">
+              <h4>Banlieue Dakar</h4>
+              <p>2-3 jours ouvrables</p>
+            </div>
+            <div class="zone">
+              <h4>Autres régions</h4>
+              <p>3-5 jours ouvrables</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="help-card">
+          <h3>Processus de livraison</h3>
+          <ol>
+            <li>Notre équipe prépare votre commande</li>
+            <li>Vous recevez un SMS/email de confirmation d'expédition</li>
+            <li>Notre livreur vous contacte pour convenir d'un créneau</li>
+            <li>Livraison à l'adresse indiquée</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Compte -->
+    <div class="help-section" id="compte">
+      <h2>
+        <mat-icon>account_circle</mat-icon>
+        Gestion du compte
+      </h2>
+      <div class="section-content">
+        <div class="help-card">
+          <h3>Créer un compte</h3>
+          <p>Un compte vous permet de :</p>
+          <ul>
+            <li>Suivre vos commandes</li>
+            <li>Sauvegarder vos adresses</li>
+            <li>Accéder à votre historique d'achats</li>
+            <li>Bénéficier d'offres exclusives</li>
+          </ul>
+        </div>
+        
+        <div class="help-card">
+          <h3>Mot de passe oublié</h3>
+          <p>Cliquez sur "Mot de passe oublié" sur la page de connexion et suivez les instructions envoyées par email.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact rapide -->
+  <div class="contact-section">
+    <div class="contact-card">
+      <h3>Vous ne trouvez pas votre réponse ?</h3>
+      <p>Notre équipe est là pour vous aider</p>
+      <div class="contact-actions">
+        <button mat-raised-button color="primary" routerLink="/contact">
+          <mat-icon>email</mat-icon>
+          Nous contacter
+        </button>
+        <button mat-stroked-button routerLink="/about">
+          <mat-icon>info</mat-icon>
+          À propos de nous
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
