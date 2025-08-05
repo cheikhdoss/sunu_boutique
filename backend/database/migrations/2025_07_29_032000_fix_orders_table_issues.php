@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            // Ajouter la colonne paid_at qui manque
-            $table->timestamp('paid_at')->nullable()->after('payment_date');
+            // Ajouter la colonne paid_at si elle n'existe pas déjà
+            if (!Schema::hasColumn('orders', 'paid_at')) {
+                $table->timestamp('paid_at')->nullable()->after('payment_date');
+            }
             
             // Modifier user_id pour permettre les valeurs NULL (commandes invités)
             $table->unsignedBigInteger('user_id')->nullable()->change();

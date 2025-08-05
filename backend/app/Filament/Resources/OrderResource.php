@@ -97,6 +97,22 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                Tables\Actions\Action::make('export')
+                    ->label('Exporter les commandes')
+                    ->icon('heroicon-o-document-download')
+                    ->action(function (array $data, Collection $records) {
+                        $service = new \App\Services\OrderExportService();
+                        $filename = $service->exportOrders($records);
+                        return response()->download(storage_path('app/public/exports/' . $filename));
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Exporter les commandes')
+                    ->modalSubheading('Voulez-vous exporter les commandes sélectionnées ?')
+                    ->modalButton('Oui, exporter')
+                    ->color('success')
+                    ->visible(fn () => auth()->user()->can('export_orders')),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('order_number')
                     ->label('Numéro de commande')
